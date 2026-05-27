@@ -10,7 +10,10 @@ export const Route = createFileRoute("/revenue")({
   head: () => ({
     meta: [
       { title: "Revenue — Gharpayy" },
-      { name: "description", content: "MRR closed, broken down by TCM, property, and source. Live and trending." },
+      {
+        name: "description",
+        content: "MRR closed, broken down by TCM, property, and source. Live and trending.",
+      },
     ],
   }),
   component: RevenuePage,
@@ -91,10 +94,41 @@ function RevenuePage() {
 
         {/* KPIs */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Tile label="MRR closed" value={`₹${(totalMRR / 1000).toFixed(0)}k`} sub={`${bookings.length} booking${bookings.length === 1 ? "" : "s"}`} accent="success" />
-          <Tile label="Last 7 days" value={`₹${(last7 / 1000).toFixed(0)}k`} sub={prev7 > 0 ? `${wow >= 0 ? "+" : ""}${wow}% WoW` : "—"} accent={wow >= 0 ? "success" : "destructive"} />
-          <Tile label="Top closer" value={byTcm[0] ? tcms.find((t) => t.id === byTcm[0].tcmId)?.name?.split(" ")[0] ?? "—" : "—"} sub={byTcm[0] ? `₹${(byTcm[0].revenue / 1000).toFixed(0)}k` : ""} accent="accent" />
-          <Tile label="Top property" value={byProperty[0] ? properties.find((p) => p.id === byProperty[0].propertyId)?.name ?? "—" : "—"} sub={byProperty[0] ? `${byProperty[0].bookings} booking${byProperty[0].bookings === 1 ? "" : "s"}` : ""} />
+          <Tile
+            label="MRR closed"
+            value={`₹${(totalMRR / 1000).toFixed(0)}k`}
+            sub={`${bookings.length} booking${bookings.length === 1 ? "" : "s"}`}
+            accent="success"
+          />
+          <Tile
+            label="Last 7 days"
+            value={`₹${(last7 / 1000).toFixed(0)}k`}
+            sub={prev7 > 0 ? `${wow >= 0 ? "+" : ""}${wow}% WoW` : "—"}
+            accent={wow >= 0 ? "success" : "destructive"}
+          />
+          <Tile
+            label="Top closer"
+            value={
+              byTcm[0]
+                ? (tcms.find((t) => t.id === byTcm[0].tcmId)?.name?.split(" ")[0] ?? "—")
+                : "—"
+            }
+            sub={byTcm[0] ? `₹${(byTcm[0].revenue / 1000).toFixed(0)}k` : ""}
+            accent="accent"
+          />
+          <Tile
+            label="Top property"
+            value={
+              byProperty[0]
+                ? (properties.find((p) => p.id === byProperty[0].propertyId)?.name ?? "—")
+                : "—"
+            }
+            sub={
+              byProperty[0]
+                ? `${byProperty[0].bookings} booking${byProperty[0].bookings === 1 ? "" : "s"}`
+                : ""
+            }
+          />
         </div>
 
         {/* 30-day trend */}
@@ -104,7 +138,9 @@ function RevenuePage() {
               <TrendingUp className="h-4 w-4 text-success" />
               <h2 className="font-display text-sm font-semibold">30-day MRR trend</h2>
             </div>
-            <div className="text-[10px] text-muted-foreground font-mono">peak ₹{(maxTrend / 1000).toFixed(0)}k</div>
+            <div className="text-[10px] text-muted-foreground font-mono">
+              peak ₹{(maxTrend / 1000).toFixed(0)}k
+            </div>
           </header>
           <div className="p-4">
             {trend.length === 0 ? (
@@ -113,10 +149,20 @@ function RevenuePage() {
               <div className="flex items-end gap-1 h-32">
                 {trend.map((t, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
-                    <div className="w-full relative" style={{ height: `${(t.amt / maxTrend) * 100}%`, minHeight: t.amt > 0 ? "4px" : "0" }}>
+                    <div
+                      className="w-full relative"
+                      style={{
+                        height: `${(t.amt / maxTrend) * 100}%`,
+                        minHeight: t.amt > 0 ? "4px" : "0",
+                      }}
+                    >
                       <div className="absolute inset-0 bg-success/70 group-hover:bg-success rounded-sm transition-colors" />
                     </div>
-                    {i % 5 === 0 && <span className="text-[9px] font-mono text-muted-foreground">{t.day.split(" ")[1]}</span>}
+                    {i % 5 === 0 && (
+                      <span className="text-[9px] font-mono text-muted-foreground">
+                        {t.day.split(" ")[1]}
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -126,29 +172,61 @@ function RevenuePage() {
 
         {/* Three breakdowns */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <Breakdown title="By TCM" icon={Users} rows={byTcm.map((r) => ({
-            label: tcms.find((t) => t.id === r.tcmId)?.name ?? r.tcmId,
-            sub: `${r.bookings} booking${r.bookings === 1 ? "" : "s"}`,
-            value: r.revenue,
-          }))} total={totalMRR} />
-          <Breakdown title="By property" icon={Building2} rows={byProperty.map((r) => ({
-            label: properties.find((p) => p.id === r.propertyId)?.name ?? r.propertyId,
-            sub: properties.find((p) => p.id === r.propertyId)?.area ?? "",
-            value: r.revenue,
-          }))} total={totalMRR} />
-          <Breakdown title="By source" icon={TrendingUp} rows={bySource.map((r) => ({
-            label: r.source,
-            sub: `${r.bookings} booking${r.bookings === 1 ? "" : "s"}`,
-            value: r.revenue,
-          }))} total={totalMRR} />
+          <Breakdown
+            title="By TCM"
+            icon={Users}
+            rows={byTcm.map((r) => ({
+              label: tcms.find((t) => t.id === r.tcmId)?.name ?? r.tcmId,
+              sub: `${r.bookings} booking${r.bookings === 1 ? "" : "s"}`,
+              value: r.revenue,
+            }))}
+            total={totalMRR}
+          />
+          <Breakdown
+            title="By property"
+            icon={Building2}
+            rows={byProperty.map((r) => ({
+              label: properties.find((p) => p.id === r.propertyId)?.name ?? r.propertyId,
+              sub: properties.find((p) => p.id === r.propertyId)?.area ?? "",
+              value: r.revenue,
+            }))}
+            total={totalMRR}
+          />
+          <Breakdown
+            title="By source"
+            icon={TrendingUp}
+            rows={bySource.map((r) => ({
+              label: r.source,
+              sub: `${r.bookings} booking${r.bookings === 1 ? "" : "s"}`,
+              value: r.revenue,
+            }))}
+            total={totalMRR}
+          />
         </div>
       </div>
     </AppShell>
   );
 }
 
-function Tile({ label, value, sub, accent }: { label: string; value: string; sub: string; accent?: "success" | "accent" | "destructive" }) {
-  const cls = accent === "success" ? "text-success" : accent === "destructive" ? "text-destructive" : accent === "accent" ? "text-accent" : "";
+function Tile({
+  label,
+  value,
+  sub,
+  accent,
+}: {
+  label: string;
+  value: string;
+  sub: string;
+  accent?: "success" | "accent" | "destructive";
+}) {
+  const cls =
+    accent === "success"
+      ? "text-success"
+      : accent === "destructive"
+        ? "text-destructive"
+        : accent === "accent"
+          ? "text-accent"
+          : "";
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
@@ -158,7 +236,17 @@ function Tile({ label, value, sub, accent }: { label: string; value: string; sub
   );
 }
 
-function Breakdown({ title, icon: Icon, rows, total }: { title: string; icon: typeof Users; rows: { label: string; sub: string; value: number }[]; total: number }) {
+function Breakdown({
+  title,
+  icon: Icon,
+  rows,
+  total,
+}: {
+  title: string;
+  icon: typeof Users;
+  rows: { label: string; sub: string; value: number }[];
+  total: number;
+}) {
   return (
     <section className="rounded-xl border border-border bg-card overflow-hidden">
       <header className="flex items-center gap-2 px-4 py-3 border-b border-border">
@@ -166,7 +254,9 @@ function Breakdown({ title, icon: Icon, rows, total }: { title: string; icon: ty
         <h2 className="font-display text-sm font-semibold">{title}</h2>
       </header>
       <div className="divide-y divide-border">
-        {rows.length === 0 && <div className="p-6 text-xs text-center text-muted-foreground">No bookings yet.</div>}
+        {rows.length === 0 && (
+          <div className="p-6 text-xs text-center text-muted-foreground">No bookings yet.</div>
+        )}
         {rows.map((r) => {
           const pct = total > 0 ? Math.round((r.value / total) * 100) : 0;
           return (
@@ -177,7 +267,9 @@ function Breakdown({ title, icon: Icon, rows, total }: { title: string; icon: ty
                   <div className="text-[11px] text-muted-foreground truncate">{r.sub}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-mono font-semibold">₹{(r.value / 1000).toFixed(0)}k</div>
+                  <div className="text-sm font-mono font-semibold">
+                    ₹{(r.value / 1000).toFixed(0)}k
+                  </div>
                   <div className="text-[10px] font-mono text-muted-foreground">{pct}%</div>
                 </div>
               </div>

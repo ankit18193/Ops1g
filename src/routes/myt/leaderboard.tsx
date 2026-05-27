@@ -4,5 +4,9 @@ import Leaderboard from "@/myt/pages/Leaderboard";
 
 export const Route = createFileRoute("/myt/leaderboard")({
   head: () => ({ meta: [{ title: "Leaderboard — MYT" }] }),
-  component: () => <AppShell><Leaderboard /></AppShell>,
+  component: () => (
+    <AppShell>
+      <Leaderboard />
+    </AppShell>
+  ),
 });

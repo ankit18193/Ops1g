@@ -8,8 +8,17 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Phone, MessageSquare, ClipboardCheck, AlertTriangle,
-  Flame, Snowflake, ChevronRight, Target, Zap, Sun, Calendar as CalendarIcon,
+  Phone,
+  MessageSquare,
+  ClipboardCheck,
+  AlertTriangle,
+  Flame,
+  Snowflake,
+  ChevronRight,
+  Target,
+  Zap,
+  Sun,
+  Calendar as CalendarIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -64,11 +73,16 @@ const BAND_META: Record<Band, { label: string; tone: string; icon: typeof Flame;
 };
 
 export function DailyActionQueue() {
-  const { leads, tours, followUps, role, currentTcmId, tcms, selectLead, logCall, sendMessage } = useApp();
+  const { leads, tours, followUps, role, currentTcmId, tcms, selectLead, logCall, sendMessage } =
+    useApp();
   const [now, mounted] = useMountedNow();
   const callAttempts = useCRM10x((s) => s.calls);
   const [collapsed, setCollapsed] = useState<Record<Band, boolean>>({
-    fire: false, confirm: false, recover: false, nurture: true, prospect: true,
+    fire: false,
+    confirm: false,
+    recover: false,
+    nurture: true,
+    prospect: true,
   });
 
   const filterTcm = role === "tcm" ? currentTcmId : undefined;
@@ -80,7 +94,11 @@ export function DailyActionQueue() {
   // Band classification
   const bands = useMemo(() => {
     const map: Record<Band, typeof queue> = {
-      fire: [], confirm: [], recover: [], nurture: [], prospect: [],
+      fire: [],
+      confirm: [],
+      recover: [],
+      nurture: [],
+      prospect: [],
     };
     queue.forEach((a) => {
       if (a.kind === "post-tour-overdue" || a.kind === "first-response") map.fire.push(a);
@@ -111,7 +129,8 @@ export function DailyActionQueue() {
             {role === "tcm"
               ? `Your queue · ${tcms.find((t) => t.id === currentTcmId)?.name ?? "—"}`
               : "Team queue · all agents"}
-            {" · "}{mounted ? format(new Date(now), "EEEE, MMM d") : "\u00a0"}
+            {" · "}
+            {mounted ? format(new Date(now), "EEEE, MMM d") : "\u00a0"}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -129,7 +148,9 @@ export function DailyActionQueue() {
             No pending actions. Use this time to add fresh leads or coach the team.
           </p>
           <Link to="/leads">
-            <Button variant="outline" size="sm">Browse leads</Button>
+            <Button variant="outline" size="sm">
+              Browse leads
+            </Button>
           </Link>
         </Card>
       )}
@@ -141,10 +162,7 @@ export function DailyActionQueue() {
         const Icon = meta.icon;
         const isCollapsed = collapsed[band];
         return (
-          <section
-            key={band}
-            className={`rounded-xl border-2 ${meta.tone} overflow-hidden`}
-          >
+          <section key={band} className={`rounded-xl border-2 ${meta.tone} overflow-hidden`}>
             <button
               onClick={() => setCollapsed((c) => ({ ...c, [band]: !c[band] }))}
               className="w-full flex items-center justify-between px-4 py-3 hover:bg-foreground/5 transition-colors"
@@ -185,7 +203,9 @@ export function DailyActionQueue() {
                             score {Math.round(a.score)}
                           </span>
                           {lead.intent === "hot" && (
-                            <Badge className="bg-destructive/15 text-destructive text-[10px]">HOT</Badge>
+                            <Badge className="bg-destructive/15 text-destructive text-[10px]">
+                              HOT
+                            </Badge>
                           )}
                         </div>
                         <div className="text-[11px] text-muted-foreground truncate">
@@ -240,8 +260,14 @@ export function DailyActionQueue() {
 }
 
 function Stat({
-  label, value, tone,
-}: { label: string; value: number; tone: "default" | "danger" | "success" }) {
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: "default" | "danger" | "success";
+}) {
   const cls =
     tone === "danger"
       ? "border-destructive/40 bg-destructive/5 text-destructive"

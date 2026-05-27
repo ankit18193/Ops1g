@@ -4,14 +4,38 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import {
-  Phone, MessageCircle, CalendarPlus, ClipboardList, MessageSquare, Activity as ActivityIcon,
-  Wallet, MapPin, Building2, AlertTriangle, CheckCircle2, ThumbsUp, ThumbsDown, Sparkles,
-  Tag, FileText, Clock, Send, RefreshCw, X, Bell,
+  Phone,
+  MessageCircle,
+  CalendarPlus,
+  ClipboardList,
+  MessageSquare,
+  Activity as ActivityIcon,
+  Wallet,
+  MapPin,
+  Building2,
+  AlertTriangle,
+  CheckCircle2,
+  ThumbsUp,
+  ThumbsDown,
+  Sparkles,
+  Tag,
+  FileText,
+  Clock,
+  Send,
+  RefreshCw,
+  X,
+  Bell,
 } from "lucide-react";
 import { Tour, Lead, TourStatus, TourOutcome, WhyLost } from "@/myt/lib/types";
 import { useAppState } from "@/myt/lib/app-context";
@@ -21,9 +45,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 
-type Subject =
-  | { kind: "tour"; tour: Tour }
-  | { kind: "lead"; lead: Lead };
+type Subject = { kind: "tour"; tour: Tour } | { kind: "lead"; lead: Lead };
 
 interface Props {
   subject: Subject;
@@ -40,8 +62,13 @@ const STAGES: { value: TourStatus; label: string }[] = [
 ];
 
 const SIGNAL_TAGS = [
-  "Price issue", "Location mismatch", "Parents involved",
-  "Comparing options", "Food concern", "Move-in delay", "Hot lead",
+  "Price issue",
+  "Location mismatch",
+  "Parents involved",
+  "Comparing options",
+  "Food concern",
+  "Move-in delay",
+  "Hot lead",
 ];
 
 export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: Props) {
@@ -51,9 +78,10 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
 
   // ----- derive lead + tour from subject + global state -----
   const tour = subject.kind === "tour" ? subject.tour : undefined;
-  const lead = subject.kind === "lead"
-    ? subject.lead
-    : leads.find((l) => l.phone === subject.tour.phone || l.name === subject.tour.leadName);
+  const lead =
+    subject.kind === "lead"
+      ? subject.lead
+      : leads.find((l) => l.phone === subject.tour.phone || l.name === subject.tour.leadName);
 
   const name = tour?.leadName ?? lead?.name ?? "Lead";
   const phone = tour?.phone ?? lead?.phone ?? "";
@@ -65,11 +93,12 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
   const [note, setNote] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [fuDate, setFuDate] = useState(() => {
-    const d = new Date(); d.setDate(d.getDate() + 1);
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
     return d.toISOString().slice(0, 10);
   });
   const [fuPriority, setFuPriority] = useState<"hot" | "warm" | "cold">(
-    tour?.intent === "hard" ? "hot" : tour?.intent === "medium" ? "warm" : "cold"
+    tour?.intent === "hard" ? "hot" : tour?.intent === "medium" ? "warm" : "cold",
   );
   const [fuReason, setFuReason] = useState("Decision check-in");
   const [waText, setWaText] = useState("");
@@ -77,7 +106,9 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
   // post-tour
   const existingReport = tour ? reports[tour.id] : undefined;
   const [ptOutcome, setPtOutcome] = useState<TourOutcome | "">(tour?.outcome ?? "");
-  const [ptConfidence, setPtConfidence] = useState(existingReport ? 80 : tour?.confidenceScore ?? 50);
+  const [ptConfidence, setPtConfidence] = useState(
+    existingReport ? 80 : (tour?.confidenceScore ?? 50),
+  );
   const [ptObjection, setPtObjection] = useState<WhyLost>(tour?.whyLost ?? null);
   const [ptObjectionNote, setPtObjectionNote] = useState("");
   const [ptDecisionDate, setPtDecisionDate] = useState("");
@@ -101,13 +132,22 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
   // ----- actions -----
   const setStatus = (status: TourStatus) => {
     updateTour({ status, ...(status === "completed" ? { showUp: true } : {}) });
-    log(status === "completed" ? "tour_ended" : status === "no-show" ? "no_show" : "custom_message_sent",
-      `Status → ${status}`);
+    log(
+      status === "completed"
+        ? "tour_ended"
+        : status === "no-show"
+          ? "no_show"
+          : "custom_message_sent",
+      `Status → ${status}`,
+    );
     toast.success(`Status updated to ${status}`);
   };
 
   const sendWhatsApp = (text: string) => {
-    if (!phone) { toast.error("No phone on file"); return; }
+    if (!phone) {
+      toast.error("No phone on file");
+      return;
+    }
     const cleaned = phone.replace(/\D/g, "");
     window.open(`https://wa.me/${cleaned}?text=${encodeURIComponent(text)}`, "_blank");
     log("custom_message_sent", text.slice(0, 80));
@@ -124,23 +164,34 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
     if (!note.trim()) return;
     log("custom_message_sent", `Note: ${note.trim()}${tags.length ? ` [${tags.join(", ")}]` : ""}`);
     toast.success("Note saved");
-    setNote(""); setTags([]);
+    setNote("");
+    setTags([]);
   };
 
   const saveFollowUp = () => {
     const dueAt = new Date(fuDate).toISOString();
-    log("reminder_sent", `Follow-up scheduled · ${fuPriority.toUpperCase()} · ${fuReason} · ${format(new Date(fuDate), "MMM d")}`);
+    log(
+      "reminder_sent",
+      `Follow-up scheduled · ${fuPriority.toUpperCase()} · ${fuReason} · ${format(new Date(fuDate), "MMM d")}`,
+    );
     toast.success(`Follow-up set ${format(new Date(fuDate), "MMM d")}`, { description: fuReason });
     if (lead) updateLead({ notes: `[FU ${fuDate}] ${fuReason}\n${lead.notes ?? ""}` });
   };
 
   const savePostTour = () => {
     if (!tour) return;
-    if (!ptOutcome) { toast.error("Pick an outcome"); return; }
-    if (!ptObjection && ptOutcome !== "booked" && ptOutcome !== "token-paid") {
-      toast.error("Tag the key objection"); return;
+    if (!ptOutcome) {
+      toast.error("Pick an outcome");
+      return;
     }
-    if (!ptNextFollowUp) { toast.error("Next follow-up date is mandatory"); return; }
+    if (!ptObjection && ptOutcome !== "booked" && ptOutcome !== "token-paid") {
+      toast.error("Tag the key objection");
+      return;
+    }
+    if (!ptNextFollowUp) {
+      toast.error("Next follow-up date is mandatory");
+      return;
+    }
 
     updateTour({ outcome: ptOutcome, whyLost: ptObjection, remarks: ptObjectionNote });
     setReport({
@@ -148,14 +199,19 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
       arrived: tour.showUp ? "yes" : "no",
       punctuality: "on_time",
       budgetAlignment: "exact",
-      propertyReaction: ptOutcome === "booked" || ptOutcome === "token-paid" ? "positive" : "neutral",
+      propertyReaction:
+        ptOutcome === "booked" || ptOutcome === "token-paid" ? "positive" : "neutral",
       interestLevel: ptConfidence >= 70 ? "high" : ptConfidence >= 40 ? "medium" : "low",
       firstObjection: ptObjection ?? undefined,
       decisionAuthority: "self",
       emotionalTone: "neutral",
-      outcome: (ptOutcome === "booked" || ptOutcome === "token-paid") ? "booked"
-              : ptOutcome === "follow-up" ? "warm"
-              : ptOutcome === "draft" ? "hot"
+      outcome:
+        ptOutcome === "booked" || ptOutcome === "token-paid"
+          ? "booked"
+          : ptOutcome === "follow-up"
+            ? "warm"
+            : ptOutcome === "draft"
+              ? "hot"
               : "cold",
       nextStep: `${fuReason} on ${ptNextFollowUp}`,
       notes: ptObjectionNote,
@@ -176,10 +232,7 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
           </Button>
         )}
       </SheetTrigger>
-      <SheetContent
-        side="right"
-        className="w-full sm:max-w-xl p-0 overflow-y-auto"
-      >
+      <SheetContent side="right" className="w-full sm:max-w-xl p-0 overflow-y-auto">
         {/* Header */}
         <SheetHeader className="p-4 border-b border-border bg-surface-2/40 sticky top-0 z-10">
           <div className="flex items-start justify-between gap-3">
@@ -187,7 +240,12 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
               <SheetTitle className="text-base font-heading flex items-center gap-2 flex-wrap">
                 {name}
                 {tour && (
-                  <span className={cn("text-[10px] px-1.5 py-0.5 rounded border font-medium uppercase", intentBg[tour.intent])}>
+                  <span
+                    className={cn(
+                      "text-[10px] px-1.5 py-0.5 rounded border font-medium uppercase",
+                      intentBg[tour.intent],
+                    )}
+                  >
                     {tour.intent}
                   </span>
                 )}
@@ -200,7 +258,7 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
               <p className="text-[11px] text-muted-foreground mt-1">
                 {phone && <span className="mr-2">📞 {phone}</span>}
                 <span className="mr-2">📍 {area}</span>
-                <span>💰 ₹{(budget/1000).toFixed(0)}k</span>
+                <span>💰 ₹{(budget / 1000).toFixed(0)}k</span>
               </p>
               {tour && (
                 <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -215,10 +273,24 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
 
           {/* Quick actions row */}
           <div className="flex flex-wrap gap-1.5 pt-2">
-            <Button size="sm" variant="outline" className="h-7 gap-1 text-[11px]" onClick={callNow} disabled={!phone}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 gap-1 text-[11px]"
+              onClick={callNow}
+              disabled={!phone}
+            >
               <Phone className="h-3 w-3" /> Call
             </Button>
-            <Button size="sm" variant="outline" className="h-7 gap-1 text-[11px]" onClick={() => sendWhatsApp(`Hi ${name}, this is regarding your Gharpayy tour. Can we connect?`)} disabled={!phone}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 gap-1 text-[11px]"
+              onClick={() =>
+                sendWhatsApp(`Hi ${name}, this is regarding your Gharpayy tour. Can we connect?`)
+              }
+              disabled={!phone}
+            >
               <MessageCircle className="h-3 w-3" /> WhatsApp
             </Button>
             {tour && (
@@ -227,7 +299,11 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {STAGES.map((s) => <SelectItem key={s.value} value={s.value} className="text-xs">{s.label}</SelectItem>)}
+                  {STAGES.map((s) => (
+                    <SelectItem key={s.value} value={s.value} className="text-xs">
+                      {s.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             )}
@@ -237,27 +313,72 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
         {/* Tabs */}
         <Tabs defaultValue={stale ? "post-tour" : defaultTab} className="p-4">
           <TabsList className="w-full justify-start h-9 flex-wrap">
-            <TabsTrigger value="overview" className="text-[11px] gap-1"><FileText className="h-3 w-3" /> Overview</TabsTrigger>
-            <TabsTrigger value="actions" className="text-[11px] gap-1"><MessageSquare className="h-3 w-3" /> Action</TabsTrigger>
-            <TabsTrigger value="followup" className="text-[11px] gap-1"><Bell className="h-3 w-3" /> Follow-up</TabsTrigger>
-            {tour && <TabsTrigger value="post-tour" className={cn("text-[11px] gap-1", stale && "text-destructive")}><CheckCircle2 className="h-3 w-3" /> Post-tour</TabsTrigger>}
-            <TabsTrigger value="activity" className="text-[11px] gap-1"><ActivityIcon className="h-3 w-3" /> Activity</TabsTrigger>
+            <TabsTrigger value="overview" className="text-[11px] gap-1">
+              <FileText className="h-3 w-3" /> Overview
+            </TabsTrigger>
+            <TabsTrigger value="actions" className="text-[11px] gap-1">
+              <MessageSquare className="h-3 w-3" /> Action
+            </TabsTrigger>
+            <TabsTrigger value="followup" className="text-[11px] gap-1">
+              <Bell className="h-3 w-3" /> Follow-up
+            </TabsTrigger>
+            {tour && (
+              <TabsTrigger
+                value="post-tour"
+                className={cn("text-[11px] gap-1", stale && "text-destructive")}
+              >
+                <CheckCircle2 className="h-3 w-3" /> Post-tour
+              </TabsTrigger>
+            )}
+            <TabsTrigger value="activity" className="text-[11px] gap-1">
+              <ActivityIcon className="h-3 w-3" /> Activity
+            </TabsTrigger>
           </TabsList>
 
           {/* ---- OVERVIEW ---- */}
           <TabsContent value="overview" className="mt-3 space-y-3">
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <Info icon={<Wallet className="h-3.5 w-3.5" />} label="Budget" value={`₹${budget.toLocaleString()}/mo`} />
+              <Info
+                icon={<Wallet className="h-3.5 w-3.5" />}
+                label="Budget"
+                value={`₹${budget.toLocaleString()}/mo`}
+              />
               <Info icon={<MapPin className="h-3.5 w-3.5" />} label="Area" value={area} />
-              {tour && <Info icon={<Building2 className="h-3.5 w-3.5" />} label="Property" value={property!} />}
-              {tour && <Info icon={<Clock className="h-3.5 w-3.5" />} label="Slot" value={`${tour.tourDate} ${tour.tourTime}`} />}
-              {lead && <Info icon={<Tag className="h-3.5 w-3.5" />} label="Source" value={lead.addedByName ?? "—"} />}
-              {lead && <Info icon={<Clock className="h-3.5 w-3.5" />} label="Move-in" value={lead.moveInDate} />}
+              {tour && (
+                <Info
+                  icon={<Building2 className="h-3.5 w-3.5" />}
+                  label="Property"
+                  value={property!}
+                />
+              )}
+              {tour && (
+                <Info
+                  icon={<Clock className="h-3.5 w-3.5" />}
+                  label="Slot"
+                  value={`${tour.tourDate} ${tour.tourTime}`}
+                />
+              )}
+              {lead && (
+                <Info
+                  icon={<Tag className="h-3.5 w-3.5" />}
+                  label="Source"
+                  value={lead.addedByName ?? "—"}
+                />
+              )}
+              {lead && (
+                <Info
+                  icon={<Clock className="h-3.5 w-3.5" />}
+                  label="Move-in"
+                  value={lead.moveInDate}
+                />
+              )}
             </div>
 
             {tour && (tour.confidenceReason?.length ?? 0) > 0 && (
               <div className="rounded-md border border-border bg-surface-2/40 p-2.5 text-[11px] text-muted-foreground">
-                <div className="font-medium text-foreground mb-1 flex items-center gap-1"><Sparkles className="h-3 w-3" /> Why this score</div>
+                <div className="font-medium text-foreground mb-1 flex items-center gap-1">
+                  <Sparkles className="h-3 w-3" /> Why this score
+                </div>
                 {tour!.confidenceReason!.join(" · ")}
               </div>
             )}
@@ -275,19 +396,26 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
                 {SIGNAL_TAGS.map((t) => (
                   <button
                     key={t}
-                    onClick={() => setTags((s) => s.includes(t) ? s.filter((x) => x !== t) : [...s, t])}
+                    onClick={() =>
+                      setTags((s) => (s.includes(t) ? s.filter((x) => x !== t) : [...s, t]))
+                    }
                     className={cn(
                       "text-[10px] px-2 py-0.5 rounded-full border transition-colors",
                       tags.includes(t)
                         ? "bg-primary/15 border-primary/40 text-primary"
-                        : "bg-surface-2 border-border text-muted-foreground hover:bg-surface-3"
+                        : "bg-surface-2 border-border text-muted-foreground hover:bg-surface-3",
                     )}
                   >
                     {t}
                   </button>
                 ))}
               </div>
-              <Button size="sm" className="w-full gap-1.5" onClick={saveNote} disabled={!note.trim()}>
+              <Button
+                size="sm"
+                className="w-full gap-1.5"
+                onClick={saveNote}
+                disabled={!note.trim()}
+              >
                 <FileText className="h-3.5 w-3.5" /> Save to log
               </Button>
             </div>
@@ -297,16 +425,39 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
           <TabsContent value="actions" className="mt-3 space-y-2">
             <div className="space-y-2">
               {[
-                { label: "Reconfirm tour", text: `Hi ${name}, just confirming your tour today at ${tour?.tourTime ?? "the scheduled time"} for ${property ?? "the property"}. Reply YES to confirm.` },
-                { label: "Send directions", text: `Hi ${name}, here are directions for your visit: https://maps.google.com/?q=${encodeURIComponent(property ?? area)}. TCM ${tour?.assignedToName ?? ""} will meet you.` },
-                { label: "Urgency nudge", text: `Hi ${name}, only 2 beds left in your range at ${property ?? "this property"}. 3 others viewing today. Hold expires in 4 hours. Reply YES to lock.` },
-                { label: "Post-tour check-in", text: `Hi ${name}, hope the visit went well! Did you like the place? Reply 1: Loved it · 2: Good unsure · 3: Need better options.` },
-                { label: "Token request", text: `Hi ${name}, lock your bed at ${property ?? ""} with a refundable ₹2,000 token. Pay here: gharpayy.com/pay/${tour?.id ?? ""}` },
+                {
+                  label: "Reconfirm tour",
+                  text: `Hi ${name}, just confirming your tour today at ${tour?.tourTime ?? "the scheduled time"} for ${property ?? "the property"}. Reply YES to confirm.`,
+                },
+                {
+                  label: "Send directions",
+                  text: `Hi ${name}, here are directions for your visit: https://maps.google.com/?q=${encodeURIComponent(property ?? area)}. TCM ${tour?.assignedToName ?? ""} will meet you.`,
+                },
+                {
+                  label: "Urgency nudge",
+                  text: `Hi ${name}, only 2 beds left in your range at ${property ?? "this property"}. 3 others viewing today. Hold expires in 4 hours. Reply YES to lock.`,
+                },
+                {
+                  label: "Post-tour check-in",
+                  text: `Hi ${name}, hope the visit went well! Did you like the place? Reply 1: Loved it · 2: Good unsure · 3: Need better options.`,
+                },
+                {
+                  label: "Token request",
+                  text: `Hi ${name}, lock your bed at ${property ?? ""} with a refundable ₹2,000 token. Pay here: gharpayy.com/pay/${tour?.id ?? ""}`,
+                },
               ].map((t) => (
-                <div key={t.label} className="rounded-md border border-border bg-surface-2/40 p-2.5">
+                <div
+                  key={t.label}
+                  className="rounded-md border border-border bg-surface-2/40 p-2.5"
+                >
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-[11px] font-semibold">{t.label}</span>
-                    <Button size="sm" variant="outline" className="h-6 gap-1 text-[10px]" onClick={() => sendWhatsApp(t.text)}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-6 gap-1 text-[10px]"
+                      onClick={() => sendWhatsApp(t.text)}
+                    >
                       <Send className="h-3 w-3" /> Send
                     </Button>
                   </div>
@@ -316,8 +467,21 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
 
               <div className="rounded-md border border-border bg-surface-2/40 p-2.5 space-y-2">
                 <Label className="text-[11px] text-muted-foreground">Custom message</Label>
-                <Textarea value={waText} onChange={(e) => setWaText(e.target.value)} placeholder="Type a custom WhatsApp message…" className="min-h-[60px] text-xs" />
-                <Button size="sm" className="w-full gap-1.5" disabled={!waText.trim()} onClick={() => { sendWhatsApp(waText); setWaText(""); }}>
+                <Textarea
+                  value={waText}
+                  onChange={(e) => setWaText(e.target.value)}
+                  placeholder="Type a custom WhatsApp message…"
+                  className="min-h-[60px] text-xs"
+                />
+                <Button
+                  size="sm"
+                  className="w-full gap-1.5"
+                  disabled={!waText.trim()}
+                  onClick={() => {
+                    sendWhatsApp(waText);
+                    setWaText("");
+                  }}
+                >
                   <Send className="h-3.5 w-3.5" /> Send custom
                 </Button>
               </div>
@@ -332,12 +496,19 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5">
                 <Label className="text-[11px] text-muted-foreground">Next follow-up</Label>
-                <Input type="date" value={fuDate} onChange={(e) => setFuDate(e.target.value)} className="h-9 text-sm" />
+                <Input
+                  type="date"
+                  value={fuDate}
+                  onChange={(e) => setFuDate(e.target.value)}
+                  className="h-9 text-sm"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-[11px] text-muted-foreground">Priority</Label>
                 <Select value={fuPriority} onValueChange={(v) => setFuPriority(v as any)}>
-                  <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="hot">🔥 Hot — today</SelectItem>
                     <SelectItem value="warm">☀️ Warm — 24h</SelectItem>
@@ -349,7 +520,9 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
             <div className="space-y-1.5">
               <Label className="text-[11px] text-muted-foreground">What to do</Label>
               <Select value={fuReason} onValueChange={setFuReason}>
-                <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-9 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Decision check-in">Decision check-in</SelectItem>
                   <SelectItem value="Reconfirm tour">Reconfirm tour</SelectItem>
@@ -370,7 +543,8 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
             <TabsContent value="post-tour" className="mt-3 space-y-3">
               {stale && (
                 <div className="rounded-md border border-destructive/40 bg-destructive/5 p-2.5 text-[11px] text-destructive flex items-center gap-1.5">
-                  <AlertTriangle className="h-3.5 w-3.5" /> Tour ended without an update. Fill all fields to clear the flag.
+                  <AlertTriangle className="h-3.5 w-3.5" /> Tour ended without an update. Fill all
+                  fields to clear the flag.
                 </div>
               )}
 
@@ -392,7 +566,7 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
                         "h-8 rounded-md border text-[10px] font-medium transition-colors",
                         ptOutcome === o.v
                           ? "border-primary bg-primary/15 text-primary"
-                          : "border-border bg-surface-2 text-muted-foreground hover:bg-surface-3"
+                          : "border-border bg-surface-2 text-muted-foreground hover:bg-surface-3",
                       )}
                     >
                       {o.label}
@@ -402,14 +576,26 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-muted-foreground">Deal confidence · {ptConfidence}%</Label>
-                <Slider value={[ptConfidence]} onValueChange={(v) => setPtConfidence(v[0])} max={100} step={5} />
+                <Label className="text-[11px] text-muted-foreground">
+                  Deal confidence · {ptConfidence}%
+                </Label>
+                <Slider
+                  value={[ptConfidence]}
+                  onValueChange={(v) => setPtConfidence(v[0])}
+                  max={100}
+                  step={5}
+                />
               </div>
 
               <div className="space-y-1.5">
                 <Label className="text-[11px] text-muted-foreground">Key objection</Label>
-                <Select value={ptObjection ?? ""} onValueChange={(v) => setPtObjection((v || null) as WhyLost)}>
-                  <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select objection" /></SelectTrigger>
+                <Select
+                  value={ptObjection ?? ""}
+                  onValueChange={(v) => setPtObjection((v || null) as WhyLost)}
+                >
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue placeholder="Select objection" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="price">Price</SelectItem>
                     <SelectItem value="location">Location</SelectItem>
@@ -419,17 +605,34 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
-                <Input placeholder="Add detail (exact words help)" value={ptObjectionNote} onChange={(e) => setPtObjectionNote(e.target.value)} className="h-9 text-sm" />
+                <Input
+                  placeholder="Add detail (exact words help)"
+                  value={ptObjectionNote}
+                  onChange={(e) => setPtObjectionNote(e.target.value)}
+                  className="h-9 text-sm"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1.5">
-                  <Label className="text-[11px] text-muted-foreground">Expected decision date</Label>
-                  <Input type="date" value={ptDecisionDate} onChange={(e) => setPtDecisionDate(e.target.value)} className="h-9 text-sm" />
+                  <Label className="text-[11px] text-muted-foreground">
+                    Expected decision date
+                  </Label>
+                  <Input
+                    type="date"
+                    value={ptDecisionDate}
+                    onChange={(e) => setPtDecisionDate(e.target.value)}
+                    className="h-9 text-sm"
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-[11px] text-muted-foreground">Next follow-up *</Label>
-                  <Input type="date" value={ptNextFollowUp} onChange={(e) => setPtNextFollowUp(e.target.value)} className="h-9 text-sm" />
+                  <Input
+                    type="date"
+                    value={ptNextFollowUp}
+                    onChange={(e) => setPtNextFollowUp(e.target.value)}
+                    className="h-9 text-sm"
+                  />
                 </div>
               </div>
 
@@ -445,14 +648,21 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
           {/* ---- ACTIVITY TIMELINE ---- */}
           <TabsContent value="activity" className="mt-3 space-y-2">
             {events.length === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-6">No activity yet. Every action you take here will appear in this timeline.</p>
+              <p className="text-xs text-muted-foreground text-center py-6">
+                No activity yet. Every action you take here will appear in this timeline.
+              </p>
             ) : (
               <div className="space-y-1.5">
                 {events.map((e) => (
-                  <div key={e.id} className="rounded-md border border-border bg-surface-2/40 p-2.5 text-[11px]">
+                  <div
+                    key={e.id}
+                    className="rounded-md border border-border bg-surface-2/40 p-2.5 text-[11px]"
+                  >
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-medium capitalize">{e.kind.replace(/_/g, " ")}</span>
-                      <span className="text-muted-foreground">{formatDistanceToNow(new Date(e.at), { addSuffix: true })}</span>
+                      <span className="text-muted-foreground">
+                        {formatDistanceToNow(new Date(e.at), { addSuffix: true })}
+                      </span>
                     </div>
                     {e.notes && <p className="text-muted-foreground mt-0.5">{e.notes}</p>}
                   </div>
@@ -469,7 +679,10 @@ export function LeadControlPanel({ subject, trigger, defaultTab = "overview" }: 
 function Info({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div className="rounded-md border border-border bg-surface-2/40 p-2">
-      <div className="flex items-center gap-1 text-[10px] text-muted-foreground uppercase tracking-wide">{icon}{label}</div>
+      <div className="flex items-center gap-1 text-[10px] text-muted-foreground uppercase tracking-wide">
+        {icon}
+        {label}
+      </div>
       <div className="text-foreground font-medium mt-0.5 truncate">{value}</div>
     </div>
   );

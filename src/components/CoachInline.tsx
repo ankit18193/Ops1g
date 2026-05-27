@@ -26,30 +26,59 @@ interface Props {
  */
 export function CoachInline({ page, hint, compact = false }: Props) {
   void page;
-  const role            = useApp((s) => s.role);
-  const currentTcmId    = useApp((s) => s.currentTcmId);
-  const tcms            = useApp((s) => s.tcms);
-  const leads           = useApp((s) => s.leads);
-  const tours           = useApp((s) => s.tours);
-  const followUps       = useApp((s) => s.followUps);
-  const activities      = useApp((s) => s.activities);
-  const bookings        = useApp((s) => s.bookings);
-  const handoffs        = useApp((s) => s.handoffs);
-  const [now, mounted]  = useMountedNow();
-  const who             = whoKey(role, currentTcmId);
-  const userSlot        = useGame((s) => s.byUser[who]);
+  const role = useApp((s) => s.role);
+  const currentTcmId = useApp((s) => s.currentTcmId);
+  const tcms = useApp((s) => s.tcms);
+  const leads = useApp((s) => s.leads);
+  const tours = useApp((s) => s.tours);
+  const followUps = useApp((s) => s.followUps);
+  const activities = useApp((s) => s.activities);
+  const bookings = useApp((s) => s.bookings);
+  const handoffs = useApp((s) => s.handoffs);
+  const [now, mounted] = useMountedNow();
+  const who = whoKey(role, currentTcmId);
+  const userSlot = useGame((s) => s.byUser[who]);
   const stats = mounted
     ? useGame.getState().getStats(who)
-    : { xp: 0, streak: 0, xpToday: 0, bookingsClosed: 0, cleared: {}, lastWinDate: null, todayKey: null };
+    : {
+        xp: 0,
+        streak: 0,
+        xpToday: 0,
+        bookingsClosed: 0,
+        cleared: {},
+        lastWinDate: null,
+        todayKey: null,
+      };
   void userSlot;
 
   const report = useMemo(() => {
     if (!mounted) return null;
     return buildCoachReport({
-      role, currentTcmId, tcms, leads, tours, followUps, activities, bookings, handoffs, now,
+      role,
+      currentTcmId,
+      tcms,
+      leads,
+      tours,
+      followUps,
+      activities,
+      bookings,
+      handoffs,
+      now,
       ownerSignals: { staleRooms: 0, pendingBlocks: 0 },
     });
-  }, [role, currentTcmId, tcms, leads, tours, followUps, activities, bookings, handoffs, now, mounted]);
+  }, [
+    role,
+    currentTcmId,
+    tcms,
+    leads,
+    tours,
+    followUps,
+    activities,
+    bookings,
+    handoffs,
+    now,
+    mounted,
+  ]);
 
   if (!mounted || !report) return null;
 
@@ -63,7 +92,9 @@ export function CoachInline({ page, hint, compact = false }: Props) {
         : "Coach has nothing urgent — keep working the deck.");
 
   const severity: "missed" | "todo" | "calm" = top
-    ? (report.missed[0] ? "missed" : "todo")
+    ? report.missed[0]
+      ? "missed"
+      : "todo"
     : "calm";
 
   return (
@@ -82,7 +113,11 @@ export function CoachInline({ page, hint, compact = false }: Props) {
       <Sparkles
         className={cn(
           "h-3.5 w-3.5 shrink-0",
-          severity === "missed" ? "text-destructive" : severity === "todo" ? "text-accent" : "text-muted-foreground",
+          severity === "missed"
+            ? "text-destructive"
+            : severity === "todo"
+              ? "text-accent"
+              : "text-muted-foreground",
         )}
       />
       <span className="font-medium truncate flex-1 text-foreground">{message}</span>

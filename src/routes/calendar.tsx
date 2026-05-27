@@ -1,13 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  Search,
-  Settings2,
-} from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Plus, Search, Settings2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,12 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useApp } from "@/lib/store";
-import {
-  useCalendar,
-  KIND_META,
-  type CalEvent,
-  type CalEventKind,
-} from "@/lib/calendar-store";
+import { useCalendar, KIND_META, type CalEvent, type CalEventKind } from "@/lib/calendar-store";
 import { MonthView } from "@/components/calendar/MonthView";
 import { TimeGridView } from "@/components/calendar/TimeGridView";
 import { AgendaView } from "@/components/calendar/AgendaView";
@@ -45,7 +33,9 @@ function CalendarPage() {
   const [view, setView] = useState<CalendarView>("week");
   const [focus, setFocus] = useState<Date>(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(new Date());
-  const [editing, setEditing] = useState<{ open: boolean; eventId?: string; defaultStart?: Date }>({ open: false });
+  const [editing, setEditing] = useState<{ open: boolean; eventId?: string; defaultStart?: Date }>({
+    open: false,
+  });
   const [syncOpen, setSyncOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<CalEventKind | "all">("all");
@@ -165,7 +155,9 @@ function CalendarPage() {
           <div className="flex items-center gap-2">
             <CalendarDays className="h-5 w-5 text-primary" />
             <h1 className="text-lg font-semibold">Calendar</h1>
-            <Badge variant="secondary" className="ml-1">{allEvents.length} events</Badge>
+            <Badge variant="secondary" className="ml-1">
+              {allEvents.length} events
+            </Badge>
           </div>
 
           <div className="flex items-center gap-2">
@@ -197,7 +189,9 @@ function CalendarPage() {
             <Button variant="outline" onClick={() => setSyncOpen(true)}>
               <Settings2 className="h-4 w-4 mr-1.5" /> Sync
             </Button>
-            <Button onClick={() => setEditing({ open: true, defaultStart: selectedDay ?? new Date() })}>
+            <Button
+              onClick={() => setEditing({ open: true, defaultStart: selectedDay ?? new Date() })}
+            >
               <Plus className="h-4 w-4 mr-1.5" /> New event
             </Button>
           </div>
@@ -206,7 +200,9 @@ function CalendarPage() {
         {/* Sub-toolbar */}
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-1.5">
-            <Button size="sm" variant="outline" onClick={goToday}>Today</Button>
+            <Button size="sm" variant="outline" onClick={goToday}>
+              Today
+            </Button>
             <Button size="icon" variant="ghost" onClick={() => setFocus(navigate(view, focus, -1))}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -230,7 +226,9 @@ function CalendarPage() {
         <div className="flex-1 min-h-0 flex gap-3">
           <aside className="hidden lg:flex flex-col w-56 border rounded-lg bg-card p-3 gap-3">
             <div>
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">My calendars</div>
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                My calendars
+              </div>
               <ul className="space-y-1.5 text-sm">
                 {Object.entries(KIND_META).map(([k, m]) => (
                   <li key={k} className="flex items-center gap-2">
@@ -241,7 +239,9 @@ function CalendarPage() {
               </ul>
             </div>
             <div>
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Connected</div>
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                Connected
+              </div>
               <ConnectionsList onOpen={() => setSyncOpen(true)} />
             </div>
             <div className="mt-auto text-xs text-muted-foreground">
@@ -267,9 +267,7 @@ function CalendarPage() {
               onSlotClick={openSlot}
             />
           )}
-          {view === "agenda" && (
-            <AgendaView events={allEvents} onEventClick={openEvent} />
-          )}
+          {view === "agenda" && <AgendaView events={allEvents} onEventClick={openEvent} />}
         </div>
       </div>
 

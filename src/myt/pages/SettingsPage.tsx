@@ -18,8 +18,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import {
-  Plus, RotateCcw, Trash2, Settings2, Sparkles, BellRing, MessageSquareText, Target,
-  MapPin, Users, Building2, Lightbulb,
+  Plus,
+  RotateCcw,
+  Trash2,
+  Settings2,
+  Sparkles,
+  BellRing,
+  MessageSquareText,
+  Target,
+  MapPin,
+  Users,
+  Building2,
+  Lightbulb,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -32,19 +42,47 @@ export default function SettingsPage() {
         <div>
           <h1 className="font-display text-2xl font-semibold tracking-tight">CRM Settings</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Matching behavior, drawer behavior, messaging, reminders, scoring, custom fields and targets. Stored locally.
+            Matching behavior, drawer behavior, messaging, reminders, scoring, custom fields and
+            targets. Stored locally.
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => { reset(); toast.success("Settings reset"); }}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            reset();
+            toast.success("Settings reset");
+          }}
+        >
           <RotateCcw className="mr-1 h-4 w-4" /> Reset all
         </Button>
       </div>
 
       <div className="grid gap-3 md:grid-cols-4">
-        <SummaryCard icon={Sparkles} label="Top matches shown" value={String(settings.matching.topMatchCount)} sub="inside lead drawer" />
-        <SummaryCard icon={Settings2} label="Default lead tab" value={settings.matching.drawerDefaultTab === "best-fit" ? "Best Fit" : "Control"} sub="when no active tour exists" />
-        <SummaryCard icon={MessageSquareText} label="Templates" value={String(settings.templates.length)} sub="active WhatsApp flows" />
-        <SummaryCard icon={Target} label="Targets" value={String(settings.targets.length)} sub="custom KPI rules" />
+        <SummaryCard
+          icon={Sparkles}
+          label="Top matches shown"
+          value={String(settings.matching.topMatchCount)}
+          sub="inside lead drawer"
+        />
+        <SummaryCard
+          icon={Settings2}
+          label="Default lead tab"
+          value={settings.matching.drawerDefaultTab === "best-fit" ? "Best Fit" : "Control"}
+          sub="when no active tour exists"
+        />
+        <SummaryCard
+          icon={MessageSquareText}
+          label="Templates"
+          value={String(settings.templates.length)}
+          sub="active WhatsApp flows"
+        />
+        <SummaryCard
+          icon={Target}
+          label="Targets"
+          value={String(settings.targets.length)}
+          sub="custom KPI rules"
+        />
       </div>
 
       <Tabs defaultValue="matching" className="space-y-4">
@@ -73,7 +111,12 @@ export default function SettingsPage() {
 
         <TabsContent value="templates" className="space-y-3">
           {settings.templates.map((t) => (
-            <TemplateEditor key={t.id} t={t} onSave={upsertTemplate} onDelete={() => removeTemplate(t.id)} />
+            <TemplateEditor
+              key={t.id}
+              t={t}
+              onSave={upsertTemplate}
+              onDelete={() => removeTemplate(t.id)}
+            />
           ))}
           <NewTemplate onAdd={upsertTemplate} />
         </TabsContent>
@@ -83,11 +126,17 @@ export default function SettingsPage() {
             <CardContent className="space-y-3 p-4">
               <div>
                 <Label>Site name</Label>
-                <Input value={settings.siteName} onChange={(e) => update("siteName", e.target.value)} />
+                <Input
+                  value={settings.siteName}
+                  onChange={(e) => update("siteName", e.target.value)}
+                />
               </div>
               <div>
                 <Label>Signature line</Label>
-                <Input value={settings.signatureLine} onChange={(e) => update("signatureLine", e.target.value)} />
+                <Input
+                  value={settings.signatureLine}
+                  onChange={(e) => update("signatureLine", e.target.value)}
+                />
               </div>
             </CardContent>
           </Card>
@@ -107,7 +156,10 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     update("reminders", {
                       ...settings.reminders,
-                      beforeTourMinutes: e.target.value.split(",").map((s) => parseInt(s.trim(), 10)).filter(Number.isFinite),
+                      beforeTourMinutes: e.target.value
+                        .split(",")
+                        .map((s) => parseInt(s.trim(), 10))
+                        .filter(Number.isFinite),
                     })
                   }
                 />
@@ -119,23 +171,49 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     update("reminders", {
                       ...settings.reminders,
-                      postBookingFollowupMinutes: e.target.value.split(",").map((s) => parseInt(s.trim(), 10)).filter(Number.isFinite),
+                      postBookingFollowupMinutes: e.target.value
+                        .split(",")
+                        .map((s) => parseInt(s.trim(), 10))
+                        .filter(Number.isFinite),
                     })
                   }
                 />
               </div>
-              <p className="text-xs text-muted-foreground">These reminders are surfaced as execution timing in the CRM.</p>
+              <p className="text-xs text-muted-foreground">
+                These reminders are surfaced as execution timing in the CRM.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="custom" className="space-y-3">
-          <ListEditor title="Areas" items={settings.customAreas} onChange={(v) => update("customAreas", v)} placeholder="Koramangala" />
-          <ListEditor title="Objection tags" items={settings.customObjections} onChange={(v) => update("customObjections", v)} placeholder="Too expensive" />
-          <ListEditor title="Custom outcomes" items={settings.customOutcomes} onChange={(v) => update("customOutcomes", v)} placeholder="Token paid via UPI" />
-          <PropertyEditor items={settings.customProperties} onChange={(v) => update("customProperties", v)} />
+          <ListEditor
+            title="Areas"
+            items={settings.customAreas}
+            onChange={(v) => update("customAreas", v)}
+            placeholder="Koramangala"
+          />
+          <ListEditor
+            title="Objection tags"
+            items={settings.customObjections}
+            onChange={(v) => update("customObjections", v)}
+            placeholder="Too expensive"
+          />
+          <ListEditor
+            title="Custom outcomes"
+            items={settings.customOutcomes}
+            onChange={(v) => update("customOutcomes", v)}
+            placeholder="Token paid via UPI"
+          />
+          <PropertyEditor
+            items={settings.customProperties}
+            onChange={(v) => update("customProperties", v)}
+          />
           <TcmEditor items={settings.customTcms} onChange={(v) => update("customTcms", v)} />
-          <CustomFieldsEditor fields={settings.customFields} onChange={(v) => update("customFields", v)} />
+          <CustomFieldsEditor
+            fields={settings.customFields}
+            onChange={(v) => update("customFields", v)}
+          />
         </TabsContent>
 
         <TabsContent value="targets" className="space-y-3">
@@ -174,7 +252,13 @@ function SummaryCard({
   );
 }
 
-function MatchingEditor({ matching, onChange }: { matching: MatchingSettings; onChange: (v: MatchingSettings) => void }) {
+function MatchingEditor({
+  matching,
+  onChange,
+}: {
+  matching: MatchingSettings;
+  onChange: (v: MatchingSettings) => void;
+}) {
   return (
     <div className="grid gap-3 lg:grid-cols-[1.2fr_0.8fr]">
       <Card>
@@ -200,7 +284,12 @@ function MatchingEditor({ matching, onChange }: { matching: MatchingSettings; on
             <Label>Default tab when a lead opens and no active tour exists</Label>
             <select
               value={matching.drawerDefaultTab}
-              onChange={(e) => onChange({ ...matching, drawerDefaultTab: e.target.value as MatchingSettings["drawerDefaultTab"] })}
+              onChange={(e) =>
+                onChange({
+                  ...matching,
+                  drawerDefaultTab: e.target.value as MatchingSettings["drawerDefaultTab"],
+                })
+              }
               className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm"
             >
               <option value="best-fit">Best Fit</option>
@@ -225,7 +314,9 @@ function MatchingEditor({ matching, onChange }: { matching: MatchingSettings; on
               label="Show amenities preview"
               hint="Keep quick amenities visible on collapsed cards."
               checked={matching.showAmenitiesPreview}
-              onCheckedChange={(checked) => onChange({ ...matching, showAmenitiesPreview: checked })}
+              onCheckedChange={(checked) =>
+                onChange({ ...matching, showAmenitiesPreview: checked })
+              }
             />
             <SwitchRow
               label="Show manager contact actions"
@@ -250,15 +341,26 @@ function MatchingEditor({ matching, onChange }: { matching: MatchingSettings; on
         <CardContent className="space-y-3 text-sm text-muted-foreground">
           <div className="flex items-start gap-2">
             <Sparkles className="mt-0.5 h-4 w-4 text-accent" />
-            <div>Lead drawer now opens to <span className="font-medium text-foreground">{matching.drawerDefaultTab === "best-fit" ? "Best Fit" : "Control"}</span> when there is no live tour.</div>
+            <div>
+              Lead drawer now opens to{" "}
+              <span className="font-medium text-foreground">
+                {matching.drawerDefaultTab === "best-fit" ? "Best Fit" : "Control"}
+              </span>{" "}
+              when there is no live tour.
+            </div>
           </div>
           <div className="flex items-start gap-2">
             <BellRing className="mt-0.5 h-4 w-4 text-accent" />
-            <div>{matching.topMatchCount} ranked properties are surfaced per lead for faster pitching.</div>
+            <div>
+              {matching.topMatchCount} ranked properties are surfaced per lead for faster pitching.
+            </div>
           </div>
           <div className="flex items-start gap-2">
             <Settings2 className="mt-0.5 h-4 w-4 text-accent" />
-            <div>Expanded property previews can include amenities, maps, manager contacts and score rationale.</div>
+            <div>
+              Expanded property previews can include amenities, maps, manager contacts and score
+              rationale.
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -288,59 +390,135 @@ function SwitchRow({
   );
 }
 
-function TemplateEditor({ t, onSave, onDelete }: { t: MessageTemplate; onSave: (t: MessageTemplate) => void; onDelete: () => void }) {
+function TemplateEditor({
+  t,
+  onSave,
+  onDelete,
+}: {
+  t: MessageTemplate;
+  onSave: (t: MessageTemplate) => void;
+  onDelete: () => void;
+}) {
   const [draft, setDraft] = useState(t);
   return (
     <Card>
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <Input value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} className="max-w-xs font-medium" />
+          <Input
+            value={draft.label}
+            onChange={(e) => setDraft({ ...draft, label: e.target.value })}
+            className="max-w-xs font-medium"
+          />
           <div className="flex gap-2">
-            <Button size="sm" onClick={() => { onSave(draft); toast.success("Saved"); }}>Save</Button>
-            <Button size="sm" variant="ghost" onClick={onDelete}><Trash2 className="h-4 w-4" /></Button>
+            <Button
+              size="sm"
+              onClick={() => {
+                onSave(draft);
+                toast.success("Saved");
+              }}
+            >
+              Save
+            </Button>
+            <Button size="sm" variant="ghost" onClick={onDelete}>
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
-        <Input value={draft.scenario} onChange={(e) => setDraft({ ...draft, scenario: e.target.value })} placeholder="When to send" />
-        <Textarea value={draft.body} onChange={(e) => setDraft({ ...draft, body: e.target.value })} rows={6} className="font-mono text-xs" />
-        <p className="text-[11px] text-muted-foreground">Variables: {"{{leadName}} {{propertyName}} {{area}} {{when}} {{tcmName}} {{tcmPhone}} {{budget}} {{workLocation}} {{mapsLink}} {{etaMinutes}} {{otp}} {{siteName}} {{signature}}"}</p>
+        <Input
+          value={draft.scenario}
+          onChange={(e) => setDraft({ ...draft, scenario: e.target.value })}
+          placeholder="When to send"
+        />
+        <Textarea
+          value={draft.body}
+          onChange={(e) => setDraft({ ...draft, body: e.target.value })}
+          rows={6}
+          className="font-mono text-xs"
+        />
+        <p className="text-[11px] text-muted-foreground">
+          Variables:{" "}
+          {
+            "{{leadName}} {{propertyName}} {{area}} {{when}} {{tcmName}} {{tcmPhone}} {{budget}} {{workLocation}} {{mapsLink}} {{etaMinutes}} {{otp}} {{siteName}} {{signature}}"
+          }
+        </p>
       </CardContent>
     </Card>
   );
 }
 
 function NewTemplate({ onAdd }: { onAdd: (t: MessageTemplate) => void }) {
-  const [draft, setDraft] = useState<MessageTemplate>({ id: "", label: "", scenario: "", body: "" });
+  const [draft, setDraft] = useState<MessageTemplate>({
+    id: "",
+    label: "",
+    scenario: "",
+    body: "",
+  });
   return (
     <Card>
       <CardContent className="space-y-2 p-4">
         <div className="text-sm font-medium">+ Add new template</div>
-        <Input placeholder="ID (e.g. weekend_special)" value={draft.id} onChange={(e) => setDraft({ ...draft, id: e.target.value.replace(/\s+/g, "_") })} />
-        <Input placeholder="Label" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
-        <Input placeholder="Scenario" value={draft.scenario} onChange={(e) => setDraft({ ...draft, scenario: e.target.value })} />
-        <Textarea placeholder="Body with {{variables}}" rows={4} value={draft.body} onChange={(e) => setDraft({ ...draft, body: e.target.value })} />
-        <Button size="sm" onClick={() => {
-          if (!draft.id || !draft.label || !draft.body) return toast.error("ID, label and body required");
-          onAdd(draft);
-          setDraft({ id: "", label: "", scenario: "", body: "" });
-          toast.success("Added");
-        }}><Plus className="mr-1 h-4 w-4" /> Add</Button>
+        <Input
+          placeholder="ID (e.g. weekend_special)"
+          value={draft.id}
+          onChange={(e) => setDraft({ ...draft, id: e.target.value.replace(/\s+/g, "_") })}
+        />
+        <Input
+          placeholder="Label"
+          value={draft.label}
+          onChange={(e) => setDraft({ ...draft, label: e.target.value })}
+        />
+        <Input
+          placeholder="Scenario"
+          value={draft.scenario}
+          onChange={(e) => setDraft({ ...draft, scenario: e.target.value })}
+        />
+        <Textarea
+          placeholder="Body with {{variables}}"
+          rows={4}
+          value={draft.body}
+          onChange={(e) => setDraft({ ...draft, body: e.target.value })}
+        />
+        <Button
+          size="sm"
+          onClick={() => {
+            if (!draft.id || !draft.label || !draft.body)
+              return toast.error("ID, label and body required");
+            onAdd(draft);
+            setDraft({ id: "", label: "", scenario: "", body: "" });
+            toast.success("Added");
+          }}
+        >
+          <Plus className="mr-1 h-4 w-4" /> Add
+        </Button>
       </CardContent>
     </Card>
   );
 }
 
-function WeightsEditor({ weights, onChange }: { weights: ScoreWeights; onChange: (w: ScoreWeights) => void }) {
+function WeightsEditor({
+  weights,
+  onChange,
+}: {
+  weights: ScoreWeights;
+  onChange: (w: ScoreWeights) => void;
+}) {
   const total = Object.values(weights).reduce((s, n) => s + n, 0);
   return (
     <Card>
       <CardContent className="space-y-3 p-4">
-        <div className="text-xs text-muted-foreground">Total weight: <b>{total}</b> (recommended ~100)</div>
+        <div className="text-xs text-muted-foreground">
+          Total weight: <b>{total}</b> (recommended ~100)
+        </div>
         {(Object.keys(weights) as Array<keyof ScoreWeights>).map((k) => (
           <div key={k} className="grid grid-cols-3 items-center gap-2">
             <Label className="capitalize">{k.replace(/([A-Z])/g, " $1")}</Label>
-            <Input type="number" value={weights[k]} onChange={(e) => onChange({ ...weights, [k]: parseInt(e.target.value, 10) || 0 })} />
+            <Input
+              type="number"
+              value={weights[k]}
+              onChange={(e) => onChange({ ...weights, [k]: parseInt(e.target.value, 10) || 0 })}
+            />
           </div>
         ))}
       </CardContent>
@@ -348,7 +526,17 @@ function WeightsEditor({ weights, onChange }: { weights: ScoreWeights; onChange:
   );
 }
 
-function ListEditor({ title, items, onChange, placeholder }: { title: string; items: string[]; onChange: (v: string[]) => void; placeholder: string }) {
+function ListEditor({
+  title,
+  items,
+  onChange,
+  placeholder,
+}: {
+  title: string;
+  items: string[];
+  onChange: (v: string[]) => void;
+  placeholder: string;
+}) {
   const [v, setV] = useState("");
   return (
     <Card>
@@ -356,22 +544,46 @@ function ListEditor({ title, items, onChange, placeholder }: { title: string; it
         <div className="text-sm font-medium">{title}</div>
         <div className="flex flex-wrap gap-1.5">
           {items.map((it, i) => (
-            <span key={i} className="inline-flex items-center gap-1 rounded bg-muted px-2 py-0.5 text-xs">
+            <span
+              key={i}
+              className="inline-flex items-center gap-1 rounded bg-muted px-2 py-0.5 text-xs"
+            >
               {it}
-              <button onClick={() => onChange(items.filter((_, idx) => idx !== i))} className="hover:text-destructive">×</button>
+              <button
+                onClick={() => onChange(items.filter((_, idx) => idx !== i))}
+                className="hover:text-destructive"
+              >
+                ×
+              </button>
             </span>
           ))}
         </div>
         <div className="flex gap-2">
           <Input value={v} onChange={(e) => setV(e.target.value)} placeholder={placeholder} />
-          <Button size="sm" onClick={() => { if (v.trim()) { onChange([...items, v.trim()]); setV(""); } }}>Add</Button>
+          <Button
+            size="sm"
+            onClick={() => {
+              if (v.trim()) {
+                onChange([...items, v.trim()]);
+                setV("");
+              }
+            }}
+          >
+            Add
+          </Button>
         </div>
       </CardContent>
     </Card>
   );
 }
 
-function PropertyEditor({ items, onChange }: { items: { id: string; name: string; area: string; basePrice: number }[]; onChange: (v: { id: string; name: string; area: string; basePrice: number }[]) => void }) {
+function PropertyEditor({
+  items,
+  onChange,
+}: {
+  items: { id: string; name: string; area: string; basePrice: number }[];
+  onChange: (v: { id: string; name: string; area: string; basePrice: number }[]) => void;
+}) {
   const [d, setD] = useState({ name: "", area: "", basePrice: 12000 });
   return (
     <Card>
@@ -379,16 +591,46 @@ function PropertyEditor({ items, onChange }: { items: { id: string; name: string
         <div className="text-sm font-medium">Custom properties</div>
         {items.map((p) => (
           <div key={p.id} className="flex items-center gap-2 border-b py-1 text-sm">
-            <span className="flex-1">{p.name} <span className="text-muted-foreground">· {p.area} · ₹{p.basePrice.toLocaleString("en-IN")}</span></span>
-            <button onClick={() => onChange(items.filter((x) => x.id !== p.id))} className="text-destructive"><Trash2 className="h-3.5 w-3.5" /></button>
+            <span className="flex-1">
+              {p.name}{" "}
+              <span className="text-muted-foreground">
+                · {p.area} · ₹{p.basePrice.toLocaleString("en-IN")}
+              </span>
+            </span>
+            <button
+              onClick={() => onChange(items.filter((x) => x.id !== p.id))}
+              className="text-destructive"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
           </div>
         ))}
         <div className="grid grid-cols-3 gap-2">
-          <Input placeholder="Name" value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} />
-          <Input placeholder="Area" value={d.area} onChange={(e) => setD({ ...d, area: e.target.value })} />
-          <Input type="number" placeholder="Base price" value={d.basePrice} onChange={(e) => setD({ ...d, basePrice: parseInt(e.target.value, 10) || 0 })} />
+          <Input
+            placeholder="Name"
+            value={d.name}
+            onChange={(e) => setD({ ...d, name: e.target.value })}
+          />
+          <Input
+            placeholder="Area"
+            value={d.area}
+            onChange={(e) => setD({ ...d, area: e.target.value })}
+          />
+          <Input
+            type="number"
+            placeholder="Base price"
+            value={d.basePrice}
+            onChange={(e) => setD({ ...d, basePrice: parseInt(e.target.value, 10) || 0 })}
+          />
         </div>
-        <Button size="sm" onClick={() => { if (!d.name) return; onChange([...items, { id: `cp${Date.now()}`, ...d }]); setD({ name: "", area: "", basePrice: 12000 }); }}>
+        <Button
+          size="sm"
+          onClick={() => {
+            if (!d.name) return;
+            onChange([...items, { id: `cp${Date.now()}`, ...d }]);
+            setD({ name: "", area: "", basePrice: 12000 });
+          }}
+        >
           <Plus className="mr-1 h-4 w-4" /> Add property
         </Button>
       </CardContent>
@@ -396,7 +638,13 @@ function PropertyEditor({ items, onChange }: { items: { id: string; name: string
   );
 }
 
-function TcmEditor({ items, onChange }: { items: { id: string; name: string; phone: string; zoneId: string }[]; onChange: (v: { id: string; name: string; phone: string; zoneId: string }[]) => void }) {
+function TcmEditor({
+  items,
+  onChange,
+}: {
+  items: { id: string; name: string; phone: string; zoneId: string }[];
+  onChange: (v: { id: string; name: string; phone: string; zoneId: string }[]) => void;
+}) {
   const [d, setD] = useState({ name: "", phone: "", zoneId: "" });
   return (
     <Card>
@@ -404,16 +652,45 @@ function TcmEditor({ items, onChange }: { items: { id: string; name: string; pho
         <div className="text-sm font-medium">Custom TCMs / coordinators</div>
         {items.map((p) => (
           <div key={p.id} className="flex items-center gap-2 border-b py-1 text-sm">
-            <span className="flex-1">{p.name} <span className="text-muted-foreground">· {p.phone} · zone {p.zoneId}</span></span>
-            <button onClick={() => onChange(items.filter((x) => x.id !== p.id))} className="text-destructive"><Trash2 className="h-3.5 w-3.5" /></button>
+            <span className="flex-1">
+              {p.name}{" "}
+              <span className="text-muted-foreground">
+                · {p.phone} · zone {p.zoneId}
+              </span>
+            </span>
+            <button
+              onClick={() => onChange(items.filter((x) => x.id !== p.id))}
+              className="text-destructive"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
           </div>
         ))}
         <div className="grid grid-cols-3 gap-2">
-          <Input placeholder="Name" value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} />
-          <Input placeholder="Phone" value={d.phone} onChange={(e) => setD({ ...d, phone: e.target.value })} />
-          <Input placeholder="Zone id" value={d.zoneId} onChange={(e) => setD({ ...d, zoneId: e.target.value })} />
+          <Input
+            placeholder="Name"
+            value={d.name}
+            onChange={(e) => setD({ ...d, name: e.target.value })}
+          />
+          <Input
+            placeholder="Phone"
+            value={d.phone}
+            onChange={(e) => setD({ ...d, phone: e.target.value })}
+          />
+          <Input
+            placeholder="Zone id"
+            value={d.zoneId}
+            onChange={(e) => setD({ ...d, zoneId: e.target.value })}
+          />
         </div>
-        <Button size="sm" onClick={() => { if (!d.name) return; onChange([...items, { id: `tcm${Date.now()}`, ...d }]); setD({ name: "", phone: "", zoneId: "" }); }}>
+        <Button
+          size="sm"
+          onClick={() => {
+            if (!d.name) return;
+            onChange([...items, { id: `tcm${Date.now()}`, ...d }]);
+            setD({ name: "", phone: "", zoneId: "" });
+          }}
+        >
           <Plus className="mr-1 h-4 w-4" /> Add TCM
         </Button>
       </CardContent>
@@ -421,7 +698,13 @@ function TcmEditor({ items, onChange }: { items: { id: string; name: string; pho
   );
 }
 
-function CustomFieldsEditor({ fields, onChange }: { fields: CustomField[]; onChange: (v: CustomField[]) => void }) {
+function CustomFieldsEditor({
+  fields,
+  onChange,
+}: {
+  fields: CustomField[];
+  onChange: (v: CustomField[]) => void;
+}) {
   const [d, setD] = useState<CustomField>({ id: "", label: "", type: "text", appliesTo: "tour" });
   return (
     <Card>
@@ -429,19 +712,53 @@ function CustomFieldsEditor({ fields, onChange }: { fields: CustomField[]; onCha
         <div className="text-sm font-medium">Custom fields</div>
         {fields.map((f) => (
           <div key={f.id} className="flex items-center gap-2 border-b py-1 text-sm">
-            <span className="flex-1">{f.label} <span className="text-muted-foreground">· {f.type} · {f.appliesTo}</span></span>
-            <button onClick={() => onChange(fields.filter((x) => x.id !== f.id))} className="text-destructive"><Trash2 className="h-3.5 w-3.5" /></button>
+            <span className="flex-1">
+              {f.label}{" "}
+              <span className="text-muted-foreground">
+                · {f.type} · {f.appliesTo}
+              </span>
+            </span>
+            <button
+              onClick={() => onChange(fields.filter((x) => x.id !== f.id))}
+              className="text-destructive"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
           </div>
         ))}
         <div className="grid grid-cols-4 gap-2">
-          <Input placeholder="Label" value={d.label} onChange={(e) => setD({ ...d, label: e.target.value })} />
-          <select value={d.type} onChange={(e) => setD({ ...d, type: e.target.value as CustomField["type"] })} className="h-10 rounded border bg-background px-2 text-sm">
-            <option value="text">text</option><option value="number">number</option><option value="select">select</option><option value="boolean">boolean</option>
+          <Input
+            placeholder="Label"
+            value={d.label}
+            onChange={(e) => setD({ ...d, label: e.target.value })}
+          />
+          <select
+            value={d.type}
+            onChange={(e) => setD({ ...d, type: e.target.value as CustomField["type"] })}
+            className="h-10 rounded border bg-background px-2 text-sm"
+          >
+            <option value="text">text</option>
+            <option value="number">number</option>
+            <option value="select">select</option>
+            <option value="boolean">boolean</option>
           </select>
-          <select value={d.appliesTo} onChange={(e) => setD({ ...d, appliesTo: e.target.value as CustomField["appliesTo"] })} className="h-10 rounded border bg-background px-2 text-sm">
-            <option value="tour">tour</option><option value="property">property</option><option value="lead">lead</option>
+          <select
+            value={d.appliesTo}
+            onChange={(e) => setD({ ...d, appliesTo: e.target.value as CustomField["appliesTo"] })}
+            className="h-10 rounded border bg-background px-2 text-sm"
+          >
+            <option value="tour">tour</option>
+            <option value="property">property</option>
+            <option value="lead">lead</option>
           </select>
-          <Button size="sm" onClick={() => { if (!d.label) return; onChange([...fields, { ...d, id: `f${Date.now()}` }]); setD({ id: "", label: "", type: "text", appliesTo: "tour" }); }}>
+          <Button
+            size="sm"
+            onClick={() => {
+              if (!d.label) return;
+              onChange([...fields, { ...d, id: `f${Date.now()}` }]);
+              setD({ id: "", label: "", type: "text", appliesTo: "tour" });
+            }}
+          >
             <Plus className="mr-1 h-4 w-4" /> Add
           </Button>
         </div>
@@ -450,33 +767,103 @@ function CustomFieldsEditor({ fields, onChange }: { fields: CustomField[]; onCha
   );
 }
 
-function TargetsEditor({ targets, onChange }: { targets: CustomTarget[]; onChange: (v: CustomTarget[]) => void }) {
-  const [d, setD] = useState<CustomTarget>({ id: "", label: "", metric: "tours", scope: "global", value: 100, period: "week" });
+function TargetsEditor({
+  targets,
+  onChange,
+}: {
+  targets: CustomTarget[];
+  onChange: (v: CustomTarget[]) => void;
+}) {
+  const [d, setD] = useState<CustomTarget>({
+    id: "",
+    label: "",
+    metric: "tours",
+    scope: "global",
+    value: 100,
+    period: "week",
+  });
   return (
     <Card>
       <CardContent className="space-y-2 p-4">
         <div className="text-sm font-medium">Custom targets</div>
         {targets.map((t) => (
           <div key={t.id} className="flex items-center gap-2 border-b py-1 text-sm">
-            <span className="flex-1">{t.label}: {t.value} {t.metric}/{t.period} <span className="text-muted-foreground">· scope {t.scope}{t.scopeId ? ":" + t.scopeId : ""}</span></span>
-            <button onClick={() => onChange(targets.filter((x) => x.id !== t.id))} className="text-destructive"><Trash2 className="h-3.5 w-3.5" /></button>
+            <span className="flex-1">
+              {t.label}: {t.value} {t.metric}/{t.period}{" "}
+              <span className="text-muted-foreground">
+                · scope {t.scope}
+                {t.scopeId ? ":" + t.scopeId : ""}
+              </span>
+            </span>
+            <button
+              onClick={() => onChange(targets.filter((x) => x.id !== t.id))}
+              className="text-destructive"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
           </div>
         ))}
         <div className="grid grid-cols-2 gap-2 md:grid-cols-6">
-          <Input placeholder="Label" value={d.label} onChange={(e) => setD({ ...d, label: e.target.value })} />
-          <select value={d.metric} onChange={(e) => setD({ ...d, metric: e.target.value as CustomTarget["metric"] })} className="h-10 rounded border bg-background px-2 text-sm">
-            <option value="tours">tours</option><option value="showups">showups</option><option value="bookings">bookings</option><option value="score">score</option>
+          <Input
+            placeholder="Label"
+            value={d.label}
+            onChange={(e) => setD({ ...d, label: e.target.value })}
+          />
+          <select
+            value={d.metric}
+            onChange={(e) => setD({ ...d, metric: e.target.value as CustomTarget["metric"] })}
+            className="h-10 rounded border bg-background px-2 text-sm"
+          >
+            <option value="tours">tours</option>
+            <option value="showups">showups</option>
+            <option value="bookings">bookings</option>
+            <option value="score">score</option>
           </select>
-          <select value={d.scope} onChange={(e) => setD({ ...d, scope: e.target.value as CustomTarget["scope"] })} className="h-10 rounded border bg-background px-2 text-sm">
-            <option value="global">global</option><option value="tcm">tcm</option><option value="zone">zone</option><option value="property">property</option>
+          <select
+            value={d.scope}
+            onChange={(e) => setD({ ...d, scope: e.target.value as CustomTarget["scope"] })}
+            className="h-10 rounded border bg-background px-2 text-sm"
+          >
+            <option value="global">global</option>
+            <option value="tcm">tcm</option>
+            <option value="zone">zone</option>
+            <option value="property">property</option>
           </select>
-          <Input placeholder="Scope id (optional)" value={d.scopeId ?? ""} onChange={(e) => setD({ ...d, scopeId: e.target.value })} />
-          <Input type="number" value={d.value} onChange={(e) => setD({ ...d, value: parseInt(e.target.value, 10) || 0 })} />
-          <select value={d.period} onChange={(e) => setD({ ...d, period: e.target.value as CustomTarget["period"] })} className="h-10 rounded border bg-background px-2 text-sm">
-            <option value="day">day</option><option value="week">week</option><option value="month">month</option>
+          <Input
+            placeholder="Scope id (optional)"
+            value={d.scopeId ?? ""}
+            onChange={(e) => setD({ ...d, scopeId: e.target.value })}
+          />
+          <Input
+            type="number"
+            value={d.value}
+            onChange={(e) => setD({ ...d, value: parseInt(e.target.value, 10) || 0 })}
+          />
+          <select
+            value={d.period}
+            onChange={(e) => setD({ ...d, period: e.target.value as CustomTarget["period"] })}
+            className="h-10 rounded border bg-background px-2 text-sm"
+          >
+            <option value="day">day</option>
+            <option value="week">week</option>
+            <option value="month">month</option>
           </select>
         </div>
-        <Button size="sm" onClick={() => { if (!d.label) return; onChange([...targets, { ...d, id: `tg${Date.now()}` }]); setD({ id: "", label: "", metric: "tours", scope: "global", value: 100, period: "week" }); }}>
+        <Button
+          size="sm"
+          onClick={() => {
+            if (!d.label) return;
+            onChange([...targets, { ...d, id: `tg${Date.now()}` }]);
+            setD({
+              id: "",
+              label: "",
+              metric: "tours",
+              scope: "global",
+              value: 100,
+              period: "week",
+            });
+          }}
+        >
           <Plus className="mr-1 h-4 w-4" /> Add target
         </Button>
       </CardContent>
@@ -484,9 +871,22 @@ function TargetsEditor({ targets, onChange }: { targets: CustomTarget[]; onChang
   );
 }
 
-function ZonesEditor({ zones, onChange }: { zones: ZoneOrgUnit[]; onChange: (v: ZoneOrgUnit[]) => void }) {
+function ZonesEditor({
+  zones,
+  onChange,
+}: {
+  zones: ZoneOrgUnit[];
+  onChange: (v: ZoneOrgUnit[]) => void;
+}) {
   const { tcms } = useApp();
-  const [draft, setDraft] = useState<ZoneOrgUnit>({ id: "", name: "", city: "Bangalore", flowOpsLeadName: "", flowOpsLeadPhone: "", tcmIds: [] });
+  const [draft, setDraft] = useState<ZoneOrgUnit>({
+    id: "",
+    name: "",
+    city: "Bangalore",
+    flowOpsLeadName: "",
+    flowOpsLeadPhone: "",
+    tcmIds: [],
+  });
 
   const upsert = (z: ZoneOrgUnit) => onChange(zones.map((x) => (x.id === z.id ? z : x)));
   const remove = (id: string) => onChange(zones.filter((x) => x.id !== id));
@@ -496,12 +896,21 @@ function ZonesEditor({ zones, onChange }: { zones: ZoneOrgUnit[]; onChange: (v: 
     const id = draft.id.trim() || `z-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
     if (zones.some((x) => x.id === id)) return toast.error("Zone id exists");
     onChange([...zones, { ...draft, id, name }]);
-    setDraft({ id: "", name: "", city: "Bangalore", flowOpsLeadName: "", flowOpsLeadPhone: "", tcmIds: [] });
+    setDraft({
+      id: "",
+      name: "",
+      city: "Bangalore",
+      flowOpsLeadName: "",
+      flowOpsLeadPhone: "",
+      tcmIds: [],
+    });
     toast.success("Zone added");
   };
 
   const toggleTcm = (z: ZoneOrgUnit, tcmId: string) => {
-    const tcmIds = z.tcmIds.includes(tcmId) ? z.tcmIds.filter((x) => x !== tcmId) : [...z.tcmIds, tcmId];
+    const tcmIds = z.tcmIds.includes(tcmId)
+      ? z.tcmIds.filter((x) => x !== tcmId)
+      : [...z.tcmIds, tcmId];
     upsert({ ...z, tcmIds });
   };
 
@@ -509,7 +918,9 @@ function ZonesEditor({ zones, onChange }: { zones: ZoneOrgUnit[]; onChange: (v: 
     <div className="space-y-3">
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2"><Building2 className="h-4 w-4 text-accent" /> Org structure — Bangalore zones</CardTitle>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Building2 className="h-4 w-4 text-accent" /> Org structure — Bangalore zones
+          </CardTitle>
           <p className="text-xs text-muted-foreground">
             Each zone owns a Flow Ops lead and a roster of TCMs. Routing rule R04 uses this map to
             auto-assign new leads. Edit a zone or add a new one — changes apply immediately across
@@ -525,23 +936,43 @@ function ZonesEditor({ zones, onChange }: { zones: ZoneOrgUnit[]; onChange: (v: 
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-accent" />
-                  <Input value={z.name} onChange={(e) => upsert({ ...z, name: e.target.value })} className="h-8 max-w-[200px] font-medium" />
-                  <span className="rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{z.city}</span>
+                  <Input
+                    value={z.name}
+                    onChange={(e) => upsert({ ...z, name: e.target.value })}
+                    className="h-8 max-w-[200px] font-medium"
+                  />
+                  <span className="rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {z.city}
+                  </span>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => remove(z.id)} className="h-7"><Trash2 className="h-3.5 w-3.5" /></Button>
+                <Button size="sm" variant="ghost" onClick={() => remove(z.id)} className="h-7">
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <Label className="text-[11px]">Flow Ops lead</Label>
-                  <Input value={z.flowOpsLeadName ?? ""} onChange={(e) => upsert({ ...z, flowOpsLeadName: e.target.value })} placeholder="Name" className="h-8" />
+                  <Input
+                    value={z.flowOpsLeadName ?? ""}
+                    onChange={(e) => upsert({ ...z, flowOpsLeadName: e.target.value })}
+                    placeholder="Name"
+                    className="h-8"
+                  />
                 </div>
                 <div>
                   <Label className="text-[11px]">Phone</Label>
-                  <Input value={z.flowOpsLeadPhone ?? ""} onChange={(e) => upsert({ ...z, flowOpsLeadPhone: e.target.value })} placeholder="9000010000" className="h-8" />
+                  <Input
+                    value={z.flowOpsLeadPhone ?? ""}
+                    onChange={(e) => upsert({ ...z, flowOpsLeadPhone: e.target.value })}
+                    placeholder="9000010000"
+                    className="h-8"
+                  />
                 </div>
               </div>
               <div>
-                <Label className="text-[11px] flex items-center gap-1"><Users className="h-3 w-3" /> TCMs in this zone</Label>
+                <Label className="text-[11px] flex items-center gap-1">
+                  <Users className="h-3 w-3" /> TCMs in this zone
+                </Label>
                 <div className="mt-1 flex flex-wrap gap-1.5">
                   {tcms.map((t) => {
                     const on = z.tcmIds.includes(t.id);
@@ -552,19 +983,28 @@ function ZonesEditor({ zones, onChange }: { zones: ZoneOrgUnit[]; onChange: (v: 
                         onClick={() => toggleTcm(z, t.id)}
                         className={
                           "rounded-full border px-2 py-0.5 text-[11px] transition " +
-                          (on ? "border-accent bg-accent/15 text-accent" : "border-border bg-muted/20 text-muted-foreground hover:border-accent/40")
+                          (on
+                            ? "border-accent bg-accent/15 text-accent"
+                            : "border-border bg-muted/20 text-muted-foreground hover:border-accent/40")
                         }
                       >
                         {t.name}
                       </button>
                     );
                   })}
-                  {tcms.length === 0 && <span className="text-[11px] text-muted-foreground">No TCMs in store yet.</span>}
+                  {tcms.length === 0 && (
+                    <span className="text-[11px] text-muted-foreground">No TCMs in store yet.</span>
+                  )}
                 </div>
               </div>
               <div>
                 <Label className="text-[11px]">Notes</Label>
-                <Textarea value={z.notes ?? ""} onChange={(e) => upsert({ ...z, notes: e.target.value })} rows={2} className="text-xs" />
+                <Textarea
+                  value={z.notes ?? ""}
+                  onChange={(e) => upsert({ ...z, notes: e.target.value })}
+                  rows={2}
+                  className="text-xs"
+                />
               </div>
             </CardContent>
           </Card>
@@ -572,13 +1012,33 @@ function ZonesEditor({ zones, onChange }: { zones: ZoneOrgUnit[]; onChange: (v: 
       </div>
 
       <Card>
-        <CardHeader className="pb-2"><CardTitle className="text-base">+ Add new zone</CardTitle></CardHeader>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">+ Add new zone</CardTitle>
+        </CardHeader>
         <CardContent className="grid gap-2 p-4 md:grid-cols-4">
-          <Input placeholder="Zone name (e.g. HSR Layout)" value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
-          <Input placeholder="City" value={draft.city} onChange={(e) => setDraft({ ...draft, city: e.target.value })} />
-          <Input placeholder="Flow Ops lead name" value={draft.flowOpsLeadName ?? ""} onChange={(e) => setDraft({ ...draft, flowOpsLeadName: e.target.value })} />
-          <Input placeholder="Lead phone" value={draft.flowOpsLeadPhone ?? ""} onChange={(e) => setDraft({ ...draft, flowOpsLeadPhone: e.target.value })} />
-          <Button size="sm" onClick={add} className="md:col-span-4 md:w-fit"><Plus className="mr-1 h-4 w-4" /> Add zone</Button>
+          <Input
+            placeholder="Zone name (e.g. HSR Layout)"
+            value={draft.name}
+            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+          />
+          <Input
+            placeholder="City"
+            value={draft.city}
+            onChange={(e) => setDraft({ ...draft, city: e.target.value })}
+          />
+          <Input
+            placeholder="Flow Ops lead name"
+            value={draft.flowOpsLeadName ?? ""}
+            onChange={(e) => setDraft({ ...draft, flowOpsLeadName: e.target.value })}
+          />
+          <Input
+            placeholder="Lead phone"
+            value={draft.flowOpsLeadPhone ?? ""}
+            onChange={(e) => setDraft({ ...draft, flowOpsLeadPhone: e.target.value })}
+          />
+          <Button size="sm" onClick={add} className="md:col-span-4 md:w-fit">
+            <Plus className="mr-1 h-4 w-4" /> Add zone
+          </Button>
         </CardContent>
       </Card>
     </div>
@@ -587,21 +1047,48 @@ function ZonesEditor({ zones, onChange }: { zones: ZoneOrgUnit[]; onChange: (v: 
 
 function RoadmapCard() {
   const items: { title: string; body: string }[] = [
-    { title: "Zone P&L dashboard", body: "Per-zone bookings, conversion %, supply utilisation. Compare Koramangala vs Whitefield in one screen." },
-    { title: "Flow-Ops daily standup view", body: "Auto-generated 8am brief: open leads, SLA breaches, top-3 hot rooms, TCMs at risk of missing target." },
-    { title: "TCM mobile mode", body: "Compact, action-first UI for on-tour TCMs — start tour, capture feedback, request block, all in 3 taps." },
-    { title: "Owner-facing pipeline", body: "Show each owner the count of qualified leads currently being pitched into their property — drives compliance." },
-    { title: "PDF auto-attach over WhatsApp Cloud API", body: "Replace Drive deep-link with native PDF send via Meta WhatsApp Business API. Per-message audit trail." },
-    { title: "Conversion learning loop", body: "Track which Plan A vs Plan B converted and feed back into matcher weights per zone, persona and budget band." },
-    { title: "Lead scoring v2 with intent decay", body: "Decay confidence the longer a lead is unattended; auto-revive with Coach scripts at week 1, 2 and 4." },
-    { title: "Bulk WhatsApp broadcast guardrails", body: "Throttle, dedupe and template-validate broadcasts so HR can run nudges without burning the customer relationship." },
+    {
+      title: "Zone P&L dashboard",
+      body: "Per-zone bookings, conversion %, supply utilisation. Compare Koramangala vs Whitefield in one screen.",
+    },
+    {
+      title: "Flow-Ops daily standup view",
+      body: "Auto-generated 8am brief: open leads, SLA breaches, top-3 hot rooms, TCMs at risk of missing target.",
+    },
+    {
+      title: "TCM mobile mode",
+      body: "Compact, action-first UI for on-tour TCMs — start tour, capture feedback, request block, all in 3 taps.",
+    },
+    {
+      title: "Owner-facing pipeline",
+      body: "Show each owner the count of qualified leads currently being pitched into their property — drives compliance.",
+    },
+    {
+      title: "PDF auto-attach over WhatsApp Cloud API",
+      body: "Replace Drive deep-link with native PDF send via Meta WhatsApp Business API. Per-message audit trail.",
+    },
+    {
+      title: "Conversion learning loop",
+      body: "Track which Plan A vs Plan B converted and feed back into matcher weights per zone, persona and budget band.",
+    },
+    {
+      title: "Lead scoring v2 with intent decay",
+      body: "Decay confidence the longer a lead is unattended; auto-revive with Coach scripts at week 1, 2 and 4.",
+    },
+    {
+      title: "Bulk WhatsApp broadcast guardrails",
+      body: "Throttle, dedupe and template-validate broadcasts so HR can run nudges without burning the customer relationship.",
+    },
   ];
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base flex items-center gap-2"><Lightbulb className="h-4 w-4 text-accent" /> What I recommend next</CardTitle>
+        <CardTitle className="text-base flex items-center gap-2">
+          <Lightbulb className="h-4 w-4 text-accent" /> What I recommend next
+        </CardTitle>
         <p className="text-xs text-muted-foreground">
-          Plan-of-record for the next iterations. Optimised for your zone-led org (Bangalore zones → Flow Ops lead → TCM roster). Items can be triaged here and converted into work.
+          Plan-of-record for the next iterations. Optimised for your zone-led org (Bangalore zones →
+          Flow Ops lead → TCM roster). Items can be triaged here and converted into work.
         </p>
       </CardHeader>
       <CardContent className="grid gap-2 md:grid-cols-2">

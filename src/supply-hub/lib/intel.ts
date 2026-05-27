@@ -51,7 +51,11 @@ export function personaBadge(pg: PG): PersonaBadge {
   const aud = (pg.audience || "").toLowerCase();
   const intel = AREAS.find((x) => x.area.toLowerCase() === a);
   const companies = (intel?.topCompanies || "").toLowerCase();
-  const isStudent = aud.includes("student") || companies.includes("christ") || companies.includes("bms") || companies.includes("students");
+  const isStudent =
+    aud.includes("student") ||
+    companies.includes("christ") ||
+    companies.includes("bms") ||
+    companies.includes("students");
   const isPremium = pg.tier === "Premium";
   const startingPrice = pg.prices.triple || pg.prices.double || pg.prices.single || 0;
 
@@ -61,22 +65,55 @@ export function personaBadge(pg: PG): PersonaBadge {
   if (isStudent) return "College Student Belt";
   if (isPremium && startingPrice >= 22000) return "Senior Professional";
   if (isPremium) return "Premium Working Pro";
-  if (companies.includes("infosys") || companies.includes("wipro") || companies.includes("tcs") || companies.includes("flipkart") || companies.includes("ibm")) return "IT Corridor Crowd";
+  if (
+    companies.includes("infosys") ||
+    companies.includes("wipro") ||
+    companies.includes("tcs") ||
+    companies.includes("flipkart") ||
+    companies.includes("ibm")
+  )
+    return "IT Corridor Crowd";
   return "First-Job Bangalore";
 }
 
 const PERSONA_STYLE: Record<PersonaBadge, { color: string; pitch: string }> = {
-  "IT Corridor Crowd":      { color: "text-cyan-300 border-cyan-400/40 bg-cyan-400/10",       pitch: "Pitch commute first — they care about office distance over everything." },
-  "College Student Belt":   { color: "text-amber-300 border-amber-400/40 bg-amber-400/10",     pitch: "Lead with food + study desk + parents-friendly. Price comes second." },
-  "First-Job Bangalore":    { color: "text-emerald-300 border-emerald-400/40 bg-emerald-400/10", pitch: "All-in pricing wins — no surprises. Stress \"₹X/day, nothing extra\"." },
-  "Senior Professional":    { color: "text-violet-300 border-violet-400/40 bg-violet-400/10",   pitch: "Privacy + quiet + premium amenities. Don't lead with price." },
-  "Parent-Approved Girls":  { color: "text-pink-300 border-pink-400/40 bg-pink-400/10",         pitch: "Open the parent pack first — close the parent, close the daughter." },
-  "Boys Hostel Vibe":       { color: "text-blue-300 border-blue-400/40 bg-blue-400/10",         pitch: "Vibe + crew + nightlife > amenities. Mention games/gym." },
-  "Co-live Community":      { color: "text-fuchsia-300 border-fuchsia-400/40 bg-fuchsia-400/10", pitch: "Sell the community first — events, common area, peer network." },
-  "Premium Working Pro":    { color: "text-indigo-300 border-indigo-400/40 bg-indigo-400/10",   pitch: "Service-grade pitch — daily housekeeping, premium furnishing, deposits." },
+  "IT Corridor Crowd": {
+    color: "text-cyan-300 border-cyan-400/40 bg-cyan-400/10",
+    pitch: "Pitch commute first — they care about office distance over everything.",
+  },
+  "College Student Belt": {
+    color: "text-amber-300 border-amber-400/40 bg-amber-400/10",
+    pitch: "Lead with food + study desk + parents-friendly. Price comes second.",
+  },
+  "First-Job Bangalore": {
+    color: "text-emerald-300 border-emerald-400/40 bg-emerald-400/10",
+    pitch: 'All-in pricing wins — no surprises. Stress "₹X/day, nothing extra".',
+  },
+  "Senior Professional": {
+    color: "text-violet-300 border-violet-400/40 bg-violet-400/10",
+    pitch: "Privacy + quiet + premium amenities. Don't lead with price.",
+  },
+  "Parent-Approved Girls": {
+    color: "text-pink-300 border-pink-400/40 bg-pink-400/10",
+    pitch: "Open the parent pack first — close the parent, close the daughter.",
+  },
+  "Boys Hostel Vibe": {
+    color: "text-blue-300 border-blue-400/40 bg-blue-400/10",
+    pitch: "Vibe + crew + nightlife > amenities. Mention games/gym.",
+  },
+  "Co-live Community": {
+    color: "text-fuchsia-300 border-fuchsia-400/40 bg-fuchsia-400/10",
+    pitch: "Sell the community first — events, common area, peer network.",
+  },
+  "Premium Working Pro": {
+    color: "text-indigo-300 border-indigo-400/40 bg-indigo-400/10",
+    pitch: "Service-grade pitch — daily housekeeping, premium furnishing, deposits.",
+  },
 };
 
-export function personaStyle(b: PersonaBadge) { return PERSONA_STYLE[b]; }
+export function personaStyle(b: PersonaBadge) {
+  return PERSONA_STYLE[b];
+}
 
 /* ---------- 4. Scarcity signal (#9) — derived, deterministic ---------- */
 
@@ -86,8 +123,8 @@ export interface ScarcityState {
   level: ScarcityLevel;
   /** Per-occupancy availability ("S" | "D" | "T" → null/n) */
   perBed: { single: number | null; double: number | null; triple: number | null };
-  hot: boolean;        // urgency badge — 1 or 2 left in any tier
-  reason: string;      // human reason — why this state
+  hot: boolean; // urgency badge — 1 or 2 left in any tier
+  reason: string; // human reason — why this state
 }
 
 /** High IQ + premium tier → typically near full. Low IQ + budget → tons left.
@@ -119,7 +156,9 @@ export function scarcity(pg: PG): ScarcityState {
     triple: beds("triple", 16),
   };
 
-  const counts = [perBed.single, perBed.double, perBed.triple].filter((n): n is number => n !== null);
+  const counts = [perBed.single, perBed.double, perBed.triple].filter(
+    (n): n is number => n !== null,
+  );
   const total = counts.reduce((a, b) => a + b, 0);
   const lowest = counts.length ? Math.min(...counts) : 99;
 
@@ -132,11 +171,15 @@ export function scarcity(pg: PG): ScarcityState {
   const hot = level === "1 LEFT" || level === "2 LEFT";
 
   const reason =
-    level === "1 LEFT"  ? `Only 1 ${shortTier(perBed)} sharing left — call now`
-  : level === "2 LEFT"  ? `Only 2 ${shortTier(perBed)} sharing left this week`
-  : level === "FULL"    ? "Currently full — waitlist only"
-  : level === "FEW LEFT"? "Filling fast — fewer than 5 beds open"
-  : "Multiple beds available across sharing types";
+    level === "1 LEFT"
+      ? `Only 1 ${shortTier(perBed)} sharing left — call now`
+      : level === "2 LEFT"
+        ? `Only 2 ${shortTier(perBed)} sharing left this week`
+        : level === "FULL"
+          ? "Currently full — waitlist only"
+          : level === "FEW LEFT"
+            ? "Filling fast — fewer than 5 beds open"
+            : "Multiple beds available across sharing types";
 
   return { level, perBed, hot, reason };
 }
@@ -154,10 +197,10 @@ function shortTier(p: ScarcityState["perBed"]): string {
 /* ---------- 5. Freshness tag (#14) — deterministic ---------- */
 
 export interface Freshness {
-  isFresh: boolean;       // updated in last 30 days?
-  daysAgo: number;        // 0..60
+  isFresh: boolean; // updated in last 30 days?
+  daysAgo: number; // 0..60
   changeKind: "Price drop" | "New photos" | "Room opened" | "Amenity added" | null;
-  message: string;        // short reason for re-engagement
+  message: string; // short reason for re-engagement
 }
 
 export function freshness(pg: PG): Freshness {
@@ -165,13 +208,18 @@ export function freshness(pg: PG): Freshness {
   const daysAgo = h % 60; // 0..59
   const isFresh = daysAgo <= 30;
   if (!isFresh) return { isFresh: false, daysAgo, changeKind: null, message: "" };
-  const kinds: Freshness["changeKind"][] = ["Price drop", "New photos", "Room opened", "Amenity added"];
+  const kinds: Freshness["changeKind"][] = [
+    "Price drop",
+    "New photos",
+    "Room opened",
+    "Amenity added",
+  ];
   const kind = kinds[h % kinds.length]!;
   const messages: Record<NonNullable<Freshness["changeKind"]>, string> = {
-    "Price drop":   "Manager just revised pricing — worth a fresh pitch.",
-    "New photos":   "Fresh photos uploaded — ideal forward to undecided leads.",
-    "Room opened":  "A room just opened — perfect re-engagement reason.",
-    "Amenity added":"Amenity upgraded recently — counters old objections.",
+    "Price drop": "Manager just revised pricing — worth a fresh pitch.",
+    "New photos": "Fresh photos uploaded — ideal forward to undecided leads.",
+    "Room opened": "A room just opened — perfect re-engagement reason.",
+    "Amenity added": "Amenity upgraded recently — counters old objections.",
   };
   return { isFresh, daysAgo, changeKind: kind, message: messages[kind] };
 }
@@ -183,11 +231,13 @@ export function valueScore(pg: PG): number {
   const beds = [pg.prices.triple, pg.prices.double, pg.prices.single].filter((p) => p > 0);
   if (!beds.length) return 0;
   const cheapest = Math.min(...beds);
-  const amenScore = Math.min(10, pg.amenities.length) * 2;             // 0..20
-  const safeScore = Math.min(5, pg.safety.length) * 3;                 // 0..15
-  const mealScore = pg.mealsIncluded?.match(/\d/) ? Number(pg.mealsIncluded.match(/\d/)![0]) * 4 : 0; // 0..16
-  const iqWeight = pg.iq * 0.5;                                        // 0..50
-  const raw = (amenScore + safeScore + mealScore + iqWeight);
+  const amenScore = Math.min(10, pg.amenities.length) * 2; // 0..20
+  const safeScore = Math.min(5, pg.safety.length) * 3; // 0..15
+  const mealScore = pg.mealsIncluded?.match(/\d/)
+    ? Number(pg.mealsIncluded.match(/\d/)![0]) * 4
+    : 0; // 0..16
+  const iqWeight = pg.iq * 0.5; // 0..50
+  const raw = amenScore + safeScore + mealScore + iqWeight;
   // Normalise per ₹1000 — more value per rupee = higher score
   const perK = (raw / (cheapest / 1000)) * 100;
   return Math.round(perK);
@@ -197,17 +247,17 @@ export function valueScore(pg: PG): number {
 
 export interface CommuteEstimate {
   km: number;
-  walkMins: number;        // realistic walking minutes
-  autoMins: number;        // auto, normal traffic
-  peakMins: number;        // auto, peak hour
+  walkMins: number; // realistic walking minutes
+  autoMins: number; // auto, normal traffic
+  peakMins: number; // auto, peak hour
   mode: "walk" | "auto" | "metro+auto";
-  oneLiner: string;        // a screenshot-ready single line
+  oneLiner: string; // a screenshot-ready single line
 }
 
 export function commuteEstimate(km: number, nearestMetro?: string | null): CommuteEstimate {
-  const walkMins = Math.round(km * 12);                          // 5km/h
-  const autoMins = Math.max(5, Math.round(km * 2.8));            // ~21 km/h with stops
-  const peakMins = Math.max(8, Math.round(km * 4.6));            // ~13 km/h peak
+  const walkMins = Math.round(km * 12); // 5km/h
+  const autoMins = Math.max(5, Math.round(km * 2.8)); // ~21 km/h with stops
+  const peakMins = Math.max(8, Math.round(km * 4.6)); // ~13 km/h peak
   const mode: CommuteEstimate["mode"] =
     km <= 1.2 ? "walk" : km <= 8 || !nearestMetro ? "auto" : "metro+auto";
 
@@ -242,21 +292,47 @@ export function areaMood(area: string): AreaMood | null {
   const intel = AREAS.find((a) => a.area.toLowerCase() === area.toLowerCase());
   if (!intel) return null;
   const a = area.toLowerCase();
-  const nightlife: AreaMood["nightlife"] =
-    NIGHTLIFE_HIGH.some((k) => a.includes(k)) ? "High"
-    : NIGHTLIFE_MID.some((k) => a.includes(k)) ? "Medium" : "Low";
-  const noise: AreaMood["noise"] = nightlife === "High" ? "Buzzing" : nightlife === "Medium" ? "Active" : "Quiet";
-  const companies = intel.topCompanies.split(/,/).map((s) => s.trim()).filter(Boolean).slice(0, 6);
+  const nightlife: AreaMood["nightlife"] = NIGHTLIFE_HIGH.some((k) => a.includes(k))
+    ? "High"
+    : NIGHTLIFE_MID.some((k) => a.includes(k))
+      ? "Medium"
+      : "Low";
+  const noise: AreaMood["noise"] =
+    nightlife === "High" ? "Buzzing" : nightlife === "Medium" ? "Active" : "Quiet";
+  const companies = intel.topCompanies
+    .split(/,/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 6);
   const isStudent = companies.some((c) => /christ|bms|college|student/i.test(c));
-  const isCorporate = companies.some((c) => /infosys|wipro|tcs|flipkart|ibm|goldman|accenture|cognizant/i.test(c));
-  const crowd = isStudent && isCorporate ? "Mixed students + IT pros"
-              : isStudent ? "College students + young pros"
-              : isCorporate ? "IT professionals" : "Working professionals";
+  const isCorporate = companies.some((c) =>
+    /infosys|wipro|tcs|flipkart|ibm|goldman|accenture|cognizant/i.test(c),
+  );
+  const crowd =
+    isStudent && isCorporate
+      ? "Mixed students + IT pros"
+      : isStudent
+        ? "College students + young pros"
+        : isCorporate
+          ? "IT professionals"
+          : "Working professionals";
   const ageBand = isStudent ? "18–24" : isCorporate ? "23–32" : "24–34";
-  const weekend = nightlife === "High" ? "Cafés + breweries packed till 1am" : nightlife === "Medium" ? "Quieter Saturdays, busy malls" : "Calm — residents head out for nightlife";
+  const weekend =
+    nightlife === "High"
+      ? "Cafés + breweries packed till 1am"
+      : nightlife === "Medium"
+        ? "Quieter Saturdays, busy malls"
+        : "Calm — residents head out for nightlife";
   return {
-    area: intel.area, crowd, ageBand, nightlife, noise, weekend,
-    metroAccess: intel.commute, priceBand: intel.budget, topCompanies: companies,
+    area: intel.area,
+    crowd,
+    ageBand,
+    nightlife,
+    noise,
+    weekend,
+    metroAccess: intel.commute,
+    priceBand: intel.budget,
+    topCompanies: companies,
   };
 }
 
@@ -265,23 +341,51 @@ export function areaMood(area: string): AreaMood | null {
 export type Objection = "expensive" | "far" | "no_gym" | "no_meals" | "no_ac" | "wrong_food";
 
 export function findAlternatives(pg: PG, objection: Objection, all: PG[]): PG[] {
-  const sameArea = all.filter((p) => p.id !== pg.id && p.area === pg.area && p.gender === pg.gender);
-  const cheapest = (p: PG) => Math.min(...[p.prices.triple, p.prices.double, p.prices.single].filter((x) => x > 0).concat(99999));
+  const sameArea = all.filter(
+    (p) => p.id !== pg.id && p.area === pg.area && p.gender === pg.gender,
+  );
+  const cheapest = (p: PG) =>
+    Math.min(
+      ...[p.prices.triple, p.prices.double, p.prices.single].filter((x) => x > 0).concat(99999),
+    );
   const baseCheap = cheapest(pg);
 
   switch (objection) {
     case "expensive":
-      return sameArea.filter((p) => cheapest(p) < baseCheap).sort((a, b) => cheapest(a) - cheapest(b)).slice(0, 3);
+      return sameArea
+        .filter((p) => cheapest(p) < baseCheap)
+        .sort((a, b) => cheapest(a) - cheapest(b))
+        .slice(0, 3);
     case "far":
-      return sameArea.filter((p) => p.nearbyLandmarks?.[0]?.w !== undefined).sort((a, b) => (a.nearbyLandmarks[0]?.w ?? 99) - (b.nearbyLandmarks[0]?.w ?? 99)).slice(0, 3);
+      return sameArea
+        .filter((p) => p.nearbyLandmarks?.[0]?.w !== undefined)
+        .sort((a, b) => (a.nearbyLandmarks[0]?.w ?? 99) - (b.nearbyLandmarks[0]?.w ?? 99))
+        .slice(0, 3);
     case "no_gym":
-      return all.filter((p) => p.id !== pg.id && p.area === pg.area && p.amenities.some((a) => /gym/i.test(a))).sort((a, b) => b.iq - a.iq).slice(0, 3);
+      return all
+        .filter(
+          (p) => p.id !== pg.id && p.area === pg.area && p.amenities.some((a) => /gym/i.test(a)),
+        )
+        .sort((a, b) => b.iq - a.iq)
+        .slice(0, 3);
     case "no_meals":
-      return sameArea.filter((p) => p.mealsIncluded && p.mealsIncluded.match(/\d/)).sort((a, b) => b.iq - a.iq).slice(0, 3);
+      return sameArea
+        .filter((p) => p.mealsIncluded && p.mealsIncluded.match(/\d/))
+        .sort((a, b) => b.iq - a.iq)
+        .slice(0, 3);
     case "no_ac":
-      return sameArea.filter((p) => p.amenities.some((a) => /\bac\b|air-?con/i.test(a))).sort((a, b) => b.iq - a.iq).slice(0, 3);
+      return sameArea
+        .filter((p) => p.amenities.some((a) => /\bac\b|air-?con/i.test(a)))
+        .sort((a, b) => b.iq - a.iq)
+        .slice(0, 3);
     case "wrong_food":
-      return sameArea.filter((p) => p.foodType?.toLowerCase().includes("both") || p.foodType?.toLowerCase().includes("non")).sort((a, b) => b.iq - a.iq).slice(0, 3);
+      return sameArea
+        .filter(
+          (p) =>
+            p.foodType?.toLowerCase().includes("both") || p.foodType?.toLowerCase().includes("non"),
+        )
+        .sort((a, b) => b.iq - a.iq)
+        .slice(0, 3);
     default:
       return sameArea.slice(0, 3);
   }
@@ -293,31 +397,49 @@ export interface StretchTier {
   budget: number;
   pgs: PG[];
   unlocks: string[];
-  perDayDelta: number;     // ₹/day extra vs. base
+  perDayDelta: number; // ₹/day extra vs. base
 }
 
 export function budgetStretch(base: number, allPGs: PG[], gender?: string): StretchTier[] {
   const tiers = [base, base + 2000, base + 5000];
   const filtered = gender && gender !== "Any" ? allPGs.filter((p) => p.gender === gender) : allPGs;
   return tiers.map((b, i) => {
-    const inBudget = filtered.filter((p) => {
-      const beds = [p.prices.triple, p.prices.double, p.prices.single].filter((x) => x > 0);
-      const cheap = beds.length ? Math.min(...beds) : 99999;
-      return cheap <= b * 1.05;
-    }).sort((a, b) => b.iq - a.iq).slice(0, 3);
-    const baseAmen = new Set(filtered.filter((p) => {
-      const beds = [p.prices.triple, p.prices.double, p.prices.single].filter((x) => x > 0);
-      return beds.length && Math.min(...beds) <= base;
-    }).flatMap((p) => p.amenities.map((a) => a.toLowerCase())));
+    const inBudget = filtered
+      .filter((p) => {
+        const beds = [p.prices.triple, p.prices.double, p.prices.single].filter((x) => x > 0);
+        const cheap = beds.length ? Math.min(...beds) : 99999;
+        return cheap <= b * 1.05;
+      })
+      .sort((a, b) => b.iq - a.iq)
+      .slice(0, 3);
+    const baseAmen = new Set(
+      filtered
+        .filter((p) => {
+          const beds = [p.prices.triple, p.prices.double, p.prices.single].filter((x) => x > 0);
+          return beds.length && Math.min(...beds) <= base;
+        })
+        .flatMap((p) => p.amenities.map((a) => a.toLowerCase())),
+    );
     const newAmen = new Set(inBudget.flatMap((p) => p.amenities.map((a) => a.toLowerCase())));
-    const unlocks = i === 0
-      ? ["Baseline — what your money buys today"]
-      : Array.from(newAmen).filter((a) => !baseAmen.has(a)).slice(0, 4).map(capitalise);
-    return { budget: b, pgs: inBudget, unlocks: unlocks.length ? unlocks : ["Better IQ scores · larger room sizes"], perDayDelta: Math.round((b - base) / 30) };
+    const unlocks =
+      i === 0
+        ? ["Baseline — what your money buys today"]
+        : Array.from(newAmen)
+            .filter((a) => !baseAmen.has(a))
+            .slice(0, 4)
+            .map(capitalise);
+    return {
+      budget: b,
+      pgs: inBudget,
+      unlocks: unlocks.length ? unlocks : ["Better IQ scores · larger room sizes"],
+      perDayDelta: Math.round((b - base) / 30),
+    };
   });
 }
 
-function capitalise(s: string) { return s.replace(/\b\w/g, (c) => c.toUpperCase()); }
+function capitalise(s: string) {
+  return s.replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 /* ---------- 11. Seasonal context (#15) ---------- */
 

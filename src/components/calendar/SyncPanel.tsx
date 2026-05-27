@@ -156,7 +156,9 @@ export function SyncPanel({ open, onOpenChange }: Props) {
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">{p.description}</p>
                         {conn?.account && (
-                          <p className="text-xs text-muted-foreground mt-1 truncate">{conn.account}</p>
+                          <p className="text-xs text-muted-foreground mt-1 truncate">
+                            {conn.account}
+                          </p>
                         )}
                         {conn?.lastSyncedAt && (
                           <p className="text-[10px] text-muted-foreground mt-0.5">
@@ -175,7 +177,10 @@ export function SyncPanel({ open, onOpenChange }: Props) {
                               <Trash2 className="h-3.5 w-3.5 mr-1" /> Disconnect
                             </Button>
                           ) : (
-                            <Button size="sm" onClick={() => connectOAuth(p.id as "google" | "outlook")}>
+                            <Button
+                              size="sm"
+                              onClick={() => connectOAuth(p.id as "google" | "outlook")}
+                            >
                               <Link2 className="h-3.5 w-3.5 mr-1" /> Connect
                             </Button>
                           )
@@ -200,9 +205,13 @@ export function SyncPanel({ open, onOpenChange }: Props) {
                           />
                           <span>Push events to {p.label}</span>
                         </div>
-                        <Button size="sm" variant="ghost" onClick={() =>
-                          setConnection({ ...conn, lastSyncedAt: new Date().toISOString() })
-                        }>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() =>
+                            setConnection({ ...conn, lastSyncedAt: new Date().toISOString() })
+                          }
+                        >
                           <RefreshCw className="h-3.5 w-3.5 mr-1" /> Sync now
                         </Button>
                       </div>
@@ -218,7 +227,8 @@ export function SyncPanel({ open, onOpenChange }: Props) {
           <section className="space-y-3">
             <h3 className="text-sm font-semibold">Subscribe to an ICS feed</h3>
             <p className="text-xs text-muted-foreground">
-              Paste a public webcal/ICS URL from any calendar provider. Events will be imported into Align.
+              Paste a public webcal/ICS URL from any calendar provider. Events will be imported into
+              Align.
             </p>
             <div className="space-y-2">
               <Input
@@ -272,7 +282,14 @@ export function SyncPanel({ open, onOpenChange }: Props) {
                 <Button variant="outline" size="sm" onClick={exportNow}>
                   <Download className="h-3.5 w-3.5 mr-1" /> Download .ics
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => { rotateIcsToken(); toast.success("URL rotated."); }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    rotateIcsToken();
+                    toast.success("URL rotated.");
+                  }}
+                >
                   <RefreshCw className="h-3.5 w-3.5 mr-1" /> Rotate URL
                 </Button>
                 <a

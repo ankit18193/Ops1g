@@ -1,7 +1,13 @@
 import { format, isSameDay, isToday } from "date-fns";
 import { useEffect, useRef } from "react";
 import { KIND_META, type CalEvent } from "@/lib/calendar-store";
-import { HOURS, durationMinutes, eventsForDay, minutesFromMidnight, weekDays } from "./CalendarUtils";
+import {
+  HOURS,
+  durationMinutes,
+  eventsForDay,
+  minutesFromMidnight,
+  weekDays,
+} from "./CalendarUtils";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -29,7 +35,10 @@ export function TimeGridView({ focus, events, view, onEventClick, onSlotClick }:
 
   return (
     <div className="flex-1 min-h-0 border rounded-lg bg-card overflow-hidden flex flex-col">
-      <div className="grid border-b" style={{ gridTemplateColumns: `60px repeat(${days.length}, 1fr)` }}>
+      <div
+        className="grid border-b"
+        style={{ gridTemplateColumns: `60px repeat(${days.length}, 1fr)` }}
+      >
         <div />
         {days.map((d) => {
           const today = isToday(d);
@@ -50,7 +59,10 @@ export function TimeGridView({ focus, events, view, onEventClick, onSlotClick }:
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="grid relative" style={{ gridTemplateColumns: `60px repeat(${days.length}, 1fr)` }}>
+        <div
+          className="grid relative"
+          style={{ gridTemplateColumns: `60px repeat(${days.length}, 1fr)` }}
+        >
           <div>
             {HOURS.map((h) => (
               <div
@@ -111,7 +123,8 @@ export function TimeGridView({ focus, events, view, onEventClick, onSlotClick }:
                     >
                       <div className="font-medium truncate">{e.title}</div>
                       <div className="opacity-70 truncate">
-                        {format(new Date(e.start), "h:mma").toLowerCase()} – {format(new Date(e.end), "h:mma").toLowerCase()}
+                        {format(new Date(e.start), "h:mma").toLowerCase()} –{" "}
+                        {format(new Date(e.end), "h:mma").toLowerCase()}
                       </div>
                       {e.location && <div className="opacity-70 truncate">{e.location}</div>}
                     </button>

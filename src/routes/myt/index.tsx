@@ -4,5 +4,9 @@ import HRTower from "@/myt/pages/HRTower";
 
 export const Route = createFileRoute("/myt/")({
   head: () => ({ meta: [{ title: "HR Tower — MYT" }] }),
-  component: () => <AppShell><HRTower /></AppShell>,
+  component: () => (
+    <AppShell>
+      <HRTower />
+    </AppShell>
+  ),
 });

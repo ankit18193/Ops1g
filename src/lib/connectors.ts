@@ -11,16 +11,16 @@
 import type { Role } from "./types";
 
 export type ConnectorEventKind =
-  | "lead.added"            // Flow Ops added a lead
-  | "lead.assigned"         // Lead routed to a TCM
-  | "tour.scheduled"        // Tour booked (by Flow Ops or TCM)
-  | "tour.completed"        // Tour marked done
-  | "post_tour.filled"      // TCM closed the post-tour loop
-  | "booking.closed"        // TCM closed a deal
-  | "owner.room_updated"    // Owner refreshed a room status
-  | "owner.block_decided"   // Owner accepted/declined a block
-  | "handoff.sent"          // Cross-role message
-  | "coach.cleared";        // Any user cleared a coach item
+  | "lead.added" // Flow Ops added a lead
+  | "lead.assigned" // Lead routed to a TCM
+  | "tour.scheduled" // Tour booked (by Flow Ops or TCM)
+  | "tour.completed" // Tour marked done
+  | "post_tour.filled" // TCM closed the post-tour loop
+  | "booking.closed" // TCM closed a deal
+  | "owner.room_updated" // Owner refreshed a room status
+  | "owner.block_decided" // Owner accepted/declined a block
+  | "handoff.sent" // Cross-role message
+  | "coach.cleared"; // Any user cleared a coach item
 
 export interface ConnectorEvent {
   id: string;
@@ -73,7 +73,9 @@ function saveFeed(feed: ConnectorEvent[]) {
 /** Idempotency guard so reloads don't double-fire seed/init events. */
 const seenIds = new Set<string>();
 
-export function emit(e: Omit<ConnectorEvent, "id" | "ts"> & { id?: string; ts?: number }): ConnectorEvent {
+export function emit(
+  e: Omit<ConnectorEvent, "id" | "ts"> & { id?: string; ts?: number },
+): ConnectorEvent {
   const id = e.id ?? `${e.kind}:${Math.random().toString(36).slice(2, 10)}`;
   if (seenIds.has(id)) {
     // Already broadcast this exact id — no-op.
@@ -87,7 +89,11 @@ export function emit(e: Omit<ConnectorEvent, "id" | "ts"> & { id?: string; ts?: 
   saveFeed(feed);
   // Notify
   listeners.forEach((fn) => {
-    try { fn(evt); } catch { /* swallow */ }
+    try {
+      fn(evt);
+    } catch {
+      /* swallow */
+    }
   });
   return evt;
 }

@@ -1,7 +1,7 @@
-import { Property, PropertyScores } from '@/myt/lib/types';
-import { SignalChip } from './SignalChip';
-import { MapPin, Wallet, TrendingUp, Zap, Target, Lock, Building2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Property, PropertyScores } from "@/myt/lib/types";
+import { SignalChip } from "./SignalChip";
+import { MapPin, Wallet, TrendingUp, Zap, Target, Lock, Building2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Props {
   property: Property;
@@ -10,10 +10,9 @@ interface Props {
 }
 
 const scoreColor = (s: number) =>
-  s >= 70 ? 'text-role-tcm' : s >= 45 ? 'text-role-hr' : 'text-danger';
+  s >= 70 ? "text-role-tcm" : s >= 45 ? "text-role-hr" : "text-danger";
 
-const scoreBg = (s: number) =>
-  s >= 70 ? 'bg-role-tcm' : s >= 45 ? 'bg-role-hr' : 'bg-danger';
+const scoreBg = (s: number) => (s >= 70 ? "bg-role-tcm" : s >= 45 ? "bg-role-hr" : "bg-danger");
 
 export function PropertyCard({ property: p, scores: s, onClick }: Props) {
   return (
@@ -29,8 +28,13 @@ export function PropertyCard({ property: p, scores: s, onClick }: Props) {
             <SignalChip signal={s.signal} />
           </div>
           <div className="flex items-center gap-2 mt-0.5 text-[11px] text-muted-foreground">
-            <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{p.area}</span>
-            <span className="flex items-center gap-1"><Wallet className="h-3 w-3" />₹{(p.basePrice/1000).toFixed(0)}k</span>
+            <span className="flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              {p.area}
+            </span>
+            <span className="flex items-center gap-1">
+              <Wallet className="h-3 w-3" />₹{(p.basePrice / 1000).toFixed(0)}k
+            </span>
           </div>
         </div>
       </div>
@@ -47,12 +51,19 @@ export function PropertyCard({ property: p, scores: s, onClick }: Props) {
         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
           <span>Beds</span>
           <span className="tabular-nums">
-            <span className="text-foreground font-medium">{s.bedsAvailable}</span> open · {s.bedsBlocked} blocked · {s.bedsOccupied}/{s.bedsTotal}
+            <span className="text-foreground font-medium">{s.bedsAvailable}</span> open ·{" "}
+            {s.bedsBlocked} blocked · {s.bedsOccupied}/{s.bedsTotal}
           </span>
         </div>
         <div className="h-1.5 rounded-full bg-surface-3 overflow-hidden flex">
-          <div className="bg-role-tcm" style={{ width: `${(s.bedsOccupied / Math.max(1, s.bedsTotal)) * 100}%` }} />
-          <div className="bg-role-hr" style={{ width: `${(s.bedsBlocked / Math.max(1, s.bedsTotal)) * 100}%` }} />
+          <div
+            className="bg-role-tcm"
+            style={{ width: `${(s.bedsOccupied / Math.max(1, s.bedsTotal)) * 100}%` }}
+          />
+          <div
+            className="bg-role-hr"
+            style={{ width: `${(s.bedsBlocked / Math.max(1, s.bedsTotal)) * 100}%` }}
+          />
         </div>
       </div>
 
@@ -60,9 +71,11 @@ export function PropertyCard({ property: p, scores: s, onClick }: Props) {
       <div className="flex items-center justify-between text-[11px] pt-1 border-t border-border">
         <span className="text-muted-foreground">This week</span>
         <div className="flex items-center gap-3 font-mono tabular-nums">
-          <span className="text-role-tcm font-semibold">+₹{(s.revenueWeek/1000).toFixed(0)}k</span>
+          <span className="text-role-tcm font-semibold">
+            +₹{(s.revenueWeek / 1000).toFixed(0)}k
+          </span>
           {s.missedRevenue > 0 && (
-            <span className="text-danger">−₹{(s.missedRevenue/1000).toFixed(0)}k</span>
+            <span className="text-danger">−₹{(s.missedRevenue / 1000).toFixed(0)}k</span>
           )}
         </div>
       </div>
@@ -77,25 +90,35 @@ export function PropertyCard({ property: p, scores: s, onClick }: Props) {
       {/* Active blocks indicator */}
       {s.bedsBlocked > 0 && (
         <div className="text-[10px] text-role-hr flex items-center gap-1">
-          <Lock className="h-3 w-3" />{s.bedsBlocked} bed{s.bedsBlocked > 1 ? 's' : ''} held
+          <Lock className="h-3 w-3" />
+          {s.bedsBlocked} bed{s.bedsBlocked > 1 ? "s" : ""} held
         </div>
       )}
     </button>
   );
 }
 
-function ScoreTile({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
+function ScoreTile({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+}) {
   return (
     <div className="rounded-md bg-surface-3 px-2 py-1.5">
       <div className="flex items-center gap-1 text-[9px] uppercase tracking-wide text-muted-foreground">
-        {icon}{label}
+        {icon}
+        {label}
       </div>
       <div className="flex items-baseline gap-1 mt-0.5">
-        <span className={cn('text-base font-bold tabular-nums', scoreColor(value))}>{value}</span>
+        <span className={cn("text-base font-bold tabular-nums", scoreColor(value))}>{value}</span>
         <span className="text-[9px] text-muted-foreground">/100</span>
       </div>
       <div className="h-0.5 rounded-full bg-surface-2 overflow-hidden mt-0.5">
-        <div className={cn('h-full', scoreBg(value))} style={{ width: `${value}%` }} />
+        <div className={cn("h-full", scoreBg(value))} style={{ width: `${value}%` }} />
       </div>
     </div>
   );

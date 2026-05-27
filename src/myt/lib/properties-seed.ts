@@ -1,16 +1,49 @@
-import { Property, Room, RoomBlock, RoomType } from './types';
-import { zones } from './mock-data';
+import { Property, Room, RoomBlock, RoomType } from "./types";
+import { zones } from "./mock-data";
 
 const propertyNames = [
-  'Prestige Lakeside','Brigade Meadows','Sobha Dream Acres','Godrej Splendour',
-  'Mantri Serenity','Puravankara Zenium','Salarpuria Sattva','Embassy Springs',
-  'Total Environment','Raheja Residency','Adarsh Palm Retreat','Shriram Greenfield',
-  'Provident Sunworth','Nitesh Forest Hills','DivyaSree Republic','Sterling Ascentia',
-  'Casagrand Aldea','Vaswani Reserve',
+  "Prestige Lakeside",
+  "Brigade Meadows",
+  "Sobha Dream Acres",
+  "Godrej Splendour",
+  "Mantri Serenity",
+  "Puravankara Zenium",
+  "Salarpuria Sattva",
+  "Embassy Springs",
+  "Total Environment",
+  "Raheja Residency",
+  "Adarsh Palm Retreat",
+  "Shriram Greenfield",
+  "Provident Sunworth",
+  "Nitesh Forest Hills",
+  "DivyaSree Republic",
+  "Sterling Ascentia",
+  "Casagrand Aldea",
+  "Vaswani Reserve",
 ];
 
-const owners = ['Ramesh K','Sunita Gowda','Manoj Pillai','Anita Reddy','Vikas Hegde','Deepak Bose','Lakshmi N','Suresh Babu'];
-const amenitiesPool = ['WiFi','AC','Laundry','Gym','Lounge','Cafeteria','Power backup','Parking','CCTV','Daily housekeeping'];
+const owners = [
+  "Ramesh K",
+  "Sunita Gowda",
+  "Manoj Pillai",
+  "Anita Reddy",
+  "Vikas Hegde",
+  "Deepak Bose",
+  "Lakshmi N",
+  "Suresh Babu",
+];
+const amenitiesPool = [
+  "WiFi",
+  "AC",
+  "Laundry",
+  "Gym",
+  "Lounge",
+  "Cafeteria",
+  "Power backup",
+  "Parking",
+  "CCTV",
+  "Daily housekeeping",
+];
 
 function pick<T>(arr: T[], n: number): T[] {
   return [...arr].sort(() => Math.random() - 0.5).slice(0, n);
@@ -35,15 +68,16 @@ export const properties: Property[] = propertyNames.map((name, i) => {
   };
 });
 
-const roomTypes: RoomType[] = ['single', 'double', 'triple', 'studio'];
+const roomTypes: RoomType[] = ["single", "double", "triple", "studio"];
 
 export const rooms: Room[] = properties.flatMap((p, pi) => {
   const roomCount = 4 + (pi % 4);
   return Array.from({ length: roomCount }, (_, ri) => {
     const type = roomTypes[(pi + ri) % 4];
-    const bedsTotal = type === 'single' ? 1 : type === 'double' ? 2 : type === 'triple' ? 3 : 1;
+    const bedsTotal = type === "single" ? 1 : type === "double" ? 2 : type === "triple" ? 3 : 1;
     const bedsOccupied = Math.floor(Math.random() * (bedsTotal + 1));
-    const priceMult = type === 'single' ? 1.3 : type === 'studio' ? 1.5 : type === 'double' ? 1.0 : 0.8;
+    const priceMult =
+      type === "single" ? 1.3 : type === "studio" ? 1.5 : type === "double" ? 1.0 : 0.8;
     return {
       id: `r${p.id}-${ri + 1}`,
       propertyId: p.id,
@@ -60,9 +94,13 @@ export const initialBlocks: RoomBlock[] = rooms.slice(0, 6).map((r, i) => ({
   id: `blk-seed-${i}`,
   roomId: r.id,
   propertyId: r.propertyId,
-  leadName: ['Arun Mehta','Simran Kaur','Rajat Gupta','Neha Jain','Akash Bose','Tanya Sharma'][i],
-  intent: i % 2 === 0 ? 'hard' : 'medium',
+  leadName: ["Arun Mehta", "Simran Kaur", "Rajat Gupta", "Neha Jain", "Akash Bose", "Tanya Sharma"][
+    i
+  ],
+  intent: i % 2 === 0 ? "hard" : "medium",
   createdAt: new Date(Date.now() - i * 30 * 60 * 1000).toISOString(),
-  expiresAt: new Date(Date.now() + (i % 2 === 0 ? 4 : 1) * 60 * 60 * 1000 - i * 10 * 60 * 1000).toISOString(),
-  status: 'active',
+  expiresAt: new Date(
+    Date.now() + (i % 2 === 0 ? 4 : 1) * 60 * 60 * 1000 - i * 10 * 60 * 1000,
+  ).toISOString(),
+  status: "active",
 }));

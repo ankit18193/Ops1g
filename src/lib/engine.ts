@@ -13,12 +13,12 @@ import type { Lead, Tour, FollowUp, Intent } from "./types";
 /* ============== SLA RULES ============== */
 
 export const SLA = {
-  firstResponseMins: 5,         // first response after lead arrives
-  followUpHours: 24,            // every lead has a follow-up within 24h
-  postTourHours: 1,             // post-tour form filled within 1h
-  postTourAlertHours: 2,        // soft alert
-  postTourEscalateHours: 6,     // hard escalation to Flow Ops
-  reassignDays: 3,              // T+3 with no action → reassign
+  firstResponseMins: 5, // first response after lead arrives
+  followUpHours: 24, // every lead has a follow-up within 24h
+  postTourHours: 1, // post-tour form filled within 1h
+  postTourAlertHours: 2, // soft alert
+  postTourEscalateHours: 6, // hard escalation to Flow Ops
+  reassignDays: 3, // T+3 with no action → reassign
 } as const;
 
 export type SlaState = "ok" | "warn" | "breach";
@@ -151,9 +151,10 @@ export function buildDoNextQueue(
       const minsToTour = (+new Date(t.scheduledAt) - now) / 60_000;
       actions.push({
         leadId: lead.id,
-        reason: minsToTour > 0
-          ? `Tour today in ${formatRel(minsToTour)}`
-          : `Tour was ${formatRel(-minsToTour)} ago — confirm`,
+        reason:
+          minsToTour > 0
+            ? `Tour today in ${formatRel(minsToTour)}`
+            : `Tour was ${formatRel(-minsToTour)} ago — confirm`,
         kind: "tour-today",
         score: 700 + intentBoost(lead.intent) - Math.abs(minsToTour) / 30,
         dueAt: t.scheduledAt,
@@ -219,10 +220,13 @@ function intentBoost(i: Intent) {
 }
 
 function sameDay(a: number, b: number) {
-  const da = new Date(a), db = new Date(b);
-  return da.getFullYear() === db.getFullYear() &&
-         da.getMonth() === db.getMonth() &&
-         da.getDate() === db.getDate();
+  const da = new Date(a),
+    db = new Date(b);
+  return (
+    da.getFullYear() === db.getFullYear() &&
+    da.getMonth() === db.getMonth() &&
+    da.getDate() === db.getDate()
+  );
 }
 
 function formatRel(mins: number): string {
@@ -258,14 +262,25 @@ export function computeTcmPerformance(
   const toursDone = myTours.filter((t) => t.status === "completed").length;
   const bookings = myTours.filter((t) => t.decision === "booked").length;
   const conversion = toursDone > 0 ? Math.round((bookings / toursDone) * 100) : 0;
-  const pendingPostTour = myTours.filter((t) => t.status === "completed" && !t.postTour.filledAt).length;
-  const overdueFollowUps = followUps.filter((f) => f.tcmId === tcmId && !f.done && +new Date(f.dueAt) < now).length;
+  const pendingPostTour = myTours.filter(
+    (t) => t.status === "completed" && !t.postTour.filledAt,
+  ).length;
+  const overdueFollowUps = followUps.filter(
+    (f) => f.tcmId === tcmId && !f.done && +new Date(f.dueAt) < now,
+  ).length;
   const total = myLeads.length || 1;
-  const discipline = Math.max(0, Math.min(100,
-    100 - (pendingPostTour / total) * 100 - (overdueFollowUps / total) * 60,
-  ));
+  const discipline = Math.max(
+    0,
+    Math.min(100, 100 - (pendingPostTour / total) * 100 - (overdueFollowUps / total) * 60),
+  );
   return {
-    tcmId, leadCount: myLeads.length, toursDone, bookings, conversion,
-    pendingPostTour, overdueFollowUps, discipline: Math.round(discipline),
+    tcmId,
+    leadCount: myLeads.length,
+    toursDone,
+    bookings,
+    conversion,
+    pendingPostTour,
+    overdueFollowUps,
+    discipline: Math.round(discipline),
   };
 }

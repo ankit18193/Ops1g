@@ -24,18 +24,38 @@ import { Save, Repeat2, Phone, MapPin, Sparkles, X, CalendarPlus } from "lucide-
 import { cn } from "@/lib/utils";
 import { useNavigate } from "@/shims/react-router-dom";
 import { useAppState } from "@/myt/lib/app-context";
-import { bestInventoryFits, detectAreaZone, recommendedFlowOps, recommendedTcm } from "@/myt/lib/inventory-intelligence";
-import { QUICKAD_NEED_OPTIONS, QUICKAD_ROOM_OPTIONS, QUICKAD_TYPE_OPTIONS, parseBudgetAmount } from "@/lib/quickad-shared";
+import {
+  bestInventoryFits,
+  detectAreaZone,
+  recommendedFlowOps,
+  recommendedTcm,
+} from "@/myt/lib/inventory-intelligence";
+import {
+  QUICKAD_NEED_OPTIONS,
+  QUICKAD_ROOM_OPTIONS,
+  QUICKAD_TYPE_OPTIONS,
+  parseBudgetAmount,
+} from "@/lib/quickad-shared";
 import type { ParsedLeadDraft } from "@/lib/lead-identity/types";
 
-interface Props { open: boolean; onClose: () => void; }
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
 
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
 const ZONE_BUCKETS = [
-  "CENTRAL STUDENTS", "CU YPR / STUDENTS / WORKING", "HOMES KORA", "HOMES MWB",
-  "KORA CORE", "MTECH HUB", "MWB MORE", "OTHERS COLLEGE STUDENTS",
-  "YPR MAJOR MAIN", "OTHERS",
+  "CENTRAL STUDENTS",
+  "CU YPR / STUDENTS / WORKING",
+  "HOMES KORA",
+  "HOMES MWB",
+  "KORA CORE",
+  "MTECH HUB",
+  "MWB MORE",
+  "OTHERS COLLEGE STUDENTS",
+  "YPR MAJOR MAIN",
+  "OTHERS",
 ] as const;
 
 const STAGES = [
@@ -75,7 +95,7 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [areasText, setAreasText] = useState("");        // comma-separated areas
+  const [areasText, setAreasText] = useState(""); // comma-separated areas
   const [fullAddress, setFullAddress] = useState("");
   const [budget, setBudget] = useState("");
   const [moveIn, setMoveIn] = useState(todayIso());
@@ -93,7 +113,9 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
   const [lastParsed, setLastParsed] = useState<ParsedLeadDraft | null>(null);
 
   const nameRef = useRef<HTMLInputElement>(null);
-  useEffect(() => { if (open) setTimeout(() => nameRef.current?.focus(), 50); }, [open]);
+  useEffect(() => {
+    if (open) setTimeout(() => nameRef.current?.focus(), 50);
+  }, [open]);
 
   const detectedZone = useMemo(
     () => detectZone(`${areasText} ${fullAddress}`),
@@ -105,16 +127,32 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
     const budgetNum = parseBudgetAmount(budget);
     const zone = detectAreaZone(areaText);
     const fits = bestInventoryFits({ areaText, budget: budgetNum, room, rooms, blocks, limit: 3 });
-    return { zone, fits, flowOps: recommendedFlowOps(zone.id), tcm: recommendedTcm(tours, zone.id) };
+    return {
+      zone,
+      fits,
+      flowOps: recommendedFlowOps(zone.id),
+      tcm: recommendedTcm(tours, zone.id),
+    };
   }, [areasText, fullAddress, budget, room, rooms, blocks, tours]);
 
   const reset = () => {
-    setName(""); setPhone(""); setEmail("");
-    setAreasText(""); setFullAddress("");
-    setBudget(""); setMoveIn(todayIso());
-    setType(""); setRoom(""); setNeed(""); setSpecialReqs("");
-    setInBLR(null); setQuality(null); setZoneBucket("");
-    setAssigneeId(""); setStage(STAGES[0]); setNotes("");
+    setName("");
+    setPhone("");
+    setEmail("");
+    setAreasText("");
+    setFullAddress("");
+    setBudget("");
+    setMoveIn(todayIso());
+    setType("");
+    setRoom("");
+    setNeed("");
+    setSpecialReqs("");
+    setInBLR(null);
+    setQuality(null);
+    setZoneBucket("");
+    setAssigneeId("");
+    setStage(STAGES[0]);
+    setNotes("");
     setLastParsed(null);
     setTimeout(() => nameRef.current?.focus(), 30);
   };
@@ -125,7 +163,12 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
     email: source?.email || email,
     location: source?.location || areasText,
     area: source?.areas?.length ? source.areas.join(", ") : source?.location || areasText,
-    areas: source?.areas?.length ? source.areas : areasText.split(",").map((a) => a.trim()).filter(Boolean),
+    areas: source?.areas?.length
+      ? source.areas
+      : areasText
+          .split(",")
+          .map((a) => a.trim())
+          .filter(Boolean),
     fullAddress: source?.fullAddress || fullAddress,
     budget: source?.budget || budget,
     moveInDate: source?.moveIn || moveIn,
@@ -134,19 +177,31 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
     need: source?.need || need,
     specialReqs: source?.specialReqs || specialReqs,
     extraContent: source?.extraContent || notes || specialReqs,
-    links: source?.links ?? (fullAddress.match(/https?:\/\/\S+/g) ?? []),
+    links: source?.links ?? fullAddress.match(/https?:\/\/\S+/g) ?? [],
     geoIntel: source?.geoIntel,
     rawSource: source?.rawSource,
   });
 
-  const scheduleExisting = (lead: ReturnType<typeof checkDup>["candidates"][number]["lead"], parsedOverride?: ParsedLeadDraft | null) => {
+  const scheduleExisting = (
+    lead: ReturnType<typeof checkDup>["candidates"][number]["lead"],
+    parsedOverride?: ParsedLeadDraft | null,
+  ) => {
     onClose();
-    navigate("/myt/schedule", { state: { lead, pastedLead: buildScheduleLead(parsedOverride ?? lastParsed), inventoryFit: areaFit?.fits[0] } });
+    navigate("/myt/schedule", {
+      state: {
+        lead,
+        pastedLead: buildScheduleLead(parsedOverride ?? lastParsed),
+        inventoryFit: areaFit?.fits[0],
+      },
+    });
     toast.info(`Scheduling tour for ${lead.name}`);
   };
 
   const scheduleDraft = () => {
-    if (!name.trim() || !phone.trim()) { toast.error("Need name and phone before scheduling"); return; }
+    if (!name.trim() || !phone.trim()) {
+      toast.error("Need name and phone before scheduling");
+      return;
+    }
     const dup = checkDup({ name, phone, email, location: areasText });
     const existing = dup.candidates[0]?.lead;
     if (existing && (dup.type === "exact" || dup.type === "strong")) {
@@ -177,7 +232,10 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
       });
       return;
     }
-    const areasArr = areasText.split(",").map((a) => a.trim()).filter(Boolean);
+    const areasArr = areasText
+      .split(",")
+      .map((a) => a.trim())
+      .filter(Boolean);
     const assignee = teamMembers.find((m) => m.id === assigneeId);
     const lead = create(
       {
@@ -189,7 +247,9 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
         fullAddress: fullAddress.trim(),
         budget: budget.trim(),
         moveIn,
-        type, room, need,
+        type,
+        room,
+        need,
         specialReqs: [specialReqs, notes].filter(Boolean).join(" · "),
         extraContent: notes.trim(),
         budgets: budget.split(/\s*(?:,|\/|\bor\b)\s*/i).filter(Boolean),
@@ -207,7 +267,8 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
       },
     );
     toast.success(`Lead saved · ${lead.name}`);
-    if (keepOpen) reset(); else onClose();
+    if (keepOpen) reset();
+    else onClose();
   };
 
   // Paste WhatsApp message into ANY input → auto-fill everything we can
@@ -231,7 +292,12 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
     if (parsed.need) setNeed(parsed.need.split(" / ")[0] ?? parsed.need);
     if (parsed.specialReqs) setSpecialReqs(parsed.specialReqs);
     if (parsed.inBLR !== null) setInBLR(parsed.inBLR);
-    const dup = checkDup({ name: parsed.name, phone: parsed.phone, email: parsed.email, location: parsed.areas?.join(", ") || parsed.location });
+    const dup = checkDup({
+      name: parsed.name,
+      phone: parsed.phone,
+      email: parsed.email,
+      location: parsed.areas?.join(", ") || parsed.location,
+    });
     const existing = dup.candidates[0]?.lead;
     if (existing && (dup.type === "exact" || dup.type === "strong")) {
       toast.warning(`Existing lead found: ${existing.name}`, {
@@ -248,7 +314,10 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
         side="right"
         className="w-full sm:max-w-lg flex flex-col p-0"
         onKeyDown={(e) => {
-          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save(false); }
+          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+            e.preventDefault();
+            save(false);
+          }
         }}
       >
         <SheetHeader className="px-5 pt-5">
@@ -266,23 +335,44 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
             <div className="rounded-md border border-primary/25 bg-primary/5 p-3 space-y-2">
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Area Inventory Fit</div>
-          <div className="text-sm font-semibold text-foreground">{areaFit.zone.area} · {areaFit.fits[0]?.availableBeds ?? 0} Supply Hub beds live</div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                    Area Inventory Fit
+                  </div>
+                  <div className="text-sm font-semibold text-foreground">
+                    {areaFit.zone.area} · {areaFit.fits[0]?.availableBeds ?? 0} Supply Hub beds live
+                  </div>
                 </div>
-                <Button type="button" size="sm" variant="secondary" className="h-7 text-[11px]" onClick={scheduleDraft} disabled={!areaFit.fits[0]}>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  className="h-7 text-[11px]"
+                  onClick={scheduleDraft}
+                  disabled={!areaFit.fits[0]}
+                >
                   <CalendarPlus className="h-3 w-3 mr-1" /> Best Tour
                 </Button>
               </div>
               <div className="grid gap-1.5">
                 {areaFit.fits.slice(0, 2).map((fit, i) => (
-                  <div key={fit.propertyId} className="rounded border border-border bg-background/70 px-2 py-1.5 text-[11px] flex items-center justify-between gap-2">
-                    <span className="font-medium truncate">{i === 0 ? 'Best' : 'Normal'} · {fit.propertyName}</span>
-                    <span className="text-muted-foreground shrink-0">{fit.availableBeds} beds · {fit.distanceKm !== null ? `${fit.distanceKm} km` : fit.area} · ₹{(fit.basePrice / 1000).toFixed(0)}k · {fit.score}</span>
+                  <div
+                    key={fit.propertyId}
+                    className="rounded border border-border bg-background/70 px-2 py-1.5 text-[11px] flex items-center justify-between gap-2"
+                  >
+                    <span className="font-medium truncate">
+                      {i === 0 ? "Best" : "Normal"} · {fit.propertyName}
+                    </span>
+                    <span className="text-muted-foreground shrink-0">
+                      {fit.availableBeds} beds ·{" "}
+                      {fit.distanceKm !== null ? `${fit.distanceKm} km` : fit.area} · ₹
+                      {(fit.basePrice / 1000).toFixed(0)}k · {fit.score}
+                    </span>
                   </div>
                 ))}
               </div>
               <div className="text-[10px] text-muted-foreground">
-                Flow Ops: {areaFit.flowOps?.name ?? 'Auto'} · TCM: {areaFit.tcm?.name ?? 'Auto'} · {areaFit.fits[0]?.reason ?? 'No matching inventory yet'}
+                Flow Ops: {areaFit.flowOps?.name ?? "Auto"} · TCM: {areaFit.tcm?.name ?? "Auto"} ·{" "}
+                {areaFit.fits[0]?.reason ?? "No matching inventory yet"}
               </div>
             </div>
           )}
@@ -290,15 +380,30 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
           {/* Name + Phone */}
           <div className="grid grid-cols-2 gap-2">
             <Field label="👤 Name *">
-              <Input ref={nameRef} value={name} onChange={(e) => setName(e.target.value)} placeholder="Rahul Sharma" />
+              <Input
+                ref={nameRef}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Rahul Sharma"
+              />
             </Field>
             <Field label="📱 Phone *">
-              <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="98xxxxxxxx" inputMode="tel" />
+              <Input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="98xxxxxxxx"
+                inputMode="tel"
+              />
             </Field>
           </div>
 
           <Field label="✉️ Email">
-            <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" inputMode="email" />
+            <Input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@example.com"
+              inputMode="email"
+            />
           </Field>
 
           {/* Areas */}
@@ -310,7 +415,10 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
                 placeholder="HSR Layout, BTM, Koramangala"
               />
               {detectedZone && (
-                <Badge variant="secondary" className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px]">
+                <Badge
+                  variant="secondary"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px]"
+                >
                   {detectedZone}
                 </Badge>
               )}
@@ -336,7 +444,11 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
           {/* Budget + Move-in */}
           <div className="grid grid-cols-2 gap-2">
             <Field label="💰 Budget">
-              <Input value={budget} onChange={(e) => setBudget(e.target.value)} placeholder="8-12k" />
+              <Input
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                placeholder="8-12k"
+              />
             </Field>
             <Field label="📅 Move-in">
               <Input type="date" value={moveIn} onChange={(e) => setMoveIn(e.target.value)} />
@@ -379,7 +491,9 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
             <ChipGroup
               options={QUALITY_OPTS.map((o) => o.label)}
               value={QUALITY_OPTS.find((o) => o.v === quality)?.label ?? ""}
-              onChange={(label) => setQuality(QUALITY_OPTS.find((o) => o.label === label)?.v ?? null)}
+              onChange={(label) =>
+                setQuality(QUALITY_OPTS.find((o) => o.label === label)?.v ?? null)
+              }
             />
           </Field>
 
@@ -391,7 +505,11 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
               className="w-full h-9 bg-background border border-border rounded-md px-2 text-xs"
             >
               <option value="">Select zone bucket…</option>
-              {ZONE_BUCKETS.map((z) => <option key={z} value={z}>{z}</option>)}
+              {ZONE_BUCKETS.map((z) => (
+                <option key={z} value={z}>
+                  {z}
+                </option>
+              ))}
             </select>
           </Field>
 
@@ -403,7 +521,11 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
               className="w-full h-9 bg-background border border-border rounded-md px-2 text-xs"
             >
               <option value="">Unassigned</option>
-              {teamMembers.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
+              {teamMembers.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))}
             </select>
           </Field>
 
@@ -414,7 +536,11 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
               onChange={(e) => setStage(e.target.value)}
               className="w-full h-9 bg-background border border-border rounded-md px-2 text-xs"
             >
-              {STAGES.map((s) => <option key={s} value={s}>{s}</option>)}
+              {STAGES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
             </select>
           </Field>
 
@@ -432,7 +558,12 @@ export function QuickAddLeadPanel({ open, onClose }: Props) {
 
         <div className="border-t border-border px-5 py-3 flex flex-col gap-2 bg-background">
           <div className="flex gap-2">
-            <Button onClick={() => save(true)} variant="outline" size="sm" className="flex-1 gap-1.5">
+            <Button
+              onClick={() => save(true)}
+              variant="outline"
+              size="sm"
+              className="flex-1 gap-1.5"
+            >
               <Repeat2 className="h-3.5 w-3.5" /> Save + Next
             </Button>
             <Button onClick={() => save(false)} size="sm" className="flex-1 gap-1.5">
@@ -473,8 +604,14 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function ChipGroup({ options, value, onChange }: {
-  options: readonly string[]; value: string; onChange: (v: string) => void;
+function ChipGroup({
+  options,
+  value,
+  onChange,
+}: {
+  options: readonly string[];
+  value: string;
+  onChange: (v: string) => void;
 }) {
   return (
     <div className="flex flex-wrap gap-1">

@@ -128,7 +128,10 @@ export default function TCMReportPage() {
 
   return (
     <div className="space-y-4 max-w-3xl mx-auto">
-      <Link to={`/myt/tour/${tour.id}`} className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+      <Link
+        to={`/myt/tour/${tour.id}`}
+        className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+      >
         <ArrowLeft className="h-4 w-4" /> Back to tour
       </Link>
 
@@ -136,7 +139,8 @@ export default function TCMReportPage() {
         <CardHeader>
           <CardTitle>TCM Intelligence Form — {tour.leadName}</CardTitle>
           <p className="text-xs text-muted-foreground">
-            Forced closure: you can't move on until every required field is filled. Your input is matched against the customer feedback to detect mismatches.
+            Forced closure: you can't move on until every required field is filled. Your input is
+            matched against the customer feedback to detect mismatches.
           </p>
         </CardHeader>
         <CardContent className="space-y-5">
@@ -216,7 +220,9 @@ export default function TCMReportPage() {
               >
                 <option value="">Select…</option>
                 {settings.customObjections.map((o) => (
-                  <option key={o} value={o}>{o}</option>
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
                 ))}
               </select>
             </div>

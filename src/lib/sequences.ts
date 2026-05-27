@@ -22,32 +22,72 @@ export const SEQUENCES: Record<SequenceKind, { name: string; steps: SequenceStep
   "first-contact": {
     name: "First contact",
     steps: [
-      { offsetHrs: 0, label: "Hi", template: "Hi! I'm from Gharpayy. Saw your enquiry. When are you planning to move?" },
-      { offsetHrs: 4, label: "Nudge", template: "Just checking in — happy to share photos and pricing for your area." },
-      { offsetHrs: 24, label: "Last try", template: "One last note — these properties move fast. Should I hold a slot for you?" },
+      {
+        offsetHrs: 0,
+        label: "Hi",
+        template: "Hi! I'm from Gharpayy. Saw your enquiry. When are you planning to move?",
+      },
+      {
+        offsetHrs: 4,
+        label: "Nudge",
+        template: "Just checking in — happy to share photos and pricing for your area.",
+      },
+      {
+        offsetHrs: 24,
+        label: "Last try",
+        template: "One last note — these properties move fast. Should I hold a slot for you?",
+      },
     ],
   },
   "post-tour": {
     name: "Post-tour",
     steps: [
-      { offsetHrs: 1, label: "Check-in", template: "Hi! How did you find the property? Anything I can clarify?" },
-      { offsetHrs: 24, label: "T+1", template: "Following up on yesterday's tour — any questions before you decide?" },
-      { offsetHrs: 48, label: "Scarcity", template: "Heads-up: only 2 beds left at this rate. Want me to hold one?" },
-      { offsetHrs: 72, label: "Last call", template: "Closing the file in 24h unless we hear back. Still interested?" },
+      {
+        offsetHrs: 1,
+        label: "Check-in",
+        template: "Hi! How did you find the property? Anything I can clarify?",
+      },
+      {
+        offsetHrs: 24,
+        label: "T+1",
+        template: "Following up on yesterday's tour — any questions before you decide?",
+      },
+      {
+        offsetHrs: 48,
+        label: "Scarcity",
+        template: "Heads-up: only 2 beds left at this rate. Want me to hold one?",
+      },
+      {
+        offsetHrs: 72,
+        label: "Last call",
+        template: "Closing the file in 24h unless we hear back. Still interested?",
+      },
     ],
   },
   "pre-decision": {
     name: "Pre-decision",
     steps: [
       { offsetHrs: 0, label: "Soft", template: "Hi! Decision day soon — anything blocking you?" },
-      { offsetHrs: 12, label: "Help", template: "Happy to set up a call with the property manager if it helps." },
+      {
+        offsetHrs: 12,
+        label: "Help",
+        template: "Happy to set up a call with the property manager if it helps.",
+      },
     ],
   },
   "cold-revival": {
     name: "Cold revival",
     steps: [
-      { offsetHrs: 0, label: "Wake", template: "Hi! New inventory just landed in your area. Want to see it?" },
-      { offsetHrs: 48, label: "Drop", template: "Limited-time: ₹1k off this week if you book by Sunday." },
+      {
+        offsetHrs: 0,
+        label: "Wake",
+        template: "Hi! New inventory just landed in your area. Want to see it?",
+      },
+      {
+        offsetHrs: 48,
+        label: "Drop",
+        template: "Limited-time: ₹1k off this week if you book by Sunday.",
+      },
     ],
   },
 };

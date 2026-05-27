@@ -16,26 +16,26 @@ export type MatchType = "exact" | "strong" | "possible" | "new";
 export type LeadQuality = "hot" | "good" | "bad" | null;
 
 export interface UnifiedLead {
-  ulid: string;                 // Universal Lead ID
+  ulid: string; // Universal Lead ID
   name: string;
-  phoneE164: string;            // normalized: +91XXXXXXXXXX
+  phoneE164: string; // normalized: +91XXXXXXXXXX
   phoneRaw: string;
   email: string;
   emailNorm: string;
   area: string;
-  areas?: string[];             // multi-area tokens (HSR, BTM, …)
-  fullAddress?: string;         // long-form address / map link
-  zone: string;                 // South / East / North / West / Central / "" or categorical bucket
-  zoneCategory?: string;        // editor-chosen bucket (e.g. "KORA CORE")
-  quality?: LeadQuality;        // hot / good / bad
-  stage?: string;               // Lead stage label (MYT [TENANT], etc.)
+  areas?: string[]; // multi-area tokens (HSR, BTM, …)
+  fullAddress?: string; // long-form address / map link
+  zone: string; // South / East / North / West / Central / "" or categorical bucket
+  zoneCategory?: string; // editor-chosen bucket (e.g. "KORA CORE")
+  quality?: LeadQuality; // hot / good / bad
+  stage?: string; // Lead stage label (MYT [TENANT], etc.)
   assigneeId?: string | null;
   assigneeName?: string | null;
   budget: number;
   moveInDate: string;
-  type: string;                 // Student / Working / etc
-  room: string;                 // Private / Shared / Both
-  need: string;                 // Boys / Girls / Coed
+  type: string; // Student / Working / etc
+  room: string; // Private / Shared / Both
+  need: string; // Boys / Girls / Coed
   inBLR: boolean | null;
   notes: string;
   extraContent?: string;
@@ -49,7 +49,7 @@ export interface UnifiedLead {
   createdAt: string;
   updatedAt: string;
   lastActivityAt: string;
-  rawSource?: string;           // original pasted text
+  rawSource?: string; // original pasted text
 }
 
 export interface OwnershipHistoryEntry {
@@ -105,8 +105,8 @@ export interface ActivityEntry {
 
 export interface MatchCandidate {
   lead: UnifiedLead;
-  score: number;       // 0-100
-  reasons: string[];   // "phone exact", "name 0.92", ...
+  score: number; // 0-100
+  reasons: string[]; // "phone exact", "name 0.92", ...
 }
 
 export interface MatchResult {
@@ -124,8 +124,8 @@ export interface ParsedLeadDraft {
   areas: string[];
   /** Full address / map link / long-form location string when present. */
   fullAddress: string;
-  budget: string;        // raw budget text
-  moveIn: string;        // raw move-in text
+  budget: string; // raw budget text
+  moveIn: string; // raw move-in text
   type: string;
   room: string;
   need: string;

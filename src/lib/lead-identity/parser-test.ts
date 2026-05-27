@@ -15,25 +15,42 @@ function parseCsv(text: string): Record<string, string>[] {
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
     if (inQuotes) {
-      if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
-      else if (c === '"') inQuotes = false;
+      if (c === '"' && text[i + 1] === '"') {
+        field += '"';
+        i++;
+      } else if (c === '"') inQuotes = false;
       else field += c;
     } else {
       if (c === '"') inQuotes = true;
-      else if (c === ",") { cur.push(field); field = ""; }
-      else if (c === "\n") { cur.push(field); rows.push(cur); cur = []; field = ""; }
-      else if (c === "\r") { /* skip */ }
-      else field += c;
+      else if (c === ",") {
+        cur.push(field);
+        field = "";
+      } else if (c === "\n") {
+        cur.push(field);
+        rows.push(cur);
+        cur = [];
+        field = "";
+      } else if (c === "\r") {
+        /* skip */
+      } else field += c;
     }
   }
-  if (field.length || cur.length) { cur.push(field); rows.push(cur); }
+  if (field.length || cur.length) {
+    cur.push(field);
+    rows.push(cur);
+  }
   if (rows.length === 0) return [];
   const headers = rows[0];
-  return rows.slice(1).filter((r) => r.length > 1).map((r) => {
-    const o: Record<string, string> = {};
-    headers.forEach((h, i) => { o[h.trim()] = r[i] ?? ""; });
-    return o;
-  });
+  return rows
+    .slice(1)
+    .filter((r) => r.length > 1)
+    .map((r) => {
+      const o: Record<string, string> = {};
+      headers.forEach((h, i) => {
+        o[h.trim()] = r[i] ?? "";
+      });
+      return o;
+    });
 }
 import type { ParsedLeadDraft } from "./types";
 
@@ -48,19 +65,22 @@ export interface ParserTestRowResult {
 
 export interface ParserTestReport {
   total: number;
-  parsed: number;       // production-ready
-  usable: number;       // at least one channel
+  parsed: number; // production-ready
+  usable: number; // at least one channel
   failed: number;
   missing: { phone: number; location: number; budget: number; name: number; email: number };
   zoneAccuracy: number; // % of rows where detected zone matched location text
-  zoneSample: number;   // rows where a zone could be evaluated
+  zoneSample: number; // rows where a zone could be evaluated
   rows: ParserTestRowResult[];
   durationMs: number;
 }
 
 const REQUIRED_FOR_PARSED = ["name", "phone"] as const;
 
-function classify(p: ParsedLeadDraft | null): { status: ParserTestRowResult["status"]; missing: string[] } {
+function classify(p: ParsedLeadDraft | null): {
+  status: ParserTestRowResult["status"];
+  missing: string[];
+} {
   if (!p) return { status: "failed", missing: ["name", "phone", "location", "budget"] };
   const missing: string[] = [];
   if (!p.name) missing.push("name");
@@ -81,8 +101,11 @@ export function runParserSuite(rawSamples: string[]): ParserTestReport {
   const t0 = performance.now();
   const rows: ParserTestRowResult[] = [];
   const missing = { phone: 0, location: 0, budget: 0, name: 0, email: 0 };
-  let parsed = 0, usable = 0, failed = 0;
-  let zoneHits = 0, zoneSample = 0;
+  let parsed = 0,
+    usable = 0,
+    failed = 0;
+  let zoneHits = 0,
+    zoneSample = 0;
 
   rawSamples.forEach((raw, i) => {
     const p = parseLead(raw);
@@ -90,7 +113,9 @@ export function runParserSuite(rawSamples: string[]): ParserTestReport {
     if (status === "parsed") parsed++;
     else if (status === "usable") usable++;
     else failed++;
-    miss.forEach((m) => { if (m in missing) (missing as Record<string, number>)[m]++; });
+    miss.forEach((m) => {
+      if (m in missing) (missing as Record<string, number>)[m]++;
+    });
 
     if (p && p.location) {
       zoneSample++;
@@ -111,7 +136,9 @@ export function runParserSuite(rawSamples: string[]): ParserTestReport {
 
   return {
     total: rawSamples.length,
-    parsed, usable, failed,
+    parsed,
+    usable,
+    failed,
     missing,
     zoneAccuracy: zoneSample === 0 ? 0 : Math.round((zoneHits / zoneSample) * 1000) / 10,
     zoneSample,

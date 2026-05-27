@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { glueBus, type GlueEvent } from './event-bus';
+import { useEffect, useState } from "react";
+import { glueBus, type GlueEvent } from "./event-bus";
 
 export function useGlueEvents(filter?: (e: GlueEvent) => boolean, limit = 50) {
   const [events, setEvents] = useState<GlueEvent[]>([]);

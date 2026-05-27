@@ -1,0 +1,11 @@
+# Auto-convert line endings to LF on all text files
+* text=auto eol=lf
+
+# Explicitly handle common source types
+*.ts   text eol=lf
+*.tsx  text eol=lf
+*.js   text eol=lf
+*.jsx  text eol=lf
+*.json text eol=lf
+*.css  text eol=lf
+*.md   text eol=lf

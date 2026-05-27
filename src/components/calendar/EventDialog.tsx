@@ -20,10 +20,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ExternalLink, Trash2, Calendar as CalendarIcon } from "lucide-react";
 import { useCalendar, KIND_META, type CalEvent, type CalEventKind } from "@/lib/calendar-store";
-import {
-  googleCalendarTemplateUrl,
-  outlookCalendarTemplateUrl,
-} from "@/lib/calendar-sync";
+import { googleCalendarTemplateUrl, outlookCalendarTemplateUrl } from "@/lib/calendar-sync";
 import { fromLocalInput, toLocalInput } from "./CalendarUtils";
 import { toast } from "sonner";
 
@@ -196,7 +193,11 @@ export function EventDialog({ open, onOpenChange, eventId, defaultStart }: Props
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Start</Label>
-              <Input type="datetime-local" value={start} onChange={(e) => setStart(e.target.value)} />
+              <Input
+                type="datetime-local"
+                value={start}
+                onChange={(e) => setStart(e.target.value)}
+              />
             </div>
             <div>
               <Label>End</Label>

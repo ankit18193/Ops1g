@@ -21,7 +21,10 @@ function leadCoords(area: string): { lat: number; lng: number } | null {
   if (!n) return null;
   // Most specific first — landmarks
   const lm = LANDMARKS.find(
-    (l) => l.lat && l.lng && (l.n.toLowerCase().includes(n) || n.includes(l.n.toLowerCase().split(" ")[0])),
+    (l) =>
+      l.lat &&
+      l.lng &&
+      (l.n.toLowerCase().includes(n) || n.includes(l.n.toLowerCase().split(" ")[0])),
   );
   if (lm && lm.lat && lm.lng) return { lat: lm.lat, lng: lm.lng };
   // Fall back to area centroid
@@ -48,8 +51,8 @@ export interface MatchResult {
   total: number; // 0-100
   parts: { label: string; pts: number; max: number; reason: string }[];
   commuteKm: number | null;
-  bedPrice: number | null;        // actual price for the requested occupancy (null = not offered)
-  bedLabel: string;               // "Double @ ₹15k" or "Single only"
+  bedPrice: number | null; // actual price for the requested occupancy (null = not offered)
+  bedLabel: string; // "Double @ ₹15k" or "Single only"
   reasoning: string;
   disqualified?: string;
 }
@@ -59,19 +62,35 @@ const norm = (s: string) => (s || "").toLowerCase().trim();
 function leadToPGDistance(leadArea: string, pg: PG): number | null {
   const coords = leadCoords(leadArea);
   if (coords && pg.lat && pg.lng) return hav(coords.lat, coords.lng, pg.lat, pg.lng);
-  const f = Object.keys(DISTANCE).find((k) => norm(k) === norm(leadArea) || norm(leadArea).includes(norm(k)));
+  const f = Object.keys(DISTANCE).find(
+    (k) => norm(k) === norm(leadArea) || norm(leadArea).includes(norm(k)),
+  );
   if (!f) return null;
   const row = DISTANCE[f];
-  const t = Object.keys(row).find((k) => norm(k) === norm(pg.area) || norm(pg.area).includes(norm(k)));
+  const t = Object.keys(row).find(
+    (k) => norm(k) === norm(pg.area) || norm(pg.area).includes(norm(k)),
+  );
   return t ? row[t] : null;
 }
 
 // Pick the actual price for what the lead asked for. NEVER fabricate.
 function pickBedPrice(pg: PG, occ: Lead["occupancy"]): { price: number | null; label: string } {
   const p = pg.prices;
-  if (occ === "Single") return { price: p.single || null, label: p.single ? `Single ₹${(p.single / 1000).toFixed(0)}k` : "No single" };
-  if (occ === "Double") return { price: p.double || null, label: p.double ? `Double ₹${(p.double / 1000).toFixed(0)}k` : "No double" };
-  if (occ === "Triple") return { price: p.triple || null, label: p.triple ? `Triple ₹${(p.triple / 1000).toFixed(0)}k` : "No triple" };
+  if (occ === "Single")
+    return {
+      price: p.single || null,
+      label: p.single ? `Single ₹${(p.single / 1000).toFixed(0)}k` : "No single",
+    };
+  if (occ === "Double")
+    return {
+      price: p.double || null,
+      label: p.double ? `Double ₹${(p.double / 1000).toFixed(0)}k` : "No double",
+    };
+  if (occ === "Triple")
+    return {
+      price: p.triple || null,
+      label: p.triple ? `Triple ₹${(p.triple / 1000).toFixed(0)}k` : "No triple",
+    };
   // Any → cheapest available
   const candidates = [p.triple, p.double, p.single].filter((v) => v > 0);
   if (!candidates.length) return { price: null, label: "Pricing not disclosed" };
@@ -96,16 +115,28 @@ export function matchLead(lead: Lead): MatchResult[] {
     if (pgArea && (wantArea === pgArea || wantArea.includes(pgArea) || pgArea.includes(wantArea))) {
       areaPts = 35;
       areaReason = `Exact area: ${pg.area}`;
-    } else if (norm(pg.locality).includes(wantArea) || pg.landmarksInline.some((l) => norm(l).includes(wantArea))) {
+    } else if (
+      norm(pg.locality).includes(wantArea) ||
+      pg.landmarksInline.some((l) => norm(l).includes(wantArea))
+    ) {
       areaPts = 28;
       areaReason = `Mentions "${lead.area}" in locality/landmarks`;
     } else {
       const d = leadToPGDistance(lead.area, pg);
       if (d !== null) {
-        if (d <= 5) { areaPts = 24; areaReason = `${d} km away`; }
-        else if (d <= 10) { areaPts = 16; areaReason = `${d} km — nearby`; }
-        else if (d <= 15) { areaPts = 8; areaReason = `${d} km — commutable`; }
-        else { areaPts = 2; areaReason = `${d} km — far`; }
+        if (d <= 5) {
+          areaPts = 24;
+          areaReason = `${d} km away`;
+        } else if (d <= 10) {
+          areaPts = 16;
+          areaReason = `${d} km — nearby`;
+        } else if (d <= 15) {
+          areaPts = 8;
+          areaReason = `${d} km — commutable`;
+        } else {
+          areaPts = 2;
+          areaReason = `${d} km — far`;
+        }
       }
     }
     parts.push({ label: "Area", pts: areaPts, max: 35, reason: areaReason });
@@ -114,10 +145,18 @@ export function matchLead(lead: Lead): MatchResult[] {
     // 2) Gender — 20 (HARD)
     let genderPts = 0;
     let genderReason = "";
-    if (lead.gender === "Any") { genderPts = 12; genderReason = "Lead open to any gender PG"; }
-    else if (pg.gender === lead.gender) { genderPts = 20; genderReason = `Exact: ${pg.gender}`; }
-    else if (pg.gender === "Co-live") { genderPts = 14; genderReason = "Co-live accepts both"; }
-    else { dq = `Gender mismatch — lead ${lead.gender}, PG ${pg.gender}`; }
+    if (lead.gender === "Any") {
+      genderPts = 12;
+      genderReason = "Lead open to any gender PG";
+    } else if (pg.gender === lead.gender) {
+      genderPts = 20;
+      genderReason = `Exact: ${pg.gender}`;
+    } else if (pg.gender === "Co-live") {
+      genderPts = 14;
+      genderReason = "Co-live accepts both";
+    } else {
+      dq = `Gender mismatch — lead ${lead.gender}, PG ${pg.gender}`;
+    }
     parts.push({ label: "Gender", pts: genderPts, max: 20, reason: genderReason || dq! });
     total += genderPts;
 
@@ -153,11 +192,22 @@ export function matchLead(lead: Lead): MatchResult[] {
     const aud = norm(pg.audience);
     let audPts = 0;
     let audReason = "Audience open";
-    if (lead.audience === "Both" || !lead.audience) { audPts = 6; audReason = "Open to all"; }
-    else if (aud.includes("both")) { audPts = 9; audReason = "Both students & professionals"; }
-    else if (lead.audience === "Working" && aud.includes("professional")) { audPts = 10; audReason = "Working professional PG"; }
-    else if (lead.audience === "Student" && aud.includes("student")) { audPts = 10; audReason = "Student PG"; }
-    else { audPts = 3; audReason = `Skews ${pg.audience || "mixed"}`; }
+    if (lead.audience === "Both" || !lead.audience) {
+      audPts = 6;
+      audReason = "Open to all";
+    } else if (aud.includes("both")) {
+      audPts = 9;
+      audReason = "Both students & professionals";
+    } else if (lead.audience === "Working" && aud.includes("professional")) {
+      audPts = 10;
+      audReason = "Working professional PG";
+    } else if (lead.audience === "Student" && aud.includes("student")) {
+      audPts = 10;
+      audReason = "Student PG";
+    } else {
+      audPts = 3;
+      audReason = `Skews ${pg.audience || "mixed"}`;
+    }
     parts.push({ label: "Audience", pts: audPts, max: 10, reason: audReason });
     total += audPts;
 
@@ -170,11 +220,20 @@ export function matchLead(lead: Lead): MatchResult[] {
 
     const reasoning = dq
       ? `DISQUALIFIED — ${dq}`
-      : parts.filter((p) => p.pts >= p.max * 0.7).map((p) => p.reason).join(" · ");
+      : parts
+          .filter((p) => p.pts >= p.max * 0.7)
+          .map((p) => p.reason)
+          .join(" · ");
 
     results.push({
-      pg, total: dq ? 0 : total, parts, commuteKm, bedPrice, bedLabel,
-      reasoning, disqualified: dq,
+      pg,
+      total: dq ? 0 : total,
+      parts,
+      commuteKm,
+      bedPrice,
+      bedLabel,
+      reasoning,
+      disqualified: dq,
     });
   }
 
@@ -183,9 +242,13 @@ export function matchLead(lead: Lead): MatchResult[] {
 }
 
 export function rating(score: number): { label: string; color: string; action: string } {
-  if (score >= 90) return { label: "PERFECT", color: "text-emerald-400", action: "Send WA card immediately" };
-  if (score >= 75) return { label: "STRONG", color: "text-cyan-400", action: "Call within 30 minutes" };
-  if (score >= 55) return { label: "DECENT", color: "text-amber-400", action: "Pitch with explanation" };
-  if (score >= 35) return { label: "WEAK", color: "text-orange-400", action: "Only if nothing better" };
+  if (score >= 90)
+    return { label: "PERFECT", color: "text-emerald-400", action: "Send WA card immediately" };
+  if (score >= 75)
+    return { label: "STRONG", color: "text-cyan-400", action: "Call within 30 minutes" };
+  if (score >= 55)
+    return { label: "DECENT", color: "text-amber-400", action: "Pitch with explanation" };
+  if (score >= 35)
+    return { label: "WEAK", color: "text-orange-400", action: "Only if nothing better" };
   return { label: "SKIP", color: "text-rose-400", action: "Don't pitch" };
 }

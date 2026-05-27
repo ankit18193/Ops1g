@@ -3,7 +3,12 @@
 // button) while AppShell uses <PipMain> to portal the main content into the
 // PIP window when active.
 import {
-  createContext, useCallback, useContext, useEffect, useRef, useState,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
@@ -54,97 +59,124 @@ export function PictureInPictureProvider({ children }: { children: ReactNode }) 
     });
   }, []);
 
-  const open = useCallback(async (nextMode: PipMode = "dashboard") => {
-    setMode(nextMode);
-    if (!supported) {
-      toast.error("Picture-in-Picture isn't supported here. Use Chrome, Edge, Brave or Opera on desktop.");
-      return;
-    }
-    try {
-      const w = await window.documentPictureInPicture!.requestWindow({
-        width: Math.min(nextMode === "dashboard" ? 720 : 460, window.innerWidth),
-        height: Math.min(nextMode === "capture" ? 680 : 760, window.innerHeight),
-      });
-
-      // Clone all stylesheets and inline styles so the dashboard inherits the
-      // exact same theme tokens, fonts, and Tailwind utilities.
-      const cloneStyles = () => {
-        // Drop everything currently in head except our own marker children
-        Array.from(w.document.head.querySelectorAll("link[data-pip],style[data-pip]")).forEach((n) => n.remove());
-
-        document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]').forEach((linkEl) => {
-          const clone = w.document.createElement("link");
-          clone.rel = "stylesheet";
-          clone.href = linkEl.href;
-          clone.dataset.pip = "1";
-          w.document.head.appendChild(clone);
+  const open = useCallback(
+    async (nextMode: PipMode = "dashboard") => {
+      setMode(nextMode);
+      if (!supported) {
+        toast.error(
+          "Picture-in-Picture isn't supported here. Use Chrome, Edge, Brave or Opera on desktop.",
+        );
+        return;
+      }
+      try {
+        const w = await window.documentPictureInPicture!.requestWindow({
+          width: Math.min(nextMode === "dashboard" ? 720 : 460, window.innerWidth),
+          height: Math.min(nextMode === "capture" ? 680 : 760, window.innerHeight),
         });
-        document.querySelectorAll<HTMLStyleElement>("style").forEach((styleEl) => {
-          const clone = w.document.createElement("style");
-          clone.textContent = styleEl.textContent;
-          clone.dataset.pip = "1";
-          w.document.head.appendChild(clone);
-        });
-      };
 
-      // Initial title + viewport
-      w.document.title = nextMode === "capture" ? "Gharpayy · Add Lead PiP" : nextMode === "manage" ? "Gharpayy · Manage Leads PiP" : "Gharpayy · Live PiP";
-      const meta = w.document.createElement("meta");
-      meta.name = "viewport";
-      meta.content = "width=device-width, initial-scale=1";
-      w.document.head.appendChild(meta);
-      cloneStyles();
+        // Clone all stylesheets and inline styles so the dashboard inherits the
+        // exact same theme tokens, fonts, and Tailwind utilities.
+        const cloneStyles = () => {
+          // Drop everything currently in head except our own marker children
+          Array.from(w.document.head.querySelectorAll("link[data-pip],style[data-pip]")).forEach(
+            (n) => n.remove(),
+          );
 
-      // Match host body theme
-      const hostBody = getComputedStyle(document.body);
-      w.document.body.style.margin = "0";
-      w.document.body.style.background = hostBody.backgroundColor || "#0a0a0a";
-      w.document.body.style.color = hostBody.color || "#fff";
-      w.document.body.style.fontFamily = hostBody.fontFamily;
-      const themeClass = document.documentElement.className;
-      if (themeClass) w.document.documentElement.className = themeClass;
-      w.document.documentElement.dataset.pipMode = nextMode;
-      w.document.body.dataset.pipMode = nextMode;
+          document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]').forEach((linkEl) => {
+            const clone = w.document.createElement("link");
+            clone.rel = "stylesheet";
+            clone.href = linkEl.href;
+            clone.dataset.pip = "1";
+            w.document.head.appendChild(clone);
+          });
+          document.querySelectorAll<HTMLStyleElement>("style").forEach((styleEl) => {
+            const clone = w.document.createElement("style");
+            clone.textContent = styleEl.textContent;
+            clone.dataset.pip = "1";
+            w.document.head.appendChild(clone);
+          });
+        };
 
-      // Restream new stylesheet additions (HMR / dynamic chunks)
-      moRef.current?.disconnect();
-      const mo = new MutationObserver(() => cloneStyles());
-      mo.observe(document.head, { childList: true, subtree: true });
-      moRef.current = mo;
+        // Initial title + viewport
+        w.document.title =
+          nextMode === "capture"
+            ? "Gharpayy · Add Lead PiP"
+            : nextMode === "manage"
+              ? "Gharpayy · Manage Leads PiP"
+              : "Gharpayy · Live PiP";
+        const meta = w.document.createElement("meta");
+        meta.name = "viewport";
+        meta.content = "width=device-width, initial-scale=1";
+        w.document.head.appendChild(meta);
+        cloneStyles();
 
-      // Relay keystrokes back to host so command palette / shortcuts still work
-      const onKey = (e: KeyboardEvent) => {
-        const evt = new KeyboardEvent("keydown", {
-          key: e.key, code: e.code,
-          ctrlKey: e.ctrlKey, metaKey: e.metaKey,
-          shiftKey: e.shiftKey, altKey: e.altKey, bubbles: true,
-        });
-        window.dispatchEvent(evt);
-      };
-      w.addEventListener("keydown", onKey);
+        // Match host body theme
+        const hostBody = getComputedStyle(document.body);
+        w.document.body.style.margin = "0";
+        w.document.body.style.background = hostBody.backgroundColor || "#0a0a0a";
+        w.document.body.style.color = hostBody.color || "#fff";
+        w.document.body.style.fontFamily = hostBody.fontFamily;
+        const themeClass = document.documentElement.className;
+        if (themeClass) w.document.documentElement.className = themeClass;
+        w.document.documentElement.dataset.pipMode = nextMode;
+        w.document.body.dataset.pipMode = nextMode;
 
-      const onClose = () => {
+        // Restream new stylesheet additions (HMR / dynamic chunks)
         moRef.current?.disconnect();
-        moRef.current = null;
-        w.removeEventListener("keydown", onKey);
-        setPipWindow((curr) => (curr === w ? null : curr));
-      };
-      w.addEventListener("pagehide", onClose);
+        const mo = new MutationObserver(() => cloneStyles());
+        mo.observe(document.head, { childList: true, subtree: true });
+        moRef.current = mo;
 
-      setPipWindow(w);
-      toast.success(nextMode === "capture" ? "Lead capture PiP opened." : nextMode === "manage" ? "Lead management PiP opened." : "Pop-out opened. Snap WhatsApp Web next to it.");
-    } catch (err) {
-      console.error("PIP request failed", err);
-      toast.error("Couldn't open Picture-in-Picture. Click the page first, then retry.");
-    }
-  }, [supported]);
+        // Relay keystrokes back to host so command palette / shortcuts still work
+        const onKey = (e: KeyboardEvent) => {
+          const evt = new KeyboardEvent("keydown", {
+            key: e.key,
+            code: e.code,
+            ctrlKey: e.ctrlKey,
+            metaKey: e.metaKey,
+            shiftKey: e.shiftKey,
+            altKey: e.altKey,
+            bubbles: true,
+          });
+          window.dispatchEvent(evt);
+        };
+        w.addEventListener("keydown", onKey);
 
-  useEffect(() => () => {
-    moRef.current?.disconnect();
-  }, []);
+        const onClose = () => {
+          moRef.current?.disconnect();
+          moRef.current = null;
+          w.removeEventListener("keydown", onKey);
+          setPipWindow((curr) => (curr === w ? null : curr));
+        };
+        w.addEventListener("pagehide", onClose);
+
+        setPipWindow(w);
+        toast.success(
+          nextMode === "capture"
+            ? "Lead capture PiP opened."
+            : nextMode === "manage"
+              ? "Lead management PiP opened."
+              : "Pop-out opened. Snap WhatsApp Web next to it.",
+        );
+      } catch (err) {
+        console.error("PIP request failed", err);
+        toast.error("Couldn't open Picture-in-Picture. Click the page first, then retry.");
+      }
+    },
+    [supported],
+  );
+
+  useEffect(
+    () => () => {
+      moRef.current?.disconnect();
+    },
+    [],
+  );
 
   return (
-    <PipContext.Provider value={{ pipWindow, mode, open, close, setMode, supported, active: !!pipWindow }}>
+    <PipContext.Provider
+      value={{ pipWindow, mode, open, close, setMode, supported, active: !!pipWindow }}
+    >
       {children}
     </PipContext.Provider>
   );
@@ -179,8 +211,10 @@ export function PipMount({ children }: { children: ReactNode }) {
   }, [pipWindow]);
 
   if (!pipWindow) return <>{children}</>;
-  if (mode === "capture") return createPortal(<LeadCapturePipPanel />, ensurePipMount(pipWindow, containerRef));
-  if (mode === "manage") return createPortal(<LeadManagePipPanel />, ensurePipMount(pipWindow, containerRef));
+  if (mode === "capture")
+    return createPortal(<LeadCapturePipPanel />, ensurePipMount(pipWindow, containerRef));
+  if (mode === "manage")
+    return createPortal(<LeadManagePipPanel />, ensurePipMount(pipWindow, containerRef));
   if (!containerRef.current) {
     const mount = pipWindow.document.createElement("div");
     mount.id = "pip-root";
@@ -191,7 +225,10 @@ export function PipMount({ children }: { children: ReactNode }) {
   return createPortal(children, containerRef.current);
 }
 
-function ensurePipMount(pipWindow: DocPipWindow, containerRef: React.MutableRefObject<HTMLDivElement | null>) {
+function ensurePipMount(
+  pipWindow: DocPipWindow,
+  containerRef: React.MutableRefObject<HTMLDivElement | null>,
+) {
   if (!containerRef.current) {
     const mount = pipWindow.document.createElement("div");
     mount.id = "pip-root";

@@ -11,7 +11,13 @@ import { useMountedNow } from "@/hooks/use-now";
 
 export const Route = createFileRoute("/follow-ups")({
   head: () => ({
-    meta: [{ title: "Follow-ups — Gharpayy" }, { name: "description", content: "Daily follow-up queue ranked by deal probability and urgency." }],
+    meta: [
+      { title: "Follow-ups — Gharpayy" },
+      {
+        name: "description",
+        content: "Daily follow-up queue ranked by deal probability and urgency.",
+      },
+    ],
   }),
   component: FollowUpsPage,
 });
@@ -27,9 +33,13 @@ function FollowUpsPage() {
       .filter((x) => x.lead);
   }, [followUps, leads]);
 
-  const overdue = enriched.filter((x) => isPast(new Date(x.f.dueAt)) && !isToday(new Date(x.f.dueAt)));
+  const overdue = enriched.filter(
+    (x) => isPast(new Date(x.f.dueAt)) && !isToday(new Date(x.f.dueAt)),
+  );
   const today = enriched.filter((x) => isToday(new Date(x.f.dueAt)));
-  const upcoming = enriched.filter((x) => !isPast(new Date(x.f.dueAt)) && !isToday(new Date(x.f.dueAt)));
+  const upcoming = enriched.filter(
+    (x) => !isPast(new Date(x.f.dueAt)) && !isToday(new Date(x.f.dueAt)),
+  );
   const hot = enriched.filter((x) => x.lead!.intent === "hot");
 
   return (
@@ -38,26 +48,41 @@ function FollowUpsPage() {
         <header>
           <h1 className="font-display text-2xl font-semibold tracking-tight">Follow-up queue</h1>
           <p className="text-sm text-muted-foreground">
-            {overdue.length} overdue · {today.length} today · {upcoming.length} upcoming · {hot.length} hot
+            {overdue.length} overdue · {today.length} today · {upcoming.length} upcoming ·{" "}
+            {hot.length} hot
           </p>
         </header>
 
         <Bucket
-          title="Overdue" tone="destructive" items={overdue}
+          title="Overdue"
+          tone="destructive"
+          items={overdue}
           mounted={mounted}
-          onDone={(id) => { completeFollowUp(id); toast.success("Follow-up marked done"); }}
+          onDone={(id) => {
+            completeFollowUp(id);
+            toast.success("Follow-up marked done");
+          }}
           onOpen={selectLead}
         />
         <Bucket
-          title="Today" tone="accent" items={today}
+          title="Today"
+          tone="accent"
+          items={today}
           mounted={mounted}
-          onDone={(id) => { completeFollowUp(id); toast.success("Follow-up marked done"); }}
+          onDone={(id) => {
+            completeFollowUp(id);
+            toast.success("Follow-up marked done");
+          }}
           onOpen={selectLead}
         />
         <Bucket
-          title="Upcoming" items={upcoming}
+          title="Upcoming"
+          items={upcoming}
           mounted={mounted}
-          onDone={(id) => { completeFollowUp(id); toast.success("Follow-up marked done"); }}
+          onDone={(id) => {
+            completeFollowUp(id);
+            toast.success("Follow-up marked done");
+          }}
           onOpen={selectLead}
         />
       </div>
@@ -66,7 +91,12 @@ function FollowUpsPage() {
 }
 
 function Bucket({
-  title, items, tone = "default", mounted, onDone, onOpen,
+  title,
+  items,
+  tone = "default",
+  mounted,
+  onDone,
+  onOpen,
 }: {
   title: string;
   items: { f: import("@/lib/types").FollowUp; lead?: import("@/lib/types").Lead }[];
@@ -88,15 +118,22 @@ function Bucket({
 
   return (
     <section>
-      <h2 className={`font-display text-sm font-semibold mb-2 ${titleCls}`}>{title} <span className="text-muted-foreground font-normal">({items.length})</span></h2>
+      <h2 className={`font-display text-sm font-semibold mb-2 ${titleCls}`}>
+        {title} <span className="text-muted-foreground font-normal">({items.length})</span>
+      </h2>
       {items.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border p-6 text-center text-xs text-muted-foreground">
           Nothing here.
         </div>
       ) : (
-        <div className={`rounded-xl border ${toneCls} bg-card overflow-hidden divide-y divide-border`}>
+        <div
+          className={`rounded-xl border ${toneCls} bg-card overflow-hidden divide-y divide-border`}
+        >
           {items.map(({ f, lead }) => (
-            <div key={f.id} className="grid grid-cols-12 px-4 py-3 items-center gap-2 hover:bg-accent/5 transition-colors">
+            <div
+              key={f.id}
+              className="grid grid-cols-12 px-4 py-3 items-center gap-2 hover:bg-accent/5 transition-colors"
+            >
               <button onClick={() => onOpen(lead!.id)} className="col-span-3 text-left">
                 <div className="font-medium text-sm">{lead!.name}</div>
                 <div className="text-[11px] text-muted-foreground">{lead!.phone}</div>
@@ -104,13 +141,25 @@ function Bucket({
               <div className="col-span-2 flex items-center gap-2">
                 <IntentChip intent={lead!.intent} />
               </div>
-              <div className="col-span-2"><ConfidenceBar value={lead!.confidence} /></div>
+              <div className="col-span-2">
+                <ConfidenceBar value={lead!.confidence} />
+              </div>
               <div className="col-span-3 text-xs">
                 <div>{f.reason}</div>
-                <div className="text-muted-foreground text-[11px]">{format(new Date(f.dueAt), "MMM d, p")} · {mounted ? formatDistanceToNow(new Date(f.dueAt), { addSuffix: true }) : "—"}</div>
+                <div className="text-muted-foreground text-[11px]">
+                  {format(new Date(f.dueAt), "MMM d, p")} ·{" "}
+                  {mounted ? formatDistanceToNow(new Date(f.dueAt), { addSuffix: true }) : "—"}
+                </div>
               </div>
               <div className="col-span-2 flex justify-end gap-1.5">
-                <Button size="sm" variant="outline" className="h-8" onClick={() => onOpen(lead!.id)}>Open</Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-8"
+                  onClick={() => onOpen(lead!.id)}
+                >
+                  Open
+                </Button>
                 <Button size="sm" className="h-8" onClick={() => onDone(f.id)}>
                   <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Done
                 </Button>

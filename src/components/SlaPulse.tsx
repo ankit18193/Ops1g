@@ -12,7 +12,12 @@ export function SlaPulse({ state, label }: { state: SlaState; label?: string }) 
     <span className="inline-flex items-center gap-1.5">
       <span className="relative flex h-2 w-2">
         {state !== "ok" && (
-          <span className={cn("absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping", cls)} />
+          <span
+            className={cn(
+              "absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping",
+              cls,
+            )}
+          />
         )}
         <span className={cn("relative inline-flex rounded-full h-2 w-2", cls)} />
       </span>

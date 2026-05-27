@@ -4,5 +4,9 @@ import MismatchConsole from "@/myt/pages/MismatchConsole";
 
 export const Route = createFileRoute("/myt/mismatch")({
   head: () => ({ meta: [{ title: "Mismatch Console — MYT" }] }),
-  component: () => <AppShell><MismatchConsole /></AppShell>,
+  component: () => (
+    <AppShell>
+      <MismatchConsole />
+    </AppShell>
+  ),
 });

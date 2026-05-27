@@ -2,7 +2,12 @@ import { useMemo, useState } from "react";
 import { Link, useParams } from "@/shims/react-router-dom";
 import { useAppState } from "@/myt/lib/app-context";
 import { useSettings, renderTemplate, type MessageTemplate } from "@/myt/lib/settings-context";
-import { useTourData, type TourEventKind, type TCMReport, type CustomerFeedback } from "@/myt/lib/tour-data-context";
+import {
+  useTourData,
+  type TourEventKind,
+  type TCMReport,
+  type CustomerFeedback,
+} from "@/myt/lib/tour-data-context";
 import { fmtWhen, genOtp, mapsLink, whatsappLink } from "@/myt/lib/messaging-utils";
 import { computeTourScore, detectMismatches } from "@/myt/lib/intelligence";
 import { Button } from "@/components/ui/button";
@@ -70,7 +75,10 @@ export default function TourCommand() {
   if (!tour) {
     return (
       <div className="p-6">
-        <Link to="/myt/tours" className="text-primary hover:underline inline-flex items-center gap-1">
+        <Link
+          to="/myt/tours"
+          className="text-primary hover:underline inline-flex items-center gap-1"
+        >
           <ArrowLeft className="h-4 w-4" /> Back to tours
         </Link>
         <p className="mt-4 text-muted-foreground">Tour not found.</p>
@@ -95,7 +103,9 @@ export default function TourCommand() {
     signature: settings.signatureLine,
   };
 
-  const activeTpl: MessageTemplate | undefined = settings.templates.find((t) => t.id === activeTplId);
+  const activeTpl: MessageTemplate | undefined = settings.templates.find(
+    (t) => t.id === activeTplId,
+  );
   const renderedActive = activeTpl ? renderTemplate(activeTpl.body, vars) : "";
   const renderedCustom = renderTemplate(customBody, vars);
   const score = computeTourScore(tour, events, settings.weights, tourFeedback, tourReport);
@@ -127,7 +137,9 @@ export default function TourCommand() {
       return;
     }
     logEvent("tour_started", `OTP: ${otp}`);
-    setTours((prev) => prev.map((t) => (t.id === safeTour.id ? { ...t, status: "confirmed", showUp: true } : t)));
+    setTours((prev) =>
+      prev.map((t) => (t.id === safeTour.id ? { ...t, status: "confirmed", showUp: true } : t)),
+    );
     toast.success("Tour started");
   }
 
@@ -139,7 +151,9 @@ export default function TourCommand() {
 
   function handleNoShow() {
     logEvent("no_show", "Marked no-show");
-    setTours((prev) => prev.map((t) => (t.id === safeTour.id ? { ...t, status: "no-show", showUp: false } : t)));
+    setTours((prev) =>
+      prev.map((t) => (t.id === safeTour.id ? { ...t, status: "no-show", showUp: false } : t)),
+    );
     toast.warning("Marked as no-show");
   }
 
@@ -152,7 +166,10 @@ export default function TourCommand() {
 
   return (
     <div className="space-y-4 max-w-6xl mx-auto">
-      <Link to="/myt/tours" className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+      <Link
+        to="/myt/tours"
+        className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+      >
         <ArrowLeft className="h-4 w-4" /> Back to tours
       </Link>
 
@@ -163,17 +180,37 @@ export default function TourCommand() {
             <div className="space-y-1">
               <CardTitle className="text-xl">{tour.leadName}</CardTitle>
               <div className="text-sm text-muted-foreground flex flex-wrap gap-x-3 gap-y-1">
-                <span className="inline-flex items-center gap-1"><Phone className="h-3 w-3" />{tour.phone}</span>
-                <span className="inline-flex items-center gap-1"><User className="h-3 w-3" />{tour.assignedToName}</span>
-                <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{tour.area} · {tour.propertyName}</span>
-                <span className="inline-flex items-center gap-1"><CalendarClock className="h-3 w-3" />{fmtWhen(tour.tourDate, tour.tourTime)}</span>
+                <span className="inline-flex items-center gap-1">
+                  <Phone className="h-3 w-3" />
+                  {tour.phone}
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <User className="h-3 w-3" />
+                  {tour.assignedToName}
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  {tour.area} · {tour.propertyName}
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <CalendarClock className="h-3 w-3" />
+                  {fmtWhen(tour.tourDate, tour.tourTime)}
+                </span>
                 <span>💰 ₹{tour.budget?.toLocaleString("en-IN")}</span>
               </div>
             </div>
             <div className="flex flex-col items-end gap-1">
-              <Badge variant={tour.status === "completed" ? "default" : "secondary"} className="capitalize">{tour.status}</Badge>
+              <Badge
+                variant={tour.status === "completed" ? "default" : "secondary"}
+                className="capitalize"
+              >
+                {tour.status}
+              </Badge>
               <div className="text-xs text-muted-foreground">Score</div>
-              <div className="text-2xl font-bold tabular-nums">{score.total}<span className="text-xs text-muted-foreground">/100</span></div>
+              <div className="text-2xl font-bold tabular-nums">
+                {score.total}
+                <span className="text-xs text-muted-foreground">/100</span>
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -189,7 +226,8 @@ export default function TourCommand() {
               <CircleDot className="h-4 w-4 mr-1" /> Customer running late
             </Button>
             <Button size="sm" onClick={handleStartTour}>
-              <PlayCircle className="h-4 w-4 mr-1" /> {otp ? "Confirm tour started" : "Generate OTP & start"}
+              <PlayCircle className="h-4 w-4 mr-1" />{" "}
+              {otp ? "Confirm tour started" : "Generate OTP & start"}
             </Button>
             <Button size="sm" variant="default" onClick={handleEndTour}>
               <StopCircle className="h-4 w-4 mr-1" /> End tour
@@ -198,17 +236,23 @@ export default function TourCommand() {
               <XCircle className="h-4 w-4 mr-1" /> No-show
             </Button>
             <Link to={`/myt/tour/${tour.id}/report`}>
-              <Button size="sm" variant="secondary"><Send className="h-4 w-4 mr-1" /> File TCM report</Button>
+              <Button size="sm" variant="secondary">
+                <Send className="h-4 w-4 mr-1" /> File TCM report
+              </Button>
             </Link>
             <Link to={`/myt/feedback/${tour.id}`}>
-              <Button size="sm" variant="secondary"><MessageSquare className="h-4 w-4 mr-1" /> Customer feedback</Button>
+              <Button size="sm" variant="secondary">
+                <MessageSquare className="h-4 w-4 mr-1" /> Customer feedback
+              </Button>
             </Link>
           </div>
 
           {mismatches.length > 0 && (
             <div className="mt-3 rounded border border-destructive/40 bg-destructive/10 p-2 text-xs text-destructive">
               <div className="font-semibold mb-0.5">⚠ Mismatch detected</div>
-              {mismatches.map((m, i) => <div key={i}>• {m.reason}</div>)}
+              {mismatches.map((m, i) => (
+                <div key={i}>• {m.reason}</div>
+              ))}
             </div>
           )}
         </CardContent>
@@ -225,7 +269,9 @@ export default function TourCommand() {
         <TabsContent value="messages" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Pick a scenario → copy → paste in WhatsApp</CardTitle>
+              <CardTitle className="text-base">
+                Pick a scenario → copy → paste in WhatsApp
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid md:grid-cols-3 gap-2">
@@ -239,7 +285,9 @@ export default function TourCommand() {
                     )}
                   >
                     <div className="text-sm font-medium">{t.label}</div>
-                    <div className="text-[11px] text-muted-foreground line-clamp-2">{t.scenario}</div>
+                    <div className="text-[11px] text-muted-foreground line-clamp-2">
+                      {t.scenario}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -261,7 +309,12 @@ export default function TourCommand() {
                             placeholder="OTP"
                             className="h-7 w-24 text-xs"
                           />
-                          <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => setOtp(genOtp())}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-7 px-2 text-xs"
+                            onClick={() => setOtp(genOtp())}
+                          >
                             Gen
                           </Button>
                         </div>
@@ -281,33 +334,70 @@ export default function TourCommand() {
                         text={renderedActive}
                         variant="default"
                         label="Copy message"
-                        onCopied={() => logEvent("custom_message_sent", `Copied: ${activeTpl.label}`, activeTpl.id)}
+                        onCopied={() =>
+                          logEvent(
+                            "custom_message_sent",
+                            `Copied: ${activeTpl.label}`,
+                            activeTpl.id,
+                          )
+                        }
                       />
                       <a
                         href={whatsappLink(tour.phone, renderedActive)}
                         target="_blank"
                         rel="noreferrer"
-                        onClick={() => logEvent("custom_message_sent", `WA opened: ${activeTpl.label}`, activeTpl.id)}
+                        onClick={() =>
+                          logEvent(
+                            "custom_message_sent",
+                            `WA opened: ${activeTpl.label}`,
+                            activeTpl.id,
+                          )
+                        }
                       >
-                        <Button size="sm" variant="secondary"><ExternalLink className="h-3.5 w-3.5 mr-1" /> Open WhatsApp</Button>
+                        <Button size="sm" variant="secondary">
+                          <ExternalLink className="h-3.5 w-3.5 mr-1" /> Open WhatsApp
+                        </Button>
                       </a>
                     </div>
                   </div>
-                  <Textarea value={renderedActive} readOnly rows={Math.min(12, renderedActive.split("\n").length + 1)} className="font-mono text-xs" />
+                  <Textarea
+                    value={renderedActive}
+                    readOnly
+                    rows={Math.min(12, renderedActive.split("\n").length + 1)}
+                    className="font-mono text-xs"
+                  />
                 </div>
               )}
 
               <div className="rounded border p-3 space-y-2">
-                <Label className="text-xs uppercase text-muted-foreground">Custom message (variables work: {"{{leadName}}, {{propertyName}}, {{when}}…"})</Label>
-                <Textarea value={customBody} onChange={(e) => setCustomBody(e.target.value)} rows={3} placeholder="Type a custom message…" />
+                <Label className="text-xs uppercase text-muted-foreground">
+                  Custom message (variables work: {"{{leadName}}, {{propertyName}}, {{when}}…"})
+                </Label>
+                <Textarea
+                  value={customBody}
+                  onChange={(e) => setCustomBody(e.target.value)}
+                  rows={3}
+                  placeholder="Type a custom message…"
+                />
                 {customBody && (
                   <>
                     <div className="text-xs text-muted-foreground">Preview</div>
-                    <Textarea value={renderedCustom} readOnly rows={Math.min(8, renderedCustom.split("\n").length + 1)} className="font-mono text-xs" />
+                    <Textarea
+                      value={renderedCustom}
+                      readOnly
+                      rows={Math.min(8, renderedCustom.split("\n").length + 1)}
+                      className="font-mono text-xs"
+                    />
                     <div className="flex gap-2">
                       <CopyButton text={renderedCustom} variant="default" />
-                      <a href={whatsappLink(tour.phone, renderedCustom)} target="_blank" rel="noreferrer">
-                        <Button size="sm" variant="secondary"><ExternalLink className="h-3.5 w-3.5 mr-1" /> Open WhatsApp</Button>
+                      <a
+                        href={whatsappLink(tour.phone, renderedCustom)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Button size="sm" variant="secondary">
+                          <ExternalLink className="h-3.5 w-3.5 mr-1" /> Open WhatsApp
+                        </Button>
                       </a>
                     </div>
                   </>
@@ -315,7 +405,11 @@ export default function TourCommand() {
               </div>
 
               <div className="text-xs text-muted-foreground">
-                Edit any template wording in <Link to="/myt/settings" className="text-primary underline">Settings → Message Templates</Link>.
+                Edit any template wording in{" "}
+                <Link to="/myt/settings" className="text-primary underline">
+                  Settings → Message Templates
+                </Link>
+                .
               </div>
             </CardContent>
           </Card>
@@ -326,14 +420,18 @@ export default function TourCommand() {
           <Card>
             <CardContent className="pt-6">
               {events.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No events yet. Use the action buttons above to log lifecycle moments.</p>
+                <p className="text-sm text-muted-foreground">
+                  No events yet. Use the action buttons above to log lifecycle moments.
+                </p>
               ) : (
                 <ol className="relative border-l pl-4 space-y-3">
                   {events.map((e) => (
                     <li key={e.id} className="relative">
                       <span className="absolute -left-[19px] top-1 h-2.5 w-2.5 rounded-full bg-primary" />
                       <div className="text-sm font-medium">{EVENT_LABEL[e.kind] ?? e.kind}</div>
-                      <div className="text-[11px] text-muted-foreground">{new Date(e.at).toLocaleString("en-IN")}</div>
+                      <div className="text-[11px] text-muted-foreground">
+                        {new Date(e.at).toLocaleString("en-IN")}
+                      </div>
                       {e.notes && <div className="text-xs mt-0.5">{e.notes}</div>}
                     </li>
                   ))}
@@ -347,7 +445,10 @@ export default function TourCommand() {
         <TabsContent value="score">
           <Card>
             <CardContent className="pt-6 space-y-3">
-              <div className="text-3xl font-bold tabular-nums">{score.total}<span className="text-base text-muted-foreground">/100</span></div>
+              <div className="text-3xl font-bold tabular-nums">
+                {score.total}
+                <span className="text-base text-muted-foreground">/100</span>
+              </div>
               <div className="space-y-2">
                 {(Object.keys(score.parts) as Array<keyof typeof score.parts>).map((k) => {
                   const p = score.parts[k];
@@ -356,7 +457,9 @@ export default function TourCommand() {
                     <div key={k}>
                       <div className="flex items-center justify-between text-xs">
                         <span className="capitalize">{k.replace(/([A-Z])/g, " $1")}</span>
-                        <span className="tabular-nums">{p.earned}/{p.max}</span>
+                        <span className="tabular-nums">
+                          {p.earned}/{p.max}
+                        </span>
                       </div>
                       <div className="h-1.5 bg-muted rounded overflow-hidden">
                         <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
@@ -365,7 +468,13 @@ export default function TourCommand() {
                   );
                 })}
               </div>
-              <div className="text-xs text-muted-foreground">Adjust weights in <Link to="/myt/settings" className="underline">Settings → Score Weights</Link>.</div>
+              <div className="text-xs text-muted-foreground">
+                Adjust weights in{" "}
+                <Link to="/myt/settings" className="underline">
+                  Settings → Score Weights
+                </Link>
+                .
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

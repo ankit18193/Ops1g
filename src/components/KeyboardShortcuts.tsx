@@ -90,7 +90,8 @@ export function KeyboardShortcuts() {
       if (key === "?") {
         e.preventDefault();
         toast("Keyboard shortcuts", {
-          description: "g t Today · g d Dashboard · g l Leads · g h Handoffs · g r Revival · g v Revenue · g m Heatmap · g b Leaderboard · g s Sequences · c log call · w whatsapp · n new follow-up · ⌘K palette",
+          description:
+            "g t Today · g d Dashboard · g l Leads · g h Handoffs · g r Revival · g v Revenue · g m Heatmap · g b Leaderboard · g s Sequences · c log call · w whatsapp · n new follow-up · ⌘K palette",
           duration: 8000,
         });
       }

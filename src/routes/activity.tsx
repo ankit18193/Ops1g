@@ -3,14 +3,27 @@ import { AppShell } from "@/components/AppShell";
 import { useApp } from "@/lib/store";
 import { format } from "date-fns";
 import {
-  Activity, MessageSquare, Calendar, CheckCircle2, AlertTriangle, Phone,
-  ClipboardCheck, FileText, ArrowRightLeft,
+  Activity,
+  MessageSquare,
+  Calendar,
+  CheckCircle2,
+  AlertTriangle,
+  Phone,
+  ClipboardCheck,
+  FileText,
+  ArrowRightLeft,
 } from "lucide-react";
 import type { ActivityKind } from "@/lib/types";
 
 export const Route = createFileRoute("/activity")({
   head: () => ({
-    meta: [{ title: "Activity — Gharpayy" }, { name: "description", content: "Auto-generated activity log across all leads, tours and follow-ups." }],
+    meta: [
+      { title: "Activity — Gharpayy" },
+      {
+        name: "description",
+        content: "Auto-generated activity log across all leads, tours and follow-ups.",
+      },
+    ],
   }),
   component: ActivityPage,
 });
@@ -47,11 +60,20 @@ function ActivityPage() {
           {activities.map((a) => {
             const Icon = ICON[a.kind] ?? Activity;
             const lead = a.leadId ? leads.find((l) => l.id === a.leadId) : null;
-            const actor = a.actor === "system" ? "system" : tcms.find((t) => t.id === a.actor)?.name ?? a.actor;
-            const isAlert = a.kind === "stale_alert" || a.kind === "escalation" || a.kind === "tour_cancelled";
+            const actor =
+              a.actor === "system"
+                ? "system"
+                : (tcms.find((t) => t.id === a.actor)?.name ?? a.actor);
+            const isAlert =
+              a.kind === "stale_alert" || a.kind === "escalation" || a.kind === "tour_cancelled";
             return (
-              <div key={a.id} className="flex items-start gap-3 px-4 py-3 hover:bg-accent/5 transition-colors">
-                <div className={`h-7 w-7 rounded-md flex items-center justify-center shrink-0 ${isAlert ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"}`}>
+              <div
+                key={a.id}
+                className="flex items-start gap-3 px-4 py-3 hover:bg-accent/5 transition-colors"
+              >
+                <div
+                  className={`h-7 w-7 rounded-md flex items-center justify-center shrink-0 ${isAlert ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"}`}
+                >
                   <Icon className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -61,7 +83,10 @@ function ActivityPage() {
                     {lead && (
                       <>
                         {" · "}
-                        <button onClick={() => selectLead(lead.id)} className="text-accent hover:underline">
+                        <button
+                          onClick={() => selectLead(lead.id)}
+                          className="text-accent hover:underline"
+                        >
                           {lead.name}
                         </button>
                       </>
@@ -72,7 +97,9 @@ function ActivityPage() {
             );
           })}
           {activities.length === 0 && (
-            <div className="px-4 py-12 text-center text-sm text-muted-foreground">No activity yet.</div>
+            <div className="px-4 py-12 text-center text-sm text-muted-foreground">
+              No activity yet.
+            </div>
           )}
         </div>
       </div>

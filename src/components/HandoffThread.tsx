@@ -14,13 +14,21 @@ import { ClientOnly } from "@/components/ClientOnly";
  */
 export function HandoffThread({ leadId }: { leadId: string }) {
   const { handoffs, sendHandoff, role, tcms, currentTcmId } = useApp();
-  const thread = handoffs.filter((h) => h.leadId === leadId).sort((a, b) => +new Date(a.ts) - +new Date(b.ts));
+  const thread = handoffs
+    .filter((h) => h.leadId === leadId)
+    .sort((a, b) => +new Date(a.ts) - +new Date(b.ts));
   const [text, setText] = useState("");
 
   const myRole: Role = role;
   const send = (priority: "normal" | "urgent") => {
     if (!text.trim()) return;
-    sendHandoff({ leadId, from: myRole, fromId: role === "tcm" ? currentTcmId : role, text, priority });
+    sendHandoff({
+      leadId,
+      from: myRole,
+      fromId: role === "tcm" ? currentTcmId : role,
+      text,
+      priority,
+    });
     setText("");
     toast.success(priority === "urgent" ? "Urgent handoff sent" : "Handoff sent");
   };
@@ -35,22 +43,29 @@ export function HandoffThread({ leadId }: { leadId: string }) {
         )}
         {thread.map((h) => {
           const mine = h.from === myRole && (myRole !== "tcm" || h.fromId === currentTcmId);
-          const fromLabel = h.from === "flow-ops"
-            ? "Flow Ops"
-            : h.from === "tcm"
-              ? tcms.find((t) => t.id === h.fromId)?.name ?? "TCM"
-              : "HR";
+          const fromLabel =
+            h.from === "flow-ops"
+              ? "Flow Ops"
+              : h.from === "tcm"
+                ? (tcms.find((t) => t.id === h.fromId)?.name ?? "TCM")
+                : "HR";
           return (
             <div key={h.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[85%] rounded-lg px-2.5 py-1.5 text-[12px] ${
-                h.priority === "urgent"
-                  ? "bg-destructive/10 border border-destructive/30 text-foreground"
-                  : mine
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-muted text-foreground"
-              }`}>
-                <div className={`text-[10px] ${mine && h.priority !== "urgent" ? "text-accent-foreground/80" : "text-muted-foreground"} mb-0.5 flex items-center gap-1`}>
-                  {h.priority === "urgent" && <span className="font-bold text-destructive">URGENT</span>}
+              <div
+                className={`max-w-[85%] rounded-lg px-2.5 py-1.5 text-[12px] ${
+                  h.priority === "urgent"
+                    ? "bg-destructive/10 border border-destructive/30 text-foreground"
+                    : mine
+                      ? "bg-accent text-accent-foreground"
+                      : "bg-muted text-foreground"
+                }`}
+              >
+                <div
+                  className={`text-[10px] ${mine && h.priority !== "urgent" ? "text-accent-foreground/80" : "text-muted-foreground"} mb-0.5 flex items-center gap-1`}
+                >
+                  {h.priority === "urgent" && (
+                    <span className="font-bold text-destructive">URGENT</span>
+                  )}
                   <span>{fromLabel}</span>
                   <ArrowRight className="h-2.5 w-2.5" />
                   <span>{h.to === "flow-ops" ? "Flow Ops" : h.to === "tcm" ? "TCM" : "HR"}</span>
@@ -68,7 +83,13 @@ export function HandoffThread({ leadId }: { leadId: string }) {
         <Textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={role === "flow-ops" ? "Brief the TCM…" : role === "tcm" ? "Update Flow Ops…" : "Note for the team…"}
+          placeholder={
+            role === "flow-ops"
+              ? "Brief the TCM…"
+              : role === "tcm"
+                ? "Update Flow Ops…"
+                : "Note for the team…"
+          }
           rows={2}
           className="text-sm resize-none"
         />
@@ -77,8 +98,11 @@ export function HandoffThread({ leadId }: { leadId: string }) {
             <Send className="h-3.5 w-3.5" />
           </Button>
           <Button
-            size="sm" variant="destructive" disabled={!text.trim()}
-            onClick={() => send("urgent")} className="h-8 text-[10px] px-2"
+            size="sm"
+            variant="destructive"
+            disabled={!text.trim()}
+            onClick={() => send("urgent")}
+            className="h-8 text-[10px] px-2"
             title="Mark urgent — pages the other side"
           >
             URGENT

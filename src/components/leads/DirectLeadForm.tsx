@@ -7,23 +7,55 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  CheckCircle2, AlertCircle, User, Phone, Mail, MapPin, Wallet,
-  CalendarDays, Briefcase, BedDouble, Sparkles, Loader2,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  CheckCircle2,
+  AlertCircle,
+  User,
+  Phone,
+  Mail,
+  MapPin,
+  Wallet,
+  CalendarDays,
+  Briefcase,
+  BedDouble,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DuplicateModal } from "./DuplicateModal";
-import { QUICKAD_NEED_OPTIONS, QUICKAD_ROOM_OPTIONS, QUICKAD_TYPE_OPTIONS } from "@/lib/quickad-shared";
+import {
+  QUICKAD_NEED_OPTIONS,
+  QUICKAD_ROOM_OPTIONS,
+  QUICKAD_TYPE_OPTIONS,
+} from "@/lib/quickad-shared";
 
 interface Props {
   onCreated?: (lead: UnifiedLead) => void;
 }
 
 const emptyDraft = (): ParsedLeadDraft => ({
-  name: "", phone: "", email: "", location: "", areas: [], fullAddress: "",
-  budget: "", moveIn: "",
-  type: "", room: "", need: "", specialReqs: "", inBLR: null, zone: "", rawSource: "",
+  name: "",
+  phone: "",
+  email: "",
+  location: "",
+  areas: [],
+  fullAddress: "",
+  budget: "",
+  moveIn: "",
+  type: "",
+  room: "",
+  need: "",
+  specialReqs: "",
+  inBLR: null,
+  zone: "",
+  rawSource: "",
 });
 
 const TYPE_OPTIONS = QUICKAD_TYPE_OPTIONS;
@@ -66,7 +98,16 @@ export function DirectLeadForm({ onCreated }: Props) {
   }, [draft]);
 
   const filled = useMemo(() => {
-    const fields: (keyof ParsedLeadDraft)[] = ["name", "phone", "email", "location", "budget", "moveIn", "type", "room"];
+    const fields: (keyof ParsedLeadDraft)[] = [
+      "name",
+      "phone",
+      "email",
+      "location",
+      "budget",
+      "moveIn",
+      "type",
+      "room",
+    ];
     return fields.filter((f) => String(draft[f] ?? "").trim().length > 0).length;
   }, [draft]);
   const completion = Math.round((filled / 8) * 100);
@@ -112,14 +153,21 @@ export function DirectLeadForm({ onCreated }: Props) {
           </div>
           <div>
             <h3 className="font-semibold text-sm">New lead</h3>
-            <p className="text-[11px] text-muted-foreground">Direct entry · auto zone detect · live dedup</p>
+            <p className="text-[11px] text-muted-foreground">
+              Direct entry · auto zone detect · live dedup
+            </p>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Completion</div>
+          <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+            Completion
+          </div>
           <div className="flex items-center gap-2 mt-0.5">
             <div className="h-1.5 w-24 rounded-full bg-muted overflow-hidden">
-              <div className="h-full bg-primary transition-all" style={{ width: `${completion}%` }} />
+              <div
+                className="h-full bg-primary transition-all"
+                style={{ width: `${completion}%` }}
+              />
             </div>
             <span className="text-xs font-medium tabular-nums">{completion}%</span>
           </div>
@@ -129,7 +177,11 @@ export function DirectLeadForm({ onCreated }: Props) {
       {/* Identity */}
       <Section title="Identity" subtitle="Required for safe deduplication">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FormField icon={User} label="Full name *" error={showError("name") ? errors.name : undefined}>
+          <FormField
+            icon={User}
+            label="Full name *"
+            error={showError("name") ? errors.name : undefined}
+          >
             <Input
               value={draft.name}
               onChange={(e) => update("name", e.target.value)}
@@ -139,7 +191,11 @@ export function DirectLeadForm({ onCreated }: Props) {
               autoFocus
             />
           </FormField>
-          <FormField icon={Phone} label="Phone *" error={showError("phone") ? errors.phone : undefined}>
+          <FormField
+            icon={Phone}
+            label="Phone *"
+            error={showError("phone") ? errors.phone : undefined}
+          >
             <Input
               value={draft.phone}
               onChange={(e) => update("phone", e.target.value)}
@@ -149,7 +205,11 @@ export function DirectLeadForm({ onCreated }: Props) {
               className="h-10 text-sm"
             />
           </FormField>
-          <FormField icon={Mail} label="Email" error={showError("email") ? errors.email : undefined}>
+          <FormField
+            icon={Mail}
+            label="Email"
+            error={showError("email") ? errors.email : undefined}
+          >
             <Input
               value={draft.email}
               onChange={(e) => update("email", e.target.value)}
@@ -168,7 +228,10 @@ export function DirectLeadForm({ onCreated }: Props) {
                 className="h-10 text-sm pr-20"
               />
               {draft.zone && (
-                <Badge variant="secondary" className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px]">
+                <Badge
+                  variant="secondary"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px]"
+                >
                   {draft.zone}
                 </Badge>
               )}
@@ -198,25 +261,43 @@ export function DirectLeadForm({ onCreated }: Props) {
           </FormField>
           <FormField icon={Briefcase} label="Type">
             <Select value={draft.type} onValueChange={(v) => update("type", v)}>
-              <SelectTrigger className="h-10 text-sm"><SelectValue placeholder="Select" /></SelectTrigger>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
               <SelectContent>
-                {TYPE_OPTIONS.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                {TYPE_OPTIONS.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {t}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </FormField>
           <FormField icon={BedDouble} label="Room preference">
             <Select value={draft.room} onValueChange={(v) => update("room", v)}>
-              <SelectTrigger className="h-10 text-sm"><SelectValue placeholder="Select" /></SelectTrigger>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
               <SelectContent>
-                {ROOM_OPTIONS.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                {ROOM_OPTIONS.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {t}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </FormField>
           <FormField label="Cohort / need">
             <Select value={draft.need} onValueChange={(v) => update("need", v)}>
-              <SelectTrigger className="h-10 text-sm"><SelectValue placeholder="Select" /></SelectTrigger>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
               <SelectContent>
-                {NEED_OPTIONS.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                {NEED_OPTIONS.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {t}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </FormField>
@@ -225,7 +306,9 @@ export function DirectLeadForm({ onCreated }: Props) {
               value={draft.inBLR === null ? "" : draft.inBLR ? "yes" : "no"}
               onValueChange={(v) => update("inBLR", v === "" ? null : v === "yes")}
             >
-              <SelectTrigger className="h-10 text-sm"><SelectValue placeholder="Select" /></SelectTrigger>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="yes">Yes</SelectItem>
                 <SelectItem value="no">No</SelectItem>
@@ -249,17 +332,40 @@ export function DirectLeadForm({ onCreated }: Props) {
         <div className="rounded-xl border border-border bg-card p-3 flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
             {filled >= 4 ? (
-              <><CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Strong signals — ready to dedup & save</>
+              <>
+                <CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Strong signals — ready to
+                dedup & save
+              </>
             ) : (
-              <><AlertCircle className="h-3.5 w-3.5 text-amber-500" /> Add a few more fields for confident dedup</>
+              <>
+                <AlertCircle className="h-3.5 w-3.5 text-amber-500" /> Add a few more fields for
+                confident dedup
+              </>
             )}
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="h-9" onClick={() => { setDraft(emptyDraft()); setTouched({}); }}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9"
+              onClick={() => {
+                setDraft(emptyDraft());
+                setTouched({});
+              }}
+            >
               Reset
             </Button>
-            <Button onClick={submit} disabled={submitting || Object.keys(errors).length > 0} size="sm" className="h-9 gap-2 min-w-36">
-              {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+            <Button
+              onClick={submit}
+              disabled={submitting || Object.keys(errors).length > 0}
+              size="sm"
+              className="h-9 gap-2 min-w-36"
+            >
+              {submitting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="h-4 w-4" />
+              )}
               Save lead
             </Button>
           </div>
@@ -277,7 +383,15 @@ export function DirectLeadForm({ onCreated }: Props) {
   );
 }
 
-function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+function Section({
+  title,
+  subtitle,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-xl border border-border bg-card p-4 space-y-3">
       <div>
@@ -290,7 +404,10 @@ function Section({ title, subtitle, children }: { title: string; subtitle?: stri
 }
 
 function FormField({
-  label, error, icon: Icon, children,
+  label,
+  error,
+  icon: Icon,
+  children,
 }: {
   label: string;
   error?: string;
@@ -303,7 +420,11 @@ function FormField({
         {Icon && <Icon className="h-3 w-3" />} {label}
       </Label>
       {children}
-      {error && <p className="text-[10px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {error}</p>}
+      {error && (
+        <p className="text-[10px] text-destructive flex items-center gap-1">
+          <AlertCircle className="h-3 w-3" /> {error}
+        </p>
+      )}
     </div>
   );
 }

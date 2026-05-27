@@ -6,7 +6,8 @@ export function levenshtein(a: string, b: string): number {
   if (a === b) return 0;
   if (!a.length) return b.length;
   if (!b.length) return a.length;
-  const m = a.length, n = b.length;
+  const m = a.length,
+    n = b.length;
   let prev = new Array(n + 1);
   let curr = new Array(n + 1);
   for (let j = 0; j <= n; j++) prev[j] = j;
@@ -55,9 +56,16 @@ export function scoreMatch(input: ScoreInput, lead: UnifiedLead): MatchCandidate
   // Name similarity
   if (input.name && lead.name) {
     const sim = nameSimilarity(input.name, lead.name);
-    if (sim >= 0.95) { score += 25; reasons.push(`name ${sim.toFixed(2)}`); }
-    else if (sim >= 0.8) { score += 18; reasons.push(`name ${sim.toFixed(2)}`); }
-    else if (sim >= 0.65) { score += 10; reasons.push(`name ${sim.toFixed(2)}`); }
+    if (sim >= 0.95) {
+      score += 25;
+      reasons.push(`name ${sim.toFixed(2)}`);
+    } else if (sim >= 0.8) {
+      score += 18;
+      reasons.push(`name ${sim.toFixed(2)}`);
+    } else if (sim >= 0.65) {
+      score += 10;
+      reasons.push(`name ${sim.toFixed(2)}`);
+    }
   }
   // Area weak signal
   if (input.area && lead.area && input.area.toLowerCase() === lead.area.toLowerCase()) {

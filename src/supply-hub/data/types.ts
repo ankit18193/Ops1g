@@ -75,10 +75,10 @@ export interface Contact {
 }
 
 export interface NearbyLandmark {
-  n: string;   // name
-  t: string;   // type (Tech Park, College, Mall, ...)
-  d: number;   // distance in km
-  w: number;   // walk minutes
+  n: string; // name
+  t: string; // type (Tech Park, College, Mall, ...)
+  d: number; // distance in km
+  w: number; // walk minutes
 }
 
 export interface PG {
@@ -123,12 +123,12 @@ export interface PG {
 }
 
 export interface Landmark {
-  n: string;            // name
-  a: string;            // area
-  t: string;            // type (Tech Park, MNC, College, Hospital, Mall, Company, ...)
-  p: string;            // pin
-  m: string;            // metro
-  x: string;            // notes / aliases / tenants
+  n: string; // name
+  a: string; // area
+  t: string; // type (Tech Park, MNC, College, Hospital, Mall, Company, ...)
+  p: string; // pin
+  m: string; // metro
+  x: string; // notes / aliases / tenants
   lat?: number | null;
   lng?: number | null;
 }

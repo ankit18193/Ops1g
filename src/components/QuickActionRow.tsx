@@ -12,7 +12,11 @@ import { useMountedNow } from "@/hooks/use-now";
  * Clicking the body opens the full Lead Control Panel.
  */
 export function QuickActionRow({
-  lead, reason, accent, dueLabel, onDone,
+  lead,
+  reason,
+  accent,
+  dueLabel,
+  onDone,
 }: {
   lead: Lead;
   reason?: string;
@@ -35,7 +39,9 @@ export function QuickActionRow({
   }[accent ?? "default"];
 
   return (
-    <div className={`group grid grid-cols-12 items-center gap-2 px-3 py-2.5 border-l-2 ${ring} hover:bg-accent/5 transition-colors`}>
+    <div
+      className={`group grid grid-cols-12 items-center gap-2 px-3 py-2.5 border-l-2 ${ring} hover:bg-accent/5 transition-colors`}
+    >
       <button onClick={() => selectLead(lead.id)} className="col-span-4 text-left min-w-0">
         <div className="flex items-center gap-2">
           <span className="font-medium text-sm truncate">{lead.name}</span>
@@ -46,8 +52,12 @@ export function QuickActionRow({
         </div>
       </button>
 
-      <div className="col-span-2 hidden md:block"><StageBadge stage={lead.stage} /></div>
-      <div className="col-span-2"><ConfidenceBar value={live} /></div>
+      <div className="col-span-2 hidden md:block">
+        <StageBadge stage={lead.stage} />
+      </div>
+      <div className="col-span-2">
+        <ConfidenceBar value={live} />
+      </div>
       <div className="col-span-1 hidden md:block text-[11px] text-muted-foreground truncate">
         {tcm?.initials}
       </div>
@@ -57,30 +67,49 @@ export function QuickActionRow({
 
       <div className="col-span-12 md:col-span-2 flex items-center justify-end gap-1">
         <Button
-          size="icon" variant="ghost" className="h-7 w-7"
-          onClick={(e) => { e.stopPropagation(); logCall(lead.id); toast.success(`Call logged · ${lead.name}`); }}
+          size="icon"
+          variant="ghost"
+          className="h-7 w-7"
+          onClick={(e) => {
+            e.stopPropagation();
+            logCall(lead.id);
+            toast.success(`Call logged · ${lead.name}`);
+          }}
           title="Log call"
         >
           <Phone className="h-3.5 w-3.5" />
         </Button>
         <Button
-          size="icon" variant="ghost" className="h-7 w-7"
-          onClick={(e) => { e.stopPropagation(); sendMessage(lead.id, "WhatsApp template sent"); toast.success(`WA sent · ${lead.name}`); }}
+          size="icon"
+          variant="ghost"
+          className="h-7 w-7"
+          onClick={(e) => {
+            e.stopPropagation();
+            sendMessage(lead.id, "WhatsApp template sent");
+            toast.success(`WA sent · ${lead.name}`);
+          }}
           title="WhatsApp"
         >
           <MessageSquare className="h-3.5 w-3.5" />
         </Button>
         {onDone && (
           <Button
-            size="icon" variant="ghost" className="h-7 w-7 text-success"
-            onClick={(e) => { e.stopPropagation(); onDone(); }}
+            size="icon"
+            variant="ghost"
+            className="h-7 w-7 text-success"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDone();
+            }}
             title="Mark done"
           >
             <ClipboardCheck className="h-3.5 w-3.5" />
           </Button>
         )}
         <Button
-          size="icon" variant="ghost" className="h-7 w-7"
+          size="icon"
+          variant="ghost"
+          className="h-7 w-7"
           onClick={() => selectLead(lead.id)}
           title="Open"
         >

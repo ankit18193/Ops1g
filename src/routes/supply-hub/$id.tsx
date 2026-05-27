@@ -4,13 +4,43 @@ import { useApp } from "@/lib/store";
 import { useEffect, useMemo, useState } from "react";
 import { PGS } from "@/supply-hub/data/pgs";
 import {
-  personaBadge, personaStyle, scarcity, freshness, valueScore,
-  perDay, perDayLabel, commuteEstimate, areaMood, findAlternatives, budgetStretch,
-  seasonalNudge, type Objection,
+  personaBadge,
+  personaStyle,
+  scarcity,
+  freshness,
+  valueScore,
+  perDay,
+  perDayLabel,
+  commuteEstimate,
+  areaMood,
+  findAlternatives,
+  budgetStretch,
+  seasonalNudge,
+  type Objection,
 } from "@/supply-hub/lib/intel";
-import { buildBrochure, buildParentPack, buildThreeOptions, buildWalkthrough, buildReengagement } from "@/supply-hub/lib/messages";
+import {
+  buildBrochure,
+  buildParentPack,
+  buildThreeOptions,
+  buildWalkthrough,
+  buildReengagement,
+} from "@/supply-hub/lib/messages";
 import { buildWaCard, waLink, telLink } from "@/supply-hub/lib/wa";
-import { ArrowLeft, Copy, Phone, MessageCircle, Flame, BadgeCheck, MapPin, Coins, Calendar, Sparkles, Users, Utensils, ShieldCheck } from "lucide-react";
+import {
+  ArrowLeft,
+  Copy,
+  Phone,
+  MessageCircle,
+  Flame,
+  BadgeCheck,
+  MapPin,
+  Coins,
+  Calendar,
+  Sparkles,
+  Users,
+  Utensils,
+  ShieldCheck,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/supply-hub/$id")({
@@ -30,7 +60,9 @@ const OBJECTIONS: { key: Objection; label: string }[] = [
 function SupplyHubDetail() {
   const { role } = useApp();
   const navigate = useNavigate();
-  useEffect(() => { if (role === "owner") navigate({ to: "/owner/inventory" }); }, [role, navigate]);
+  useEffect(() => {
+    if (role === "owner") navigate({ to: "/owner/inventory" });
+  }, [role, navigate]);
   const { id } = useParams({ from: "/supply-hub/$id" });
   const pg = useMemo(() => PGS.find((p) => p.id === id), [id]);
 
@@ -44,7 +76,10 @@ function SupplyHubDetail() {
       <AppShell>
         <div className="rounded-lg border bg-card p-8 text-center">
           <h2 className="font-semibold text-lg">PG not found</h2>
-          <Link to="/supply-hub" className="mt-3 inline-flex items-center gap-1 text-accent text-sm">
+          <Link
+            to="/supply-hub"
+            className="mt-3 inline-flex items-center gap-1 text-accent text-sm"
+          >
             <ArrowLeft className="h-4 w-4" /> Back to Supply Hub
           </Link>
         </div>
@@ -58,7 +93,9 @@ function SupplyHubDetail() {
   const fr = freshness(pg);
   const value = valueScore(pg);
   const mood = areaMood(pg.area);
-  const cheap = Math.min(...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999));
+  const cheap = Math.min(
+    ...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999),
+  );
   const nearestKm = pg.nearbyLandmarks?.[0]?.d ?? null;
   const commute = nearestKm !== null ? commuteEstimate(nearestKm) : null;
   const alts = findAlternatives(pg, obj, PGS);
@@ -72,7 +109,10 @@ function SupplyHubDetail() {
   return (
     <AppShell>
       <div className="space-y-5">
-        <Link to="/supply-hub" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-accent">
+        <Link
+          to="/supply-hub"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-accent"
+        >
           <ArrowLeft className="h-4 w-4" /> Supply Hub
         </Link>
 
@@ -80,32 +120,72 @@ function SupplyHubDetail() {
         <div className="rounded-lg border bg-card p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{pg.area} · {pg.tier} · {pg.gender}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {pg.area} · {pg.tier} · {pg.gender}
+              </div>
               <h1 className="mt-1 font-display text-2xl font-semibold">{pg.name}</h1>
               <div className="text-sm text-muted-foreground">{pg.locality}</div>
               <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className={cn("inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium", ps.color)}>
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium",
+                    ps.color,
+                  )}
+                >
                   <BadgeCheck className="h-3 w-3" /> {persona}
                 </span>
-                {sc.hot && <span className="inline-flex items-center gap-1 rounded-md border border-rose-400/40 bg-rose-400/10 text-rose-300 px-2 py-0.5 text-xs font-semibold"><Flame className="h-3 w-3" />{sc.level}</span>}
-                {!sc.hot && sc.level !== "AVAILABLE" && <span className="rounded-md border border-amber-400/40 bg-amber-400/10 text-amber-300 px-2 py-0.5 text-xs">{sc.level}</span>}
-                {fr.isFresh && fr.changeKind && <span className="rounded-md border border-emerald-400/40 bg-emerald-400/10 text-emerald-300 px-2 py-0.5 text-xs">{fr.changeKind} · {fr.daysAgo}d ago</span>}
-                <span className="rounded-md border border-border bg-muted/30 px-2 py-0.5 text-xs">IQ {pg.iq}/100</span>
-                <span className="rounded-md border border-border bg-muted/30 px-2 py-0.5 text-xs">Value {value}</span>
+                {sc.hot && (
+                  <span className="inline-flex items-center gap-1 rounded-md border border-rose-400/40 bg-rose-400/10 text-rose-300 px-2 py-0.5 text-xs font-semibold">
+                    <Flame className="h-3 w-3" />
+                    {sc.level}
+                  </span>
+                )}
+                {!sc.hot && sc.level !== "AVAILABLE" && (
+                  <span className="rounded-md border border-amber-400/40 bg-amber-400/10 text-amber-300 px-2 py-0.5 text-xs">
+                    {sc.level}
+                  </span>
+                )}
+                {fr.isFresh && fr.changeKind && (
+                  <span className="rounded-md border border-emerald-400/40 bg-emerald-400/10 text-emerald-300 px-2 py-0.5 text-xs">
+                    {fr.changeKind} · {fr.daysAgo}d ago
+                  </span>
+                )}
+                <span className="rounded-md border border-border bg-muted/30 px-2 py-0.5 text-xs">
+                  IQ {pg.iq}/100
+                </span>
+                <span className="rounded-md border border-border bg-muted/30 px-2 py-0.5 text-xs">
+                  Value {value}
+                </span>
               </div>
               <div className="mt-3 text-xs italic text-muted-foreground">{ps.pitch}</div>
             </div>
             <div className="text-right">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Starting</div>
-              <div className="font-display text-3xl font-semibold">{cheap < 99999 ? `₹${(cheap / 1000).toFixed(1)}k` : "—"}</div>
-              {cheap < 99999 && <div className="text-xs text-muted-foreground">{perDayLabel(cheap)} · all inclusive</div>}
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Starting
+              </div>
+              <div className="font-display text-3xl font-semibold">
+                {cheap < 99999 ? `₹${(cheap / 1000).toFixed(1)}k` : "—"}
+              </div>
+              {cheap < 99999 && (
+                <div className="text-xs text-muted-foreground">
+                  {perDayLabel(cheap)} · all inclusive
+                </div>
+              )}
               <div className="mt-3 flex justify-end gap-2">
                 {pg.manager.phone && telLink(pg.manager.phone) && (
-                  <a href={telLink(pg.manager.phone)!} className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1.5 text-xs hover:bg-muted">
+                  <a
+                    href={telLink(pg.manager.phone)!}
+                    className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1.5 text-xs hover:bg-muted"
+                  >
                     <Phone className="h-3 w-3" /> Call
                   </a>
                 )}
-                <a href={waLink(pg.manager.phone, waCard)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1.5 text-xs text-accent-foreground hover:opacity-90">
+                <a
+                  href={waLink(pg.manager.phone, waCard)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1.5 text-xs text-accent-foreground hover:opacity-90"
+                >
                   <MessageCircle className="h-3 w-3" /> WhatsApp
                 </a>
               </div>
@@ -113,8 +193,14 @@ function SupplyHubDetail() {
           </div>
           <div className="mt-4 rounded-md border border-dashed border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">Scarcity reason:</span> {sc.reason}
-            {fr.isFresh && fr.message && (<><br /><span className="font-semibold text-foreground">Re-engage:</span> {fr.message}</>)}
-            <br /><span className="font-semibold text-foreground">Season:</span> {seasonalNudge()}
+            {fr.isFresh && fr.message && (
+              <>
+                <br />
+                <span className="font-semibold text-foreground">Re-engage:</span> {fr.message}
+              </>
+            )}
+            <br />
+            <span className="font-semibold text-foreground">Season:</span> {seasonalNudge()}
           </div>
         </div>
 
@@ -126,7 +212,9 @@ function SupplyHubDetail() {
               onClick={() => setTab(t)}
               className={cn(
                 "px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
-                tab === t ? "border-accent text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
+                tab === t
+                  ? "border-accent text-foreground"
+                  : "border-transparent text-muted-foreground hover:text-foreground",
               )}
             >
               {t === "intel" && "Property Intel"}
@@ -142,9 +230,27 @@ function SupplyHubDetail() {
             {/* Pricing */}
             <Card title="Pricing" icon={Coins}>
               <div className="space-y-1.5 text-sm">
-                {pg.prices.single > 0 && <Row label="Single" value={`₹${pg.prices.single.toLocaleString("en-IN")}/mo`} sub={`₹${perDay(pg.prices.single)}/day`} />}
-                {pg.prices.double > 0 && <Row label="Double" value={`₹${pg.prices.double.toLocaleString("en-IN")}/mo`} sub={`₹${perDay(pg.prices.double)}/day`} />}
-                {pg.prices.triple > 0 && <Row label="Triple" value={`₹${pg.prices.triple.toLocaleString("en-IN")}/mo`} sub={`₹${perDay(pg.prices.triple)}/day`} />}
+                {pg.prices.single > 0 && (
+                  <Row
+                    label="Single"
+                    value={`₹${pg.prices.single.toLocaleString("en-IN")}/mo`}
+                    sub={`₹${perDay(pg.prices.single)}/day`}
+                  />
+                )}
+                {pg.prices.double > 0 && (
+                  <Row
+                    label="Double"
+                    value={`₹${pg.prices.double.toLocaleString("en-IN")}/mo`}
+                    sub={`₹${perDay(pg.prices.double)}/day`}
+                  />
+                )}
+                {pg.prices.triple > 0 && (
+                  <Row
+                    label="Triple"
+                    value={`₹${pg.prices.triple.toLocaleString("en-IN")}/mo`}
+                    sub={`₹${perDay(pg.prices.triple)}/day`}
+                  />
+                )}
                 <Row label="Deposit" value={pg.deposit || "—"} />
                 <Row label="Min stay" value={pg.minStay || "—"} />
               </div>
@@ -170,18 +276,42 @@ function SupplyHubDetail() {
                   <Row label="Auto (peak)" value={`${commute.peakMins} min`} />
                   <div className="text-xs text-accent pt-1">{commute.oneLiner}</div>
                 </div>
-              ) : <div className="text-sm text-muted-foreground">No coordinates available.</div>}
+              ) : (
+                <div className="text-sm text-muted-foreground">No coordinates available.</div>
+              )}
             </Card>
 
             {/* Amenities & Safety */}
             <Card title="Amenities & Safety" icon={ShieldCheck}>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1 mb-1">Amenities</div>
-              <div className="flex flex-wrap gap-1">
-                {pg.amenities.map((a) => <span key={a} className="rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[11px]">{a}</span>)}
+              <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1 mb-1">
+                Amenities
               </div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground mt-3 mb-1">Safety</div>
               <div className="flex flex-wrap gap-1">
-                {pg.safety.length ? pg.safety.map((s) => <span key={s} className="rounded border border-emerald-400/30 bg-emerald-400/10 text-emerald-300 px-1.5 py-0.5 text-[11px]">{s}</span>) : <span className="text-xs text-muted-foreground">Not disclosed</span>}
+                {pg.amenities.map((a) => (
+                  <span
+                    key={a}
+                    className="rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[11px]"
+                  >
+                    {a}
+                  </span>
+                ))}
+              </div>
+              <div className="text-xs uppercase tracking-wider text-muted-foreground mt-3 mb-1">
+                Safety
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {pg.safety.length ? (
+                  pg.safety.map((s) => (
+                    <span
+                      key={s}
+                      className="rounded border border-emerald-400/30 bg-emerald-400/10 text-emerald-300 px-1.5 py-0.5 text-[11px]"
+                    >
+                      {s}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-xs text-muted-foreground">Not disclosed</span>
+                )}
               </div>
             </Card>
 
@@ -207,7 +337,9 @@ function SupplyHubDetail() {
                   <Row label="Weekend" value={mood.weekend} />
                   <Row label="Top companies" value={mood.topCompanies.slice(0, 4).join(", ")} />
                 </div>
-              ) : <div className="text-sm text-muted-foreground">No area intel.</div>}
+              ) : (
+                <div className="text-sm text-muted-foreground">No area intel.</div>
+              )}
             </Card>
 
             {/* Nearby landmarks */}
@@ -221,7 +353,9 @@ function SupplyHubDetail() {
                     </div>
                     <div className="text-right">
                       <div>{lm.d < 1 ? `${Math.round(lm.d * 1000)}m` : `${lm.d}km`}</div>
-                      <div className="text-muted-foreground">{lm.w <= 0 ? "<1 min walk" : `${lm.w} min walk`}</div>
+                      <div className="text-muted-foreground">
+                        {lm.w <= 0 ? "<1 min walk" : `${lm.w} min walk`}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -234,7 +368,12 @@ function SupplyHubDetail() {
                 {Object.entries(pg.iqBreakdown).map(([k, v]) => (
                   <div key={k} className="flex items-center justify-between text-xs">
                     <span>{k}</span>
-                    <span className={cn("font-mono", v.ok ? "text-emerald-400" : "text-muted-foreground/60")}>
+                    <span
+                      className={cn(
+                        "font-mono",
+                        v.ok ? "text-emerald-400" : "text-muted-foreground/60",
+                      )}
+                    >
                       {v.earned}/{v.max}
                     </span>
                   </div>
@@ -254,9 +393,13 @@ function SupplyHubDetail() {
               </div>
               {pg.persona.painPoints?.length > 0 && (
                 <>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground mt-3 mb-1">Pain points</div>
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground mt-3 mb-1">
+                    Pain points
+                  </div>
                   <ul className="text-xs list-disc pl-4 space-y-0.5 text-muted-foreground">
-                    {pg.persona.painPoints.map((p, i) => <li key={i}>{p}</li>)}
+                    {pg.persona.painPoints.map((p, i) => (
+                      <li key={i}>{p}</li>
+                    ))}
                   </ul>
                 </>
               )}
@@ -268,8 +411,18 @@ function SupplyHubDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <MessageCard title="WhatsApp card" body={waCard} pgPhone={pg.manager.phone} />
             <MessageCard title="Full brochure" body={brochure} pgPhone={pg.manager.phone} />
-            {pg.gender === "Girls" && <MessageCard title="Parent safety pack" body={parentPack} pgPhone={pg.manager.phone} />}
-            <MessageCard title="Re-engagement (got price)" body={reengage} pgPhone={pg.manager.phone} />
+            {pg.gender === "Girls" && (
+              <MessageCard
+                title="Parent safety pack"
+                body={parentPack}
+                pgPhone={pg.manager.phone}
+              />
+            )}
+            <MessageCard
+              title="Re-engagement (got price)"
+              body={reengage}
+              pgPhone={pg.manager.phone}
+            />
           </div>
         )}
 
@@ -277,10 +430,30 @@ function SupplyHubDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card title="Call 1 — discovery" icon={Phone}>
               <div className="space-y-2 text-sm">
-                <div><span className="text-xs uppercase tracking-wider text-muted-foreground">Goal</span><div>{pg.scripts.call1.goal}</div></div>
-                <div><span className="text-xs uppercase tracking-wider text-muted-foreground">Opening</span><div className="italic">"{pg.scripts.call1.opening}"</div></div>
-                <div><span className="text-xs uppercase tracking-wider text-muted-foreground">Hook</span><div className="italic">"{pg.scripts.call1.hook}"</div></div>
-                <div><span className="text-xs uppercase tracking-wider text-muted-foreground">Close</span><div className="italic">"{pg.scripts.call1.close}"</div></div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Goal
+                  </span>
+                  <div>{pg.scripts.call1.goal}</div>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Opening
+                  </span>
+                  <div className="italic">"{pg.scripts.call1.opening}"</div>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Hook
+                  </span>
+                  <div className="italic">"{pg.scripts.call1.hook}"</div>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Close
+                  </span>
+                  <div className="italic">"{pg.scripts.call1.close}"</div>
+                </div>
               </div>
             </Card>
             <Card title="Call 2 — objections" icon={MessageCircle}>
@@ -304,11 +477,21 @@ function SupplyHubDetail() {
             </Card>
             <Card title="Money script" icon={Coins}>
               <div className="space-y-1 text-sm">
-                <div className="text-xs uppercase tracking-wider text-muted-foreground">Breakdown</div>
-                <ul className="list-disc pl-4 text-xs space-y-0.5">{pg.scripts.money.breakdown.map((b, i) => <li key={i}>{b}</li>)}</ul>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-2">Pay later</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Breakdown
+                </div>
+                <ul className="list-disc pl-4 text-xs space-y-0.5">
+                  {pg.scripts.money.breakdown.map((b, i) => (
+                    <li key={i}>{b}</li>
+                  ))}
+                </ul>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-2">
+                  Pay later
+                </div>
                 <div className="text-xs">{pg.scripts.money.payLater}</div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-2">Deposit objection</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-2">
+                  Deposit objection
+                </div>
                 <div className="text-xs">{pg.scripts.money.depositObjection}</div>
               </div>
             </Card>
@@ -324,33 +507,58 @@ function SupplyHubDetail() {
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <div className="text-sm font-semibold">If lead objects:</div>
                 {OBJECTIONS.map((o) => (
-                  <button key={o.key} onClick={() => setObj(o.key)} className={cn("rounded-md border px-2 py-1 text-xs", obj === o.key ? "border-accent bg-accent/10 text-accent" : "border-border hover:bg-muted")}>
+                  <button
+                    key={o.key}
+                    onClick={() => setObj(o.key)}
+                    className={cn(
+                      "rounded-md border px-2 py-1 text-xs",
+                      obj === o.key
+                        ? "border-accent bg-accent/10 text-accent"
+                        : "border-border hover:bg-muted",
+                    )}
+                  >
                     {o.label}
                   </button>
                 ))}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {alts.length === 0 && <div className="text-sm text-muted-foreground">No alternatives in this area.</div>}
-                {alts.map((alt) => <AltTile key={alt.id} pg={alt} />)}
+                {alts.length === 0 && (
+                  <div className="text-sm text-muted-foreground">No alternatives in this area.</div>
+                )}
+                {alts.map((alt) => (
+                  <AltTile key={alt.id} pg={alt} />
+                ))}
               </div>
               {alts.length > 0 && (
                 <div className="mt-3">
-                  <CopyBtn label="Copy 3-options WhatsApp message" text={buildThreeOptions(alts, { gender: pg.gender })} />
+                  <CopyBtn
+                    label="Copy 3-options WhatsApp message"
+                    text={buildThreeOptions(alts, { gender: pg.gender })}
+                  />
                 </div>
               )}
             </div>
 
             <div>
-              <div className="text-sm font-semibold mb-3">Budget stretch — what +₹2k / +₹5k unlocks</div>
+              <div className="text-sm font-semibold mb-3">
+                Budget stretch — what +₹2k / +₹5k unlocks
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {stretch.map((s) => (
                   <div key={s.budget} className="rounded-lg border bg-card p-4">
-                    <div className="font-display text-lg font-semibold">₹{(s.budget / 1000).toFixed(0)}k <span className="text-xs text-muted-foreground">+ ₹{s.perDayDelta}/day</span></div>
+                    <div className="font-display text-lg font-semibold">
+                      ₹{(s.budget / 1000).toFixed(0)}k{" "}
+                      <span className="text-xs text-muted-foreground">+ ₹{s.perDayDelta}/day</span>
+                    </div>
                     <div className="text-xs text-muted-foreground mt-1 mb-2">Unlocks:</div>
                     <ul className="text-xs list-disc pl-4 space-y-0.5">
-                      {s.unlocks.map((u, i) => <li key={i}>{u}</li>)}
+                      {s.unlocks.map((u, i) => (
+                        <li key={i}>{u}</li>
+                      ))}
                     </ul>
-                    <div className="mt-2 text-[10px] text-muted-foreground">{s.pgs.length} options at this tier</div>
+                    <div className="mt-2 text-[10px] text-muted-foreground">
+                      {s.pgs.length} options at this tier
+                    </div>
                   </div>
                 ))}
               </div>
@@ -362,7 +570,17 @@ function SupplyHubDetail() {
   );
 }
 
-function Card({ title, icon: Icon, children, accent }: { title: string; icon: React.ComponentType<{ className?: string }>; children: React.ReactNode; accent?: boolean }) {
+function Card({
+  title,
+  icon: Icon,
+  children,
+  accent,
+}: {
+  title: string;
+  icon: React.ComponentType<{ className?: string }>;
+  children: React.ReactNode;
+  accent?: boolean;
+}) {
   return (
     <div className={cn("rounded-lg border bg-card p-4", accent && "border-accent/40")}>
       <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-3">
@@ -378,26 +596,47 @@ function Row({ label, value, sub }: { label: string; value: React.ReactNode; sub
   return (
     <div className="flex items-baseline justify-between gap-3">
       <span className="text-xs text-muted-foreground">{label}</span>
-      <span className="text-sm text-right">{value}{sub && <span className="text-[10px] text-muted-foreground ml-1">({sub})</span>}</span>
+      <span className="text-sm text-right">
+        {value}
+        {sub && <span className="text-[10px] text-muted-foreground ml-1">({sub})</span>}
+      </span>
     </div>
   );
 }
 
 function BedRow({ label, left }: { label: string; left: number | null }) {
-  if (left === null) return <Row label={label} value={<span className="text-muted-foreground/60">Not offered</span>} />;
+  if (left === null)
+    return (
+      <Row label={label} value={<span className="text-muted-foreground/60">Not offered</span>} />
+    );
   const tone = left === 0 ? "text-rose-400" : left <= 2 ? "text-amber-300" : "text-emerald-400";
-  return <Row label={label} value={<span className={tone}>{left === 0 ? "Full" : `${left} left`}</span>} />;
+  return (
+    <Row
+      label={label}
+      value={<span className={tone}>{left === 0 ? "Full" : `${left} left`}</span>}
+    />
+  );
 }
 
-function AltTile({ pg }: { pg: typeof PGS[number] }) {
-  const cheap = Math.min(...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999));
+function AltTile({ pg }: { pg: (typeof PGS)[number] }) {
+  const cheap = Math.min(
+    ...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999),
+  );
   return (
-    <Link to="/supply-hub/$id" params={{ id: pg.id }} className="block rounded-lg border bg-card p-3 hover:border-accent/50">
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{pg.area} · {pg.tier}</div>
+    <Link
+      to="/supply-hub/$id"
+      params={{ id: pg.id }}
+      className="block rounded-lg border bg-card p-3 hover:border-accent/50"
+    >
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+        {pg.area} · {pg.tier}
+      </div>
       <div className="font-semibold text-sm mt-0.5 truncate">{pg.name}</div>
       <div className="mt-1 flex items-center justify-between text-xs">
         <span className="text-muted-foreground">IQ {pg.iq}</span>
-        <span className="font-semibold">{cheap < 99999 ? `₹${(cheap / 1000).toFixed(0)}k` : "—"}</span>
+        <span className="font-semibold">
+          {cheap < 99999 ? `₹${(cheap / 1000).toFixed(0)}k` : "—"}
+        </span>
       </div>
     </Link>
   );
@@ -407,15 +646,24 @@ function MessageCard({ title, body, pgPhone }: { title: string; body: string; pg
   return (
     <div className="rounded-lg border bg-card p-4">
       <div className="flex items-center justify-between mb-3">
-        <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">{title}</div>
+        <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+          {title}
+        </div>
         <div className="flex gap-1.5">
           <CopyBtn label="Copy" text={body} />
-          <a href={waLink(pgPhone, body)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1 text-xs text-accent-foreground hover:opacity-90">
+          <a
+            href={waLink(pgPhone, body)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-1 text-xs text-accent-foreground hover:opacity-90"
+          >
             <MessageCircle className="h-3 w-3" /> Send
           </a>
         </div>
       </div>
-      <pre className="text-xs whitespace-pre-wrap font-sans bg-muted/20 rounded p-3 max-h-96 overflow-y-auto scrollbar-thin">{body}</pre>
+      <pre className="text-xs whitespace-pre-wrap font-sans bg-muted/20 rounded p-3 max-h-96 overflow-y-auto scrollbar-thin">
+        {body}
+      </pre>
     </div>
   );
 }
@@ -426,7 +674,10 @@ function CopyBtn({ label, text }: { label: string; text: string }) {
     <button
       type="button"
       onClick={() => {
-        navigator.clipboard?.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1200); });
+        navigator.clipboard?.writeText(text).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1200);
+        });
       }}
       className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs hover:bg-muted"
     >

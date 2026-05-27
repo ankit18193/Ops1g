@@ -64,10 +64,7 @@ function lev(a: string, b: string): number {
     dp[0] = i;
     for (let j = 1; j <= n; j++) {
       const tmp = dp[j];
-      dp[j] =
-        a[i - 1] === b[j - 1]
-          ? prev
-          : 1 + Math.min(prev, dp[j], dp[j - 1]);
+      dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j], dp[j - 1]);
       prev = tmp;
     }
   }

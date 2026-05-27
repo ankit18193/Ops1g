@@ -14,7 +14,14 @@ interface Props {
   className?: string;
 }
 
-export function CopyButton({ text, size = "sm", variant = "secondary", label = "Copy", onCopied, className }: Props) {
+export function CopyButton({
+  text,
+  size = "sm",
+  variant = "secondary",
+  label = "Copy",
+  onCopied,
+  className,
+}: Props) {
   const [copied, setCopied] = useState(false);
   return (
     <Button

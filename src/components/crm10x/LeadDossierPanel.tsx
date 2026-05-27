@@ -8,7 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Phone, Sparkles, Trophy, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { ObjectionLogger } from "./ObjectionLogger";
@@ -28,7 +34,10 @@ export function LeadDossierPanel({ lead }: { lead: Lead }) {
   const logCall = useCRM10x((s) => s.logCall);
 
   const tours = useMemo(() => allTours.filter((t) => t.leadId === lead.id), [allTours, lead.id]);
-  const objections = useMemo(() => allObjections.filter((o) => o.leadId === lead.id), [allObjections, lead.id]);
+  const objections = useMemo(
+    () => allObjections.filter((o) => o.leadId === lead.id),
+    [allObjections, lead.id],
+  );
   const calls = useMemo(() => allCalls.filter((c) => c.leadId === lead.id), [allCalls, lead.id]);
   const visits = useMemo(
     () => Object.values(visitsRecord).filter((v) => v.leadId === lead.id),
@@ -60,13 +69,18 @@ export function LeadDossierPanel({ lead }: { lead: Lead }) {
       loggedBy: lead.assignedTcmId,
     });
     toast.success("Call logged");
-    setNotes(""); setBestCallTime("");
+    setNotes("");
+    setBestCallTime("");
   };
 
-  const tone = probability.score >= 75 ? "text-success border-success/40 bg-success/10"
-    : probability.score >= 50 ? "text-accent border-accent/40 bg-accent/10"
-    : probability.score >= 30 ? "text-warning border-warning/40 bg-warning/10"
-    : "text-muted-foreground border-border bg-muted/40";
+  const tone =
+    probability.score >= 75
+      ? "text-success border-success/40 bg-success/10"
+      : probability.score >= 50
+        ? "text-accent border-accent/40 bg-accent/10"
+        : probability.score >= 30
+          ? "text-warning border-warning/40 bg-warning/10"
+          : "text-muted-foreground border-border bg-muted/40";
 
   return (
     <div className="space-y-4">
@@ -85,7 +99,8 @@ export function LeadDossierPanel({ lead }: { lead: Lead }) {
               key={i}
               className={`text-[10px] px-1.5 py-0.5 rounded-md ${s.impact > 0 ? "bg-success/20 text-success" : "bg-destructive/20 text-destructive"}`}
             >
-              {s.impact > 0 ? "+" : ""}{s.impact} · {s.label}
+              {s.impact > 0 ? "+" : ""}
+              {s.impact} · {s.label}
             </span>
           ))}
         </div>
@@ -108,13 +123,24 @@ export function LeadDossierPanel({ lead }: { lead: Lead }) {
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Duration (sec)</Label>
-            <Input type="number" className="h-8 text-xs" value={duration} onChange={(e) => setDuration(Number(e.target.value))} />
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Duration (sec)
+            </Label>
+            <Input
+              type="number"
+              className="h-8 text-xs"
+              value={duration}
+              onChange={(e) => setDuration(Number(e.target.value))}
+            />
           </div>
           <div>
-            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Outcome</Label>
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Outcome
+            </Label>
             <Select value={outcome} onValueChange={(v) => setOutcome(v as CallOutcome)}>
-              <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="answered">Answered</SelectItem>
                 <SelectItem value="not-answered">Not answered</SelectItem>
@@ -126,9 +152,13 @@ export function LeadDossierPanel({ lead }: { lead: Lead }) {
             </Select>
           </div>
           <div>
-            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Language</Label>
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Language
+            </Label>
             <Select value={language} onValueChange={(v) => setLanguage(v as LangPref)}>
-              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="—" /></SelectTrigger>
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue placeholder="—" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="english">English</SelectItem>
                 <SelectItem value="hindi">Hindi</SelectItem>
@@ -138,17 +168,35 @@ export function LeadDossierPanel({ lead }: { lead: Lead }) {
             </Select>
           </div>
           <div>
-            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Best call time</Label>
-            <Input className="h-8 text-xs" placeholder="after 6 PM" value={bestCallTime} onChange={(e) => setBestCallTime(e.target.value)} />
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Best call time
+            </Label>
+            <Input
+              className="h-8 text-xs"
+              placeholder="after 6 PM"
+              value={bestCallTime}
+              onChange={(e) => setBestCallTime(e.target.value)}
+            />
           </div>
         </div>
-        <Textarea rows={2} className="text-xs resize-none" placeholder="Notes…" value={notes} onChange={(e) => setNotes(e.target.value)} />
-        <Button size="sm" className="w-full h-8 text-xs" onClick={submitCall}>Log call</Button>
+        <Textarea
+          rows={2}
+          className="text-xs resize-none"
+          placeholder="Notes…"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
+        <Button size="sm" className="w-full h-8 text-xs" onClick={submitCall}>
+          Log call
+        </Button>
       </div>
 
       {/* Objection logger (only meaningful when call answered or visit done) */}
       {(outcome === "answered" || tours.some((t) => t.status === "completed")) && (
-        <ObjectionLogger lead={lead} context={tours.some((t) => t.status === "completed") ? "visit" : "call"} />
+        <ObjectionLogger
+          lead={lead}
+          context={tours.some((t) => t.status === "completed") ? "visit" : "call"}
+        />
       )}
 
       <SmartWaLayer lead={lead} />
@@ -161,7 +209,10 @@ export function LeadDossierPanel({ lead }: { lead: Lead }) {
           </div>
           {objections.slice(0, 4).map((o) => (
             <div key={o.id} className="text-[11px] border-l-2 border-border pl-2">
-              <div className="font-medium">{o.code}{o.resolution === "yes" && " · ✓ resolved"}</div>
+              <div className="font-medium">
+                {o.code}
+                {o.resolution === "yes" && " · ✓ resolved"}
+              </div>
               {o.leadWords && <div className="italic text-muted-foreground">"{o.leadWords}"</div>}
               {o.handling && <div className="text-muted-foreground">→ {o.handling}</div>}
             </div>

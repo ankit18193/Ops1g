@@ -3,8 +3,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type {
-  UnifiedLead, AccessRequest, ActivityEntry, ParsedLeadDraft,
-  MatchResult, ActivityKind, LifecycleState,
+  UnifiedLead,
+  AccessRequest,
+  ActivityEntry,
+  ParsedLeadDraft,
+  MatchResult,
+  ActivityKind,
+  LifecycleState,
 } from "./types";
 import { newUlid, normalizePhoneIN, normalizeEmail, parseBudgetToNumber } from "./normalize";
 import { findMatches } from "./similarity";
@@ -40,7 +45,12 @@ interface IdentityStore {
   ) => UnifiedLead;
 
   /** Append an activity to a lead's timeline. */
-  logActivity: (ulid: string, kind: ActivityKind, text: string, meta?: Record<string, unknown>) => void;
+  logActivity: (
+    ulid: string,
+    kind: ActivityKind,
+    text: string,
+    meta?: Record<string, unknown>,
+  ) => void;
 
   requestAccess: (ulid: string, message?: string) => AccessRequest | null;
   decideRequest: (id: string, decision: "approved" | "rejected") => void;
@@ -126,13 +136,19 @@ export const useIdentityStore = create<IdentityStore>()(
         const user = get().currentUser;
         const entry: ActivityEntry = {
           id: `act_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-          ulid, ts: nowIso(),
-          actorId: user.id, actorName: user.name,
-          kind, text, meta,
+          ulid,
+          ts: nowIso(),
+          actorId: user.id,
+          actorName: user.name,
+          kind,
+          text,
+          meta,
         };
         set((s) => ({
           activities: [entry, ...s.activities],
-          leads: s.leads.map((l) => l.ulid === ulid ? { ...l, lastActivityAt: entry.ts, updatedAt: entry.ts } : l),
+          leads: s.leads.map((l) =>
+            l.ulid === ulid ? { ...l, lastActivityAt: entry.ts, updatedAt: entry.ts } : l,
+          ),
         }));
       },
 
@@ -166,37 +182,43 @@ export const useIdentityStore = create<IdentityStore>()(
         if (!req) return;
         const ts = nowIso();
         set((s) => ({
-          requests: s.requests.map((r) => r.id === id ? { ...r, state: decision, decidedAt: ts } : r),
+          requests: s.requests.map((r) =>
+            r.id === id ? { ...r, state: decision, decidedAt: ts } : r,
+          ),
         }));
         if (decision === "approved") {
           get().setSecondaryOwner(req.ulid, req.requesterId, req.requesterName);
           get().logActivity(req.ulid, "access-granted", `Access granted to ${req.requesterName}`);
         } else {
-          get().logActivity(req.ulid, "access-rejected", `Access rejected for ${req.requesterName}`);
+          get().logActivity(
+            req.ulid,
+            "access-rejected",
+            `Access rejected for ${req.requesterName}`,
+          );
         }
       },
 
       setSecondaryOwner: (ulid, ownerId, ownerName) => {
         set((s) => ({
-          leads: s.leads.map((l) => l.ulid === ulid
-            ? { ...l, secondaryOwnerId: ownerId, updatedAt: nowIso() }
-            : l),
+          leads: s.leads.map((l) =>
+            l.ulid === ulid ? { ...l, secondaryOwnerId: ownerId, updatedAt: nowIso() } : l,
+          ),
         }));
         get().logActivity(ulid, "secondary-added", `${ownerName} added as secondary owner`);
       },
 
       reassignPrimary: (ulid, ownerId, ownerName, reason) => {
         set((s) => ({
-          leads: s.leads.map((l) => l.ulid === ulid
-            ? { ...l, primaryOwnerId: ownerId, updatedAt: nowIso() }
-            : l),
+          leads: s.leads.map((l) =>
+            l.ulid === ulid ? { ...l, primaryOwnerId: ownerId, updatedAt: nowIso() } : l,
+          ),
         }));
         get().logActivity(ulid, "owner-changed", `Primary owner → ${ownerName} (${reason})`);
       },
 
       setLifecycleState: (ulid, state) => {
         set((s) => ({
-          leads: s.leads.map((l) => l.ulid === ulid ? { ...l, state, updatedAt: nowIso() } : l),
+          leads: s.leads.map((l) => (l.ulid === ulid ? { ...l, state, updatedAt: nowIso() } : l)),
         }));
         get().logActivity(ulid, "state-changed", `State → ${state}`);
       },

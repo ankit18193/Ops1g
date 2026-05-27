@@ -16,7 +16,7 @@ export interface ProbabilityInput {
 }
 
 export interface ProbabilityBreakdown {
-  score: number;            // 0-100 booking probability
+  score: number; // 0-100 booking probability
   signals: { label: string; impact: number }[];
   recommendation: string;
 }
@@ -28,33 +28,69 @@ export function computeBookingProbability(input: ProbabilityInput): ProbabilityB
 
   // Move-in proximity
   const days = (new Date(lead.moveInDate).getTime() - Date.now()) / 86400000;
-  if (days <= 7) { score += 20; signals.push({ label: "Move-in ≤7d", impact: 20 }); }
-  else if (days <= 15) { score += 12; signals.push({ label: "Move-in ≤15d", impact: 12 }); }
-  else if (days <= 30) { score += 6; signals.push({ label: "Move-in ≤30d", impact: 6 }); }
-  else { score -= 4; signals.push({ label: "Move-in >30d", impact: -4 }); }
+  if (days <= 7) {
+    score += 20;
+    signals.push({ label: "Move-in ≤7d", impact: 20 });
+  } else if (days <= 15) {
+    score += 12;
+    signals.push({ label: "Move-in ≤15d", impact: 12 });
+  } else if (days <= 30) {
+    score += 6;
+    signals.push({ label: "Move-in ≤30d", impact: 6 });
+  } else {
+    score -= 4;
+    signals.push({ label: "Move-in >30d", impact: -4 });
+  }
 
   // Verified budget / move-in
-  if (profile?.verifiedBudget) { score += 8; signals.push({ label: "Budget verified", impact: 8 }); }
-  if (profile?.verifiedMoveIn) { score += 6; signals.push({ label: "Move-in verified", impact: 6 }); }
+  if (profile?.verifiedBudget) {
+    score += 8;
+    signals.push({ label: "Budget verified", impact: 8 });
+  }
+  if (profile?.verifiedMoveIn) {
+    score += 6;
+    signals.push({ label: "Move-in verified", impact: 6 });
+  }
 
   // Decision authority
-  if (profile?.decisionMaker === "self") { score += 8; signals.push({ label: "Self-deciding", impact: 8 }); }
-  else if (profile?.decisionMaker === "parents") { score -= 4; signals.push({ label: "Needs parental approval", impact: -4 }); }
-  else if (profile?.decisionMaker === "company-hr") { score -= 6; signals.push({ label: "Needs HR approval", impact: -6 }); }
+  if (profile?.decisionMaker === "self") {
+    score += 8;
+    signals.push({ label: "Self-deciding", impact: 8 });
+  } else if (profile?.decisionMaker === "parents") {
+    score -= 4;
+    signals.push({ label: "Needs parental approval", impact: -4 });
+  } else if (profile?.decisionMaker === "company-hr") {
+    score -= 6;
+    signals.push({ label: "Needs HR approval", impact: -6 });
+  }
 
   // Competing PGs
   const competing = profile?.shortlistedCount ?? 0;
-  if (competing >= 4) { score -= 10; signals.push({ label: `${competing} competing PGs`, impact: -10 }); }
-  else if (competing === 0) { score += 4; signals.push({ label: "No competition", impact: 4 }); }
+  if (competing >= 4) {
+    score -= 10;
+    signals.push({ label: `${competing} competing PGs`, impact: -10 });
+  } else if (competing === 0) {
+    score += 4;
+    signals.push({ label: "No competition", impact: 4 });
+  }
 
   // Tours done
   const completedTours = tours.filter((t) => t.status === "completed").length;
-  if (completedTours >= 1) { score += 12; signals.push({ label: "Visit done", impact: 12 }); }
+  if (completedTours >= 1) {
+    score += 12;
+    signals.push({ label: "Visit done", impact: 12 });
+  }
 
   // Visit reaction
   const lastVisit = visits.sort((a, b) => (b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""))[0];
-  if (lastVisit?.reaction === "loved") { score += 12; signals.push({ label: "Loved the property", impact: 12 }); }
-  if (lastVisit?.reaction === "disappointed") { score -= 14; signals.push({ label: "Disappointed at visit", impact: -14 }); }
+  if (lastVisit?.reaction === "loved") {
+    score += 12;
+    signals.push({ label: "Loved the property", impact: 12 });
+  }
+  if (lastVisit?.reaction === "disappointed") {
+    score -= 14;
+    signals.push({ label: "Disappointed at visit", impact: -14 });
+  }
 
   // Unresolved objections
   const unresolved = objections.filter((o) => o.code !== "none" && o.resolution !== "yes");
@@ -66,17 +102,27 @@ export function computeBookingProbability(input: ProbabilityInput): ProbabilityB
 
   // Recent contact
   const lastCall = calls[0];
-  const lastCallDays = lastCall ? (Date.now() - new Date(lastCall.ts).getTime()) / 86400000 : Infinity;
-  if (lastCallDays <= 1) { score += 4; signals.push({ label: "Contacted today", impact: 4 }); }
-  else if (lastCallDays >= 7) { score -= 8; signals.push({ label: "No contact in 7d+", impact: -8 }); }
+  const lastCallDays = lastCall
+    ? (Date.now() - new Date(lastCall.ts).getTime()) / 86400000
+    : Infinity;
+  if (lastCallDays <= 1) {
+    score += 4;
+    signals.push({ label: "Contacted today", impact: 4 });
+  } else if (lastCallDays >= 7) {
+    score -= 8;
+    signals.push({ label: "No contact in 7d+", impact: -8 });
+  }
 
   score = Math.max(0, Math.min(100, Math.round(score)));
 
   const recommendation =
-    score >= 75 ? "Push for token now — call within 2h."
-    : score >= 50 ? "Send fresh property options + price reassurance."
-    : score >= 30 ? "Re-qualify on call: budget, move-in, decision-maker."
-    : "Cold — drop into 30/60/90d revival sequence.";
+    score >= 75
+      ? "Push for token now — call within 2h."
+      : score >= 50
+        ? "Send fresh property options + price reassurance."
+        : score >= 30
+          ? "Re-qualify on call: budget, move-in, decision-maker."
+          : "Cold — drop into 30/60/90d revival sequence.";
 
   return { score, signals, recommendation };
 }
@@ -98,7 +144,9 @@ export function inferBestCallTime(calls: CallRecord[]): string | null {
 }
 
 /** Aggregate top objections across all leads. */
-export function topObjections(objections: ObjectionRecord[]): { code: string; count: number; pct: number }[] {
+export function topObjections(
+  objections: ObjectionRecord[],
+): { code: string; count: number; pct: number }[] {
   const filtered = objections.filter((o) => o.code !== "none");
   const total = filtered.length || 1;
   const map = new Map<string, number>();
@@ -121,9 +169,17 @@ export function avgStageVelocity(leads: Lead[]): number {
 
 /** Conversion funnel between consecutive stages. */
 export function funnelMetrics(leads: Lead[]) {
-  const order: Lead["stage"][] = ["new","contacted","tour-scheduled","tour-done","negotiation","booked"];
-  const counts = order.map((stage) => leads.filter((l) =>
-    order.indexOf(l.stage) >= order.indexOf(stage)).length);
+  const order: Lead["stage"][] = [
+    "new",
+    "contacted",
+    "tour-scheduled",
+    "tour-done",
+    "negotiation",
+    "booked",
+  ];
+  const counts = order.map(
+    (stage) => leads.filter((l) => order.indexOf(l.stage) >= order.indexOf(stage)).length,
+  );
   return order.map((stage, i) => {
     const next = i < order.length - 1 ? counts[i + 1] : counts[i];
     const conv = counts[i] === 0 ? 0 : Math.round((next / counts[i]) * 100);

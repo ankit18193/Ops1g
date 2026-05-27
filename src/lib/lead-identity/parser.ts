@@ -17,57 +17,184 @@ interface ZoneDef {
 
 const ZONES: ZoneDef[] = [
   {
-    zone: "South", priority: 1,
+    zone: "South",
+    priority: 1,
     keywords: [
-      "koramangala","kormangala","kormagalam","kormanagala","korma","btm layout","btm","jayanagar","jaynagar","jp nagar","jpnagar",
-      "hsr layout","hsr","banashankari","basavanagudi","lalbagh","south end","southend",
-      "electronic city","neeladri","begur","bommanahalli","hulimavu",
-      "sg palya","silk board","silkboard","agara","madiwala","tavarekere",
-      "christ university","bannerghatta","kanakapura","kalena agrahara",
-      "hosur road","forum mall","vv puram","jayadev hospital",
-      "jayanagar 9th","btm 2nd stage","btm stage 2","koramangala 3rd",
-      "koramangala 4th","koramangala 5th","koramangala 6th",
-      "umiya emporium","nexus mall",
+      "koramangala",
+      "kormangala",
+      "kormagalam",
+      "kormanagala",
+      "korma",
+      "btm layout",
+      "btm",
+      "jayanagar",
+      "jaynagar",
+      "jp nagar",
+      "jpnagar",
+      "hsr layout",
+      "hsr",
+      "banashankari",
+      "basavanagudi",
+      "lalbagh",
+      "south end",
+      "southend",
+      "electronic city",
+      "neeladri",
+      "begur",
+      "bommanahalli",
+      "hulimavu",
+      "sg palya",
+      "silk board",
+      "silkboard",
+      "agara",
+      "madiwala",
+      "tavarekere",
+      "christ university",
+      "bannerghatta",
+      "kanakapura",
+      "kalena agrahara",
+      "hosur road",
+      "forum mall",
+      "vv puram",
+      "jayadev hospital",
+      "jayanagar 9th",
+      "btm 2nd stage",
+      "btm stage 2",
+      "koramangala 3rd",
+      "koramangala 4th",
+      "koramangala 5th",
+      "koramangala 6th",
+      "umiya emporium",
+      "nexus mall",
     ],
   },
   {
-    zone: "East", priority: 2,
+    zone: "East",
+    priority: 2,
     keywords: [
-      "whitefield","white field","hopefarm","itpl","kundanahalli","kundalahalli","kadugodi",
-      "brookfield","hoodi","garudacharpalya","varthur","nallurhalli","kr puram","seetharampalya","seetharam palya",
-      "bellandur","sarjapur","ecospace","embassy tech village","prestige tech park","prestige technopark","yemalur",
-      "indiranagar","indranagar","indira nagar","domlur","ejipura","murgeshpalya",
-      "cv raman nagar","new thippasandra","old airport road","airport road","hal",
-      "marathahalli","marathalli","mahadevapura","mahadevpura","bagmane","brigade tech",
-      "kadubeesanahalli","kadubeesana","spice garden","phoenix market city","brigade metropolis",
-      "rmz infinity","prestige shantiniketan","whitefield metro","aecs layout","aecs",
+      "whitefield",
+      "white field",
+      "hopefarm",
+      "itpl",
+      "kundanahalli",
+      "kundalahalli",
+      "kadugodi",
+      "brookfield",
+      "hoodi",
+      "garudacharpalya",
+      "varthur",
+      "nallurhalli",
+      "kr puram",
+      "seetharampalya",
+      "seetharam palya",
+      "bellandur",
+      "sarjapur",
+      "ecospace",
+      "embassy tech village",
+      "prestige tech park",
+      "prestige technopark",
+      "yemalur",
+      "indiranagar",
+      "indranagar",
+      "indira nagar",
+      "domlur",
+      "ejipura",
+      "murgeshpalya",
+      "cv raman nagar",
+      "new thippasandra",
+      "old airport road",
+      "airport road",
+      "hal",
+      "marathahalli",
+      "marathalli",
+      "mahadevapura",
+      "mahadevpura",
+      "bagmane",
+      "brigade tech",
+      "kadubeesanahalli",
+      "kadubeesana",
+      "spice garden",
+      "phoenix market city",
+      "brigade metropolis",
+      "rmz infinity",
+      "prestige shantiniketan",
+      "whitefield metro",
+      "aecs layout",
+      "aecs",
     ],
   },
   {
-    zone: "North", priority: 3,
+    zone: "North",
+    priority: 3,
     keywords: [
-      "yelahanka","hebbal","manyata tech","manyata","manyatha","nagawara","thanisandra",
-      "jakkur","banaswadi","kalyan nagar","rt nagar","sahakara nagar","devanahalli",
-      "vidyaranyapura","jalahalli","bhartiya","embassy boulevard",
-      "nagasandra","hennur","peenya","yeshwanthpur","ypr",
+      "yelahanka",
+      "hebbal",
+      "manyata tech",
+      "manyata",
+      "manyatha",
+      "nagawara",
+      "thanisandra",
+      "jakkur",
+      "banaswadi",
+      "kalyan nagar",
+      "rt nagar",
+      "sahakara nagar",
+      "devanahalli",
+      "vidyaranyapura",
+      "jalahalli",
+      "bhartiya",
+      "embassy boulevard",
+      "nagasandra",
+      "hennur",
+      "peenya",
+      "yeshwanthpur",
+      "ypr",
     ],
   },
   {
-    zone: "West", priority: 4,
+    zone: "West",
+    priority: 4,
     keywords: [
-      "rajajinagar","vijaynagar","vijaya nagar","yeswanthpur",
-      "nagarbhavi","chord road","mahalakshmi layout","malleshwaram","tumkur road",
-      "sanjayanagara","chandra layout",
+      "rajajinagar",
+      "vijaynagar",
+      "vijaya nagar",
+      "yeswanthpur",
+      "nagarbhavi",
+      "chord road",
+      "mahalakshmi layout",
+      "malleshwaram",
+      "tumkur road",
+      "sanjayanagara",
+      "chandra layout",
     ],
   },
   {
-    zone: "Central", priority: 5,
+    zone: "Central",
+    priority: 5,
     keywords: [
-      "mg road","brigade road","richmond road","richmond circle","shanthinagar",
-      "ashok nagar","vittal mallya","jayamahal","majestic",
-      "gandhi nagar","frazer town","cubbon park","ub city","vasanth nagar",
-      "trinity circle","halasuru","church street","lavelle road",
-      "residency road","museum road","adugodi","wilson garden","cunningham",
+      "mg road",
+      "brigade road",
+      "richmond road",
+      "richmond circle",
+      "shanthinagar",
+      "ashok nagar",
+      "vittal mallya",
+      "jayamahal",
+      "majestic",
+      "gandhi nagar",
+      "frazer town",
+      "cubbon park",
+      "ub city",
+      "vasanth nagar",
+      "trinity circle",
+      "halasuru",
+      "church street",
+      "lavelle road",
+      "residency road",
+      "museum road",
+      "adugodi",
+      "wilson garden",
+      "cunningham",
     ],
   },
 ];
@@ -83,16 +210,33 @@ export function detectZone(rawText: string): string {
 
 const EMOJI_RE = /[📝📱✉️📍💰📆📅👨🏢👫✨💥💯⚡🔥💛😘🏠🎯👥📞👤💼🛏️🥵✅❌⭐]/g;
 
-const NULL_WORD_RE = /\b(?:name|form|full|thank\s*you|thanks|gharpayy|gharpayy\.com|your\s+superstay\s+awaits|best\s+pg\s+in\s+10\s+minutes|18\s*sec|aayushi\s+from\s+gharpayy|not\s+filled)\b/gi;
+const NULL_WORD_RE =
+  /\b(?:name|form|full|thank\s*you|thanks|gharpayy|gharpayy\.com|your\s+superstay\s+awaits|best\s+pg\s+in\s+10\s+minutes|18\s*sec|aayushi\s+from\s+gharpayy|not\s+filled)\b/gi;
 const LINK_RE = /(?:https?:\/\/|www\.)\S+|\b(?:maps\.app\.goo\.gl|goo\.gl|bit\.ly)\/\S+/gi;
 
 const LOCATION_HINTS = [
   ...ZONES.flatMap((z) => z.keywords),
-  "near","opposite","mall","road","layout","circle","stage","cross","main",
-  "metro","station","colony","nagar","palya","puram","halli","village",
+  "near",
+  "opposite",
+  "mall",
+  "road",
+  "layout",
+  "circle",
+  "stage",
+  "cross",
+  "main",
+  "metro",
+  "station",
+  "colony",
+  "nagar",
+  "palya",
+  "puram",
+  "halli",
+  "village",
 ];
 
-const NON_NAME_TOKENS = /\b(name|phone|mobile|email|location|area|budget|move|moving|room|need|special|request|profession|working|student|intern|girls?|boys?|coed|private|shared|sharing|single|double|triple|ac|veg|gym|preferred|in\s*blr|out\s*of)\b/i;
+const NON_NAME_TOKENS =
+  /\b(name|phone|mobile|email|location|area|budget|move|moving|room|need|special|request|profession|working|student|intern|girls?|boys?|coed|private|shared|sharing|single|double|triple|ac|veg|gym|preferred|in\s*blr|out\s*of)\b/i;
 
 // All known label keywords used to *terminate* a previous field's value when
 // a paste arrives on one physical line (no real newlines).
@@ -119,15 +263,17 @@ function cutAtNextLabel(value: string): string {
 
 /** Pre-normalise raw paste: convert literal escape sequences and CRLF to \n. */
 function normalisePaste(raw: string): string {
-  return raw
-    // First handle literal \r\n / \n / \r escape sequences (4-char strings)
-    .replace(/\\r\\n/g, "\n")
-    .replace(/\\n/g, "\n")
-    .replace(/\\r/g, "\n")
-    .replace(/\\t/g, " ")
-    // Then real CRLF
-    .replace(/\r\n/g, "\n")
-    .replace(/\r/g, "\n");
+  return (
+    raw
+      // First handle literal \r\n / \n / \r escape sequences (4-char strings)
+      .replace(/\\r\\n/g, "\n")
+      .replace(/\\n/g, "\n")
+      .replace(/\\r/g, "\n")
+      .replace(/\\t/g, " ")
+      // Then real CRLF
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n")
+  );
 }
 
 function looksLikeName(line: string): boolean {
@@ -137,7 +283,11 @@ function looksLikeName(line: string): boolean {
   if (/@/.test(t)) return false;
   if (NON_NAME_TOKENS.test(t)) return false;
   if (LOCATION_HINTS.some((k) => t.toLowerCase().includes(k))) return false;
-  const words = t.replace(/[^a-zA-Z\s.]/g, "").trim().split(/\s+/).filter(Boolean);
+  const words = t
+    .replace(/[^a-zA-Z\s.]/g, "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
   if (words.length < 1 || words.length > 5) return false;
   return /^[A-Z]/.test(words[0]) || /^[a-z]/.test(words[0]);
 }
@@ -151,21 +301,28 @@ function looksLikeLocation(line: string): boolean {
 }
 
 function looksLikeBudget(line: string): boolean {
-  const t = line.trim().toLowerCase().replace(/[₹,\s]/g, "");
-  return /^\d{3,6}$/.test(t) ||
+  const t = line
+    .trim()
+    .toLowerCase()
+    .replace(/[₹,\s]/g, "");
+  return (
+    /^\d{3,6}$/.test(t) ||
     /^\d+(?:\.\d+)?k$/i.test(t) ||
     /^\d+[-–to]+\d+k?$/i.test(t) ||
-    /^\d+k?[-–to/]+\d+k?$/i.test(t);
+    /^\d+k?[-–to/]+\d+k?$/i.test(t)
+  );
 }
 
 function looksLikeDate(line: string): boolean {
   const t = line.trim().toLowerCase();
   if (t.length > 40) return false;
-  return /^(immediate|asap|now|today|tomorrow)/i.test(t) ||
+  return (
+    /^(immediate|asap|now|today|tomorrow)/i.test(t) ||
     /\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}/.test(t) ||
     /\d{1,2}(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(t) ||
     /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+\d{1,2}/i.test(t) ||
-    /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i.test(t);
+    /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i.test(t)
+  );
 }
 
 function normalizeRoom(text: string): string {
@@ -183,12 +340,30 @@ function extractLinks(text: string): string[] {
 }
 
 function extractBudgets(text: string): string[] {
-  const matches = text.match(/(?:under\s*)?₹?\s*\d{1,2}(?:\.\d+)?\s*(?:k|K|000)?\s*(?:[-–to\/]+\s*₹?\s*\d{1,2}(?:\.\d+)?\s*(?:k|K|000)?)?|\b\d{4,6}\s*(?:to|-|–)\s*\d{4,6}\b/g) ?? [];
-  return [...new Set(matches.map((m) => m.replace(/[₹,()]/g, "").replace(/\s+/g, " ").trim()).filter((m) => /\d/.test(m)))].slice(0, 6);
+  const matches =
+    text.match(
+      /(?:under\s*)?₹?\s*\d{1,2}(?:\.\d+)?\s*(?:k|K|000)?\s*(?:[-–to\/]+\s*₹?\s*\d{1,2}(?:\.\d+)?\s*(?:k|K|000)?)?|\b\d{4,6}\s*(?:to|-|–)\s*\d{4,6}\b/g,
+    ) ?? [];
+  return [
+    ...new Set(
+      matches
+        .map((m) =>
+          m
+            .replace(/[₹,()]/g, "")
+            .replace(/\s+/g, " ")
+            .trim(),
+        )
+        .filter((m) => /\d/.test(m)),
+    ),
+  ].slice(0, 6);
 }
 
 function cleanJunk(text: string): string {
-  return text.replace(NULL_WORD_RE, " ").replace(/[*_`⚡🔥💛🥵]/g, " ").replace(/\s+/g, " ").trim();
+  return text
+    .replace(NULL_WORD_RE, " ")
+    .replace(/[*_`⚡🔥💛🥵]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 /** Title-case a name string, preserving common patronymic letters. */
@@ -256,19 +431,33 @@ export function parseLead(raw: string): ParsedLeadDraft | null {
   // collapse — strip up to first digit / @ / known label.
   if (name) {
     name = name
-      .split(/\s+(?:Phone|Mobile|Email|Location|Budget|Move|Moving|Working|Student|Room|Need)\b/i)[0]
+      .split(
+        /\s+(?:Phone|Mobile|Email|Location|Budget|Move|Moving|Working|Student|Room|Need)\b/i,
+      )[0]
       .replace(/[\d@].*$/, "")
       .replace(/^\W+|\W+$/g, "")
       .trim();
   }
 
   if (!name) {
-    const lines = clean.split("\n").map((l) => l.trim()).filter(Boolean);
+    const lines = clean
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
     for (const line of lines.slice(0, 3)) {
-      const stripped = line.replace(EMOJI_RE, "").replace(/^[-–*•]\s*/, "").trim();
+      const stripped = line
+        .replace(EMOJI_RE, "")
+        .replace(/^[-–*•]\s*/, "")
+        .trim();
       const inlineMatch = stripped.match(/^([A-Za-z][A-Za-z\s.]{1,40}?)\s+(?:\+?91)?[6-9]\d{9}/);
-      if (inlineMatch) { name = inlineMatch[1].trim(); break; }
-      if (looksLikeName(stripped)) { name = stripped; break; }
+      if (inlineMatch) {
+        name = inlineMatch[1].trim();
+        break;
+      }
+      if (looksLikeName(stripped)) {
+        name = stripped;
+        break;
+      }
     }
   }
   if (name) name = titleCase(name);
@@ -297,12 +486,18 @@ export function parseLead(raw: string): ParsedLeadDraft | null {
   const budgets = extractBudgets(clean);
   let budget = grab(
     /(?:Actual\s*budget|Budget\s*Range|Budget\s*range|Budget\s*is|Budget|Budjet)\s*[:\-–(]*\s*([^\n)📆👨🏢]{2,80})/i,
-  ).replace(/[₹()\[\]]/g, "").replace(/\s+/g, " ").trim();
+  )
+    .replace(/[₹()\[\]]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
   if (!budget && budgets.length) budget = budgets.join(", ");
 
   if (!budget) {
     for (const line of clean.split("\n").map((l) => l.trim())) {
-      if (looksLikeBudget(line)) { budget = line.replace(/[₹]/g, "").trim(); break; }
+      if (looksLikeBudget(line)) {
+        budget = line.replace(/[₹]/g, "").trim();
+        break;
+      }
     }
   }
 
@@ -316,18 +511,30 @@ export function parseLead(raw: string): ParsedLeadDraft | null {
 
   if (!moveIn) {
     for (const line of clean.split("\n").map((l) => l.trim())) {
-      if (looksLikeDate(line) && !looksLikeBudget(line)) { moveIn = line; break; }
+      if (looksLikeDate(line) && !looksLikeBudget(line)) {
+        moveIn = line;
+        break;
+      }
     }
   }
 
   // ---------- Type ----------
-  const isWorking = /\bworking\b|\bprofessional\b|\banalyst\b|\banalysist\b|\bmarketer\b|\bengineer\b|\bdeveloper\b|\bemployee\b/i.test(clean);
+  const isWorking =
+    /\bworking\b|\bprofessional\b|\banalyst\b|\banalysist\b|\bmarketer\b|\bengineer\b|\bdeveloper\b|\bemployee\b/i.test(
+      clean,
+    );
   const isStudent = /\bstudent\b/i.test(clean);
   const isIntern = /\bintern(?:ing)?\b/i.test(clean);
-  const type = isWorking && isStudent ? "Student/Working"
-    : isWorking ? "Working"
-    : isStudent ? "Student"
-    : isIntern ? "Intern" : "";
+  const type =
+    isWorking && isStudent
+      ? "Student/Working"
+      : isWorking
+        ? "Working"
+        : isStudent
+          ? "Student"
+          : isIntern
+            ? "Intern"
+            : "";
 
   // ---------- Room ----------
   const roomLabeled = grab(/Room(?:\s*Type)?\s*[*:\-–(]+\s*([^\n👫✨📞]{2,60})/i);
@@ -342,18 +549,24 @@ export function parseLead(raw: string): ParsedLeadDraft | null {
   const wantGirls = needRaw.includes("girl") || /\bgirls?\s*(?:pg|preferable|only)?/i.test(clean);
   const wantBoys = needRaw.includes("boy") || /\bboys?\b/i.test(clean);
   const wantCoed = needRaw.includes("coed") || /\bcoed\b/i.test(clean);
-  const need = [wantGirls && "Girls", wantBoys && "Boys", wantCoed && "Coed"].filter(Boolean).join(" / ");
+  const need = [wantGirls && "Girls", wantBoys && "Boys", wantCoed && "Coed"]
+    .filter(Boolean)
+    .join(" / ");
 
   // ---------- Special requests ----------
   let specialReqs = grab(
     /Special\s*Requests?\s*[*:\-–(]+\s*([^\n*📞]{2,200})/i,
     /Notes?\s*[:\-–]+\s*([^\n]{2,200})/i,
     /Remarks?\s*[:\-–]+\s*([^\n]{2,200})/i,
-  ).replace(/\b(NA|None|n\/a|If any)\b/gi, "").trim();
+  )
+    .replace(/\b(NA|None|n\/a|If any)\b/gi, "")
+    .trim();
 
   if (!specialReqs) {
     const consumed = new Set<string>();
-    [name, phone, email, location, budget, moveIn].forEach((v) => v && consumed.add(v.toLowerCase().trim()));
+    [name, phone, email, location, budget, moveIn].forEach(
+      (v) => v && consumed.add(v.toLowerCase().trim()),
+    );
     const extras: string[] = [];
     for (const rawLine of clean.split("\n")) {
       const line = rawLine.replace(EMOJI_RE, "").trim();
@@ -363,17 +576,31 @@ export function parseLead(raw: string): ParsedLeadDraft | null {
       if (/\d{6,}/.test(line)) continue;
       if (/@/.test(line)) continue;
       if (looksLikeBudget(line) || looksLikeDate(line)) continue;
-      if (NON_NAME_TOKENS.test(line) && !/\b(veg|non[- ]?veg|ac|gym|wifi|food|parking|pet|ventilation|spacious|clean|backup|family|balcony|attached|sunlight|quiet|washroom)\b/i.test(line)) continue;
-      if (/\b(veg|non[- ]?veg|ac|gym|wifi|food|parking|pet|ventilation|spacious|clean|backup|family|quiet|sunlight|balcony|attached|washroom)\b/i.test(line)
-          || (/^[A-Za-z]/.test(line) && line.split(/\s+/).length >= 3)) {
+      if (
+        NON_NAME_TOKENS.test(line) &&
+        !/\b(veg|non[- ]?veg|ac|gym|wifi|food|parking|pet|ventilation|spacious|clean|backup|family|balcony|attached|sunlight|quiet|washroom)\b/i.test(
+          line,
+        )
+      )
+        continue;
+      if (
+        /\b(veg|non[- ]?veg|ac|gym|wifi|food|parking|pet|ventilation|spacious|clean|backup|family|quiet|sunlight|balcony|attached|washroom)\b/i.test(
+          line,
+        ) ||
+        (/^[A-Za-z]/.test(line) && line.split(/\s+/).length >= 3)
+      ) {
         extras.push(line);
       }
     }
     specialReqs = extras.join("; ").slice(0, 240);
   }
 
-  const inBLRTrue = /\bin\s*blr\b|in bangalore|currently in bangalore|already here|yes.*blr/i.test(normalised);
-  const inBLRFalse = /not in blr|not in bangalore|outside bangalore|relocating|out.*blr/i.test(normalised);
+  const inBLRTrue = /\bin\s*blr\b|in bangalore|currently in bangalore|already here|yes.*blr/i.test(
+    normalised,
+  );
+  const inBLRFalse = /not in blr|not in bangalore|outside bangalore|relocating|out.*blr/i.test(
+    normalised,
+  );
   const inBLR = inBLRTrue ? true : inBLRFalse ? false : null;
 
   const zone = detectZone(normalised);
@@ -386,7 +613,12 @@ export function parseLead(raw: string): ParsedLeadDraft | null {
       if (kw.length < 4) continue;
       if (areaPool.includes(kw)) {
         // canonical-case version
-        areaSet.add(kw.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "));
+        areaSet.add(
+          kw
+            .split(" ")
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(" "),
+        );
       }
     }
   }
@@ -397,19 +629,38 @@ export function parseLead(raw: string): ParsedLeadDraft | null {
   const urlMatch = normalised.match(/https?:\/\/\S+/);
   if (urlMatch) fullAddress = urlMatch[0];
   if (!fullAddress) {
-    const longLine = normalised.split("\n").map((l) => l.trim()).find((l) => l.length > 60 && /\d/.test(l) && !/@/.test(l));
+    const longLine = normalised
+      .split("\n")
+      .map((l) => l.trim())
+      .find((l) => l.length > 60 && /\d/.test(l) && !/@/.test(l));
     if (longLine) fullAddress = longLine;
   }
   const labeledFull = grab(/Full\s*Address\s*[:\-–]+\s*([^\n]{5,300})/i);
   if (labeledFull) fullAddress = labeledFull;
 
-  const consumedValues = [name, phone, email, location, budget, moveIn, type, room, need, specialReqs, fullAddress, ...links, ...budgets]
+  const consumedValues = [
+    name,
+    phone,
+    email,
+    location,
+    budget,
+    moveIn,
+    type,
+    room,
+    need,
+    specialReqs,
+    fullAddress,
+    ...links,
+    ...budgets,
+  ]
     .filter(Boolean)
     .map((v) => String(v).toLowerCase());
   const extraContent = cleanJunk(normalised)
     .split(/\n|\s{2,}/)
     .map((part) => part.trim())
-    .filter((part) => part.length > 2 && !consumedValues.some((v) => v && part.toLowerCase().includes(v)))
+    .filter(
+      (part) => part.length > 2 && !consumedValues.some((v) => v && part.toLowerCase().includes(v)),
+    )
     .join(" · ")
     .slice(0, 900);
   const geoIntel = {
@@ -417,19 +668,55 @@ export function parseLead(raw: string): ParsedLeadDraft | null {
     zone,
     areas,
     links,
-    confidence: (links.length || areas.length >= 2 ? "high" : location ? "medium" : "low") as "high" | "medium" | "low",
-    distanceHint: links.length ? "Map link attached for distance check" : areas.length ? `Route by ${areas[0]}${areas[1] ? ` + ${areas.length - 1} more area(s)` : ""}` : "Needs location before distance check",
-    syncStatus: (location || areas.length || links.length ? links.length ? "ready" : "needs-map-link" : "needs-location") as "ready" | "needs-map-link" | "needs-location",
+    confidence: (links.length || areas.length >= 2 ? "high" : location ? "medium" : "low") as
+      | "high"
+      | "medium"
+      | "low",
+    distanceHint: links.length
+      ? "Map link attached for distance check"
+      : areas.length
+        ? `Route by ${areas[0]}${areas[1] ? ` + ${areas.length - 1} more area(s)` : ""}`
+        : "Needs location before distance check",
+    syncStatus: (location || areas.length || links.length
+      ? links.length
+        ? "ready"
+        : "needs-map-link"
+      : "needs-location") as "ready" | "needs-map-link" | "needs-location",
   };
-  const summary = [name || "Unnamed", phone && `☎ ${phone}`, budget && `₹ ${budget}`, moveIn && `move ${moveIn}`, room, need, location || areas.join(", ")]
-    .filter(Boolean).join(" · ");
+  const summary = [
+    name || "Unnamed",
+    phone && `☎ ${phone}`,
+    budget && `₹ ${budget}`,
+    moveIn && `move ${moveIn}`,
+    room,
+    need,
+    location || areas.join(", "),
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   if (!phone && !email && !name) return null;
 
   return {
-    name, phone, email, location, areas, fullAddress,
-    budget, moveIn,
-    type, room, need, specialReqs, extraContent, summary, budgets, links, geoIntel, inBLR, zone,
+    name,
+    phone,
+    email,
+    location,
+    areas,
+    fullAddress,
+    budget,
+    moveIn,
+    type,
+    room,
+    need,
+    specialReqs,
+    extraContent,
+    summary,
+    budgets,
+    links,
+    geoIntel,
+    inBLR,
+    zone,
     rawSource: raw,
   };
 }
@@ -460,14 +747,15 @@ export function splitLeads(text: string): string[] {
 
   const isJunk = (line: string): boolean => {
     const t = line.trim();
-    return !t ||
-      /^(not filled|no|n\/a|xyz|3405|na)$/i.test(t) ||
-      /^[\-–=*_]{3,}$/.test(t);
+    return !t || /^(not filled|no|n\/a|xyz|3405|na)$/i.test(t) || /^[\-–=*_]{3,}$/.test(t);
   };
 
   for (const line of lines) {
     if (isJunk(line)) {
-      if (cur.length) { chunks.push(cur.join("\n")); cur = []; }
+      if (cur.length) {
+        chunks.push(cur.join("\n"));
+        cur = [];
+      }
       continue;
     }
     if (cur.length === 0) {

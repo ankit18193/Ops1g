@@ -10,7 +10,10 @@ export const Route = createFileRoute("/leaderboard")({
   head: () => ({
     meta: [
       { title: "Leaderboard — Gharpayy" },
-      { name: "description", content: "TCM performance: conversion, response, discipline, revenue. Live ranking." },
+      {
+        name: "description",
+        content: "TCM performance: conversion, response, discipline, revenue. Live ranking.",
+      },
     ],
   }),
   component: LeaderboardPage,
@@ -43,7 +46,8 @@ function LeaderboardPage() {
             <Trophy className="h-6 w-6 text-accent" /> TCM Leaderboard
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Conversion × discipline × speed. Updated live. Rank changes when you fill that post-tour form.
+            Conversion × discipline × speed. Updated live. Rank changes when you fill that post-tour
+            form.
           </p>
         </header>
 
@@ -79,17 +83,24 @@ function LeaderboardPage() {
                   <td className="px-4 py-3 text-muted-foreground">{tcm.zone}</td>
                   <td className="px-4 py-3 text-right tabular-nums">{perf.leadCount}</td>
                   <td className="px-4 py-3 text-right tabular-nums">{perf.toursDone}</td>
-                  <td className="px-4 py-3 text-right tabular-nums font-semibold text-success">{perf.bookings}</td>
+                  <td className="px-4 py-3 text-right tabular-nums font-semibold text-success">
+                    {perf.bookings}
+                  </td>
                   <td className="px-4 py-3 text-right tabular-nums">
                     <span className={perf.conversion >= 35 ? "text-success font-semibold" : ""}>
                       {perf.conversion}%
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
-                    <span className={
-                      perf.discipline >= 75 ? "text-success" :
-                      perf.discipline >= 50 ? "text-warning-foreground" : "text-destructive"
-                    }>
+                    <span
+                      className={
+                        perf.discipline >= 75
+                          ? "text-success"
+                          : perf.discipline >= 50
+                            ? "text-warning-foreground"
+                            : "text-destructive"
+                      }
+                    >
                       {perf.discipline}
                     </span>
                   </td>
@@ -103,16 +114,43 @@ function LeaderboardPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Card icon={Flame} title="Top closer" value={rows[0]?.tcm.name ?? "—"} sub={`${rows[0]?.perf.conversion ?? 0}% conversion`} />
-          <Card icon={Clock} title="Fastest response" value={[...tcms].sort((a, b) => a.avgResponseMins - b.avgResponseMins)[0]?.name ?? "—"} sub={`${[...tcms].sort((a, b) => a.avgResponseMins - b.avgResponseMins)[0]?.avgResponseMins ?? 0}m avg`} />
-          <Card icon={TrendingUp} title="Highest discipline" value={[...rows].sort((a, b) => b.perf.discipline - a.perf.discipline)[0]?.tcm.name ?? "—"} sub={`${[...rows].sort((a, b) => b.perf.discipline - a.perf.discipline)[0]?.perf.discipline ?? 0}/100`} />
+          <Card
+            icon={Flame}
+            title="Top closer"
+            value={rows[0]?.tcm.name ?? "—"}
+            sub={`${rows[0]?.perf.conversion ?? 0}% conversion`}
+          />
+          <Card
+            icon={Clock}
+            title="Fastest response"
+            value={[...tcms].sort((a, b) => a.avgResponseMins - b.avgResponseMins)[0]?.name ?? "—"}
+            sub={`${[...tcms].sort((a, b) => a.avgResponseMins - b.avgResponseMins)[0]?.avgResponseMins ?? 0}m avg`}
+          />
+          <Card
+            icon={TrendingUp}
+            title="Highest discipline"
+            value={
+              [...rows].sort((a, b) => b.perf.discipline - a.perf.discipline)[0]?.tcm.name ?? "—"
+            }
+            sub={`${[...rows].sort((a, b) => b.perf.discipline - a.perf.discipline)[0]?.perf.discipline ?? 0}/100`}
+          />
         </div>
       </div>
     </AppShell>
   );
 }
 
-function Card({ icon: Icon, title, value, sub }: { icon: typeof Trophy; title: string; value: string; sub: string }) {
+function Card({
+  icon: Icon,
+  title,
+  value,
+  sub,
+}: {
+  icon: typeof Trophy;
+  title: string;
+  value: string;
+  sub: string;
+}) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted-foreground">

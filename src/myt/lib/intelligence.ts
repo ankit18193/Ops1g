@@ -19,7 +19,11 @@ export function detectMismatches(
 
   // Customer says "not_fit" but TCM marks high interest
   if (feedback.sentiment === "not_fit" && report.interestLevel === "high") {
-    out.push({ tourId: tour.id, severity: "high", reason: "Customer: not a fit · TCM: high interest" });
+    out.push({
+      tourId: tour.id,
+      severity: "high",
+      reason: "Customer: not a fit · TCM: high interest",
+    });
   }
   // Customer "loved" but TCM "low"
   if (feedback.sentiment === "loved" && report.interestLevel === "low") {
@@ -28,14 +32,27 @@ export function detectMismatches(
   // Price mismatch — comment mentions expensive but TCM says exact
   const priceWords = (feedback.comment ?? "").toLowerCase();
   if (
-    (priceWords.includes("expensive") || priceWords.includes("costly") || priceWords.includes("too much")) &&
+    (priceWords.includes("expensive") ||
+      priceWords.includes("costly") ||
+      priceWords.includes("too much")) &&
     report.budgetAlignment === "exact"
   ) {
-    out.push({ tourId: tour.id, severity: "high", reason: "Customer: too expensive · TCM: budget exact match" });
+    out.push({
+      tourId: tour.id,
+      severity: "high",
+      reason: "Customer: too expensive · TCM: budget exact match",
+    });
   }
   // Customer needs better but TCM marked booked/hot
-  if (feedback.sentiment === "need_better" && (report.outcome === "booked" || report.outcome === "hot")) {
-    out.push({ tourId: tour.id, severity: "high", reason: `Customer: need better options · TCM: ${report.outcome}` });
+  if (
+    feedback.sentiment === "need_better" &&
+    (report.outcome === "booked" || report.outcome === "hot")
+  ) {
+    out.push({
+      tourId: tour.id,
+      severity: "high",
+      reason: `Customer: need better options · TCM: ${report.outcome}`,
+    });
   }
   return out;
 }
@@ -59,11 +76,17 @@ export function computeTourScore(
   const confirmation = has("confirmed_by_customer") ? 1 : has("confirmation_sent") ? 0.4 : 0;
   // Show-up
   const showUp =
-    tour.status === "completed" || has("tour_started") ? 1 : tour.showUp === false || has("no_show") ? 0 : 0.3;
+    tour.status === "completed" || has("tour_started")
+      ? 1
+      : tour.showUp === false || has("no_show")
+        ? 0
+        : 0.3;
   // Engagement (proxy: feedback length + report objection captured)
   const engagement = Math.min(
     1,
-    (feedback?.comment ? 0.5 : 0) + (report?.firstObjection ? 0.3 : 0) + (report?.priceReactionWords ? 0.2 : 0),
+    (feedback?.comment ? 0.5 : 0) +
+      (report?.firstObjection ? 0.3 : 0) +
+      (report?.priceReactionWords ? 0.2 : 0),
   );
   // Property fit
   const fitMap = { exact: 1, stretch: 0.6, mismatch: 0.1 } as const;
@@ -80,8 +103,18 @@ export function computeTourScore(
       )
     : 0;
   // Conversion likelihood
-  const outcomeMap: Record<string, number> = { booked: 1, hot: 0.8, warm: 0.5, cold: 0.2, dropped: 0 };
-  const conversionLikelihood = report ? (outcomeMap[report.outcome] ?? 0.3) : tour.tokenPaid ? 1 : 0.3;
+  const outcomeMap: Record<string, number> = {
+    booked: 1,
+    hot: 0.8,
+    warm: 0.5,
+    cold: 0.2,
+    dropped: 0,
+  };
+  const conversionLikelihood = report
+    ? (outcomeMap[report.outcome] ?? 0.3)
+    : tour.tokenPaid
+      ? 1
+      : 0.3;
 
   const factors = {
     confirmation,

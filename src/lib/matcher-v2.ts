@@ -81,11 +81,26 @@ export const DEFAULT_MATCHING: MatchingV2Settings = {
   showScoreBreakdown: true,
 };
 
-function pickBedPrice(pg: PG, occupancy: string | undefined): { price: number | null; label: string } {
+function pickBedPrice(
+  pg: PG,
+  occupancy: string | undefined,
+): { price: number | null; label: string } {
   const p = pg.prices;
-  if (occupancy === "Single") return { price: p.single || null, label: p.single ? `Single ₹${(p.single / 1000).toFixed(0)}k` : "No single" };
-  if (occupancy === "Double") return { price: p.double || null, label: p.double ? `Double ₹${(p.double / 1000).toFixed(0)}k` : "No double" };
-  if (occupancy === "Triple") return { price: p.triple || null, label: p.triple ? `Triple ₹${(p.triple / 1000).toFixed(0)}k` : "No triple" };
+  if (occupancy === "Single")
+    return {
+      price: p.single || null,
+      label: p.single ? `Single ₹${(p.single / 1000).toFixed(0)}k` : "No single",
+    };
+  if (occupancy === "Double")
+    return {
+      price: p.double || null,
+      label: p.double ? `Double ₹${(p.double / 1000).toFixed(0)}k` : "No double",
+    };
+  if (occupancy === "Triple")
+    return {
+      price: p.triple || null,
+      label: p.triple ? `Triple ₹${(p.triple / 1000).toFixed(0)}k` : "No triple",
+    };
   const candidates = [p.triple, p.double, p.single].filter((v) => v > 0);
   if (!candidates.length) return { price: null, label: "Pricing TBC" };
   const cheapest = Math.min(...candidates);
@@ -164,10 +179,19 @@ export function runMatcherV2(lead: AppLead, settings?: MatchingV2Settings): Matc
     let dPts = 0;
     let dReason = "Distance unknown";
     if (dist.km != null) {
-      if (dist.km <= radiusKm * 0.4) { dPts = m.wDistance; dReason = `${dist.km} km — within ideal radius`; }
-      else if (dist.km <= radiusKm) { dPts = Math.round(m.wDistance * 0.75); dReason = `${dist.km} km — within ${radiusKm} km cap`; }
-      else if (dist.km <= radiusKm * 1.6) { dPts = Math.round(m.wDistance * 0.4); dReason = `${dist.km} km — slightly outside radius`; }
-      else { dPts = Math.round(m.wDistance * 0.1); dReason = `${dist.km} km — far`; }
+      if (dist.km <= radiusKm * 0.4) {
+        dPts = m.wDistance;
+        dReason = `${dist.km} km — within ideal radius`;
+      } else if (dist.km <= radiusKm) {
+        dPts = Math.round(m.wDistance * 0.75);
+        dReason = `${dist.km} km — within ${radiusKm} km cap`;
+      } else if (dist.km <= radiusKm * 1.6) {
+        dPts = Math.round(m.wDistance * 0.4);
+        dReason = `${dist.km} km — slightly outside radius`;
+      } else {
+        dPts = Math.round(m.wDistance * 0.1);
+        dReason = `${dist.km} km — far`;
+      }
     }
     parts.push({ label: "commute", pts: dPts, max: m.wDistance, reason: dReason });
 
@@ -175,47 +199,79 @@ export function runMatcherV2(lead: AppLead, settings?: MatchingV2Settings): Matc
     let bPts = 0;
     let bReason = bedLabel;
     if (bedPrice != null) {
-      if (bedPrice >= supplyLead.budgetMin && bedPrice <= supplyLead.budgetMax) { bPts = m.wBudget; bReason = `${bedLabel} fits budget`; }
-      else if (bedPrice < supplyLead.budgetMin) { bPts = Math.round(m.wBudget * 0.7); bReason = `${bedLabel} below budget — under-served`; }
-      else if (bedPrice <= supplyLead.budgetMax * 1.1) { bPts = Math.round(m.wBudget * 0.5); bReason = `${bedLabel} ~10% over`; }
+      if (bedPrice >= supplyLead.budgetMin && bedPrice <= supplyLead.budgetMax) {
+        bPts = m.wBudget;
+        bReason = `${bedLabel} fits budget`;
+      } else if (bedPrice < supplyLead.budgetMin) {
+        bPts = Math.round(m.wBudget * 0.7);
+        bReason = `${bedLabel} below budget — under-served`;
+      } else if (bedPrice <= supplyLead.budgetMax * 1.1) {
+        bPts = Math.round(m.wBudget * 0.5);
+        bReason = `${bedLabel} ~10% over`;
+      }
     }
     parts.push({ label: "budget", pts: bPts, max: m.wBudget, reason: bReason });
 
     // 3) Availability (scarcity inverted — fewer beds → higher urgency, but full = 0)
     let aPts = 0;
     let aReason = sc.reason;
-    if (sc.level === "FULL") { aPts = 0; aReason = "Full — waitlist only"; }
-    else if (sc.level === "1 LEFT" || sc.level === "2 LEFT") { aPts = m.wAvailability; aReason = sc.reason; }
-    else if (sc.level === "FEW LEFT") { aPts = Math.round(m.wAvailability * 0.7); }
-    else { aPts = Math.round(m.wAvailability * 0.5); }
+    if (sc.level === "FULL") {
+      aPts = 0;
+      aReason = "Full — waitlist only";
+    } else if (sc.level === "1 LEFT" || sc.level === "2 LEFT") {
+      aPts = m.wAvailability;
+      aReason = sc.reason;
+    } else if (sc.level === "FEW LEFT") {
+      aPts = Math.round(m.wAvailability * 0.7);
+    } else {
+      aPts = Math.round(m.wAvailability * 0.5);
+    }
     parts.push({ label: "scarcity", pts: aPts, max: m.wAvailability, reason: aReason });
 
     // 4) Conversion (proxy)
     const cPts = Math.round((conversion / 100) * m.wConversion);
-    parts.push({ label: "quality", pts: cPts, max: m.wConversion, reason: `Conversion proxy ${conversion}/100` });
+    parts.push({
+      label: "quality",
+      pts: cPts,
+      max: m.wConversion,
+      reason: `Conversion proxy ${conversion}/100`,
+    });
 
     // 5) Compliance
     const oPts = Math.round((compliance / 100) * m.wCompliance);
-    parts.push({ label: "compliance", pts: oPts, max: m.wCompliance, reason: `Owner compliance ${compliance}/100` });
+    parts.push({
+      label: "compliance",
+      pts: oPts,
+      max: m.wCompliance,
+      reason: `Owner compliance ${compliance}/100`,
+    });
 
     // 6) Audience
     const aud = audienceTag(lead);
     const pgAud = (pg.audience || "").toLowerCase();
     let audPts = Math.round(m.wAudience * 0.5);
     let audReason = "Audience open";
-    if (aud === "Working" && /professional/.test(pgAud)) { audPts = m.wAudience; audReason = "Working professional fit"; }
-    else if (aud === "Student" && /student/.test(pgAud)) { audPts = m.wAudience; audReason = "Student PG fit"; }
-    else if (/both/.test(pgAud)) { audPts = Math.round(m.wAudience * 0.85); audReason = "Mixed audience"; }
+    if (aud === "Working" && /professional/.test(pgAud)) {
+      audPts = m.wAudience;
+      audReason = "Working professional fit";
+    } else if (aud === "Student" && /student/.test(pgAud)) {
+      audPts = m.wAudience;
+      audReason = "Student PG fit";
+    } else if (/both/.test(pgAud)) {
+      audPts = Math.round(m.wAudience * 0.85);
+      audReason = "Mixed audience";
+    }
     parts.push({ label: "audience", pts: audPts, max: m.wAudience, reason: audReason });
 
     const totalRaw = parts.reduce((s, p) => s + p.pts, 0);
     const totalMax = parts.reduce((s, p) => s + p.max, 0) || 1;
     const score = Math.round((totalRaw / totalMax) * 100);
 
-    const driverParts = parts.filter((p) => p.label !== "audience") as Array<MatchPart & { label: Driver }>;
-    const dominant: Driver = (driverParts
-      .slice()
-      .sort((a, b) => b.pts / b.max - a.pts / a.max)[0]?.label ?? "commute") as Driver;
+    const driverParts = parts.filter((p) => p.label !== "audience") as Array<
+      MatchPart & { label: Driver }
+    >;
+    const dominant: Driver = (driverParts.slice().sort((a, b) => b.pts / b.max - a.pts / a.max)[0]
+      ?.label ?? "commute") as Driver;
 
     const reasoning = dq
       ? `DISQUALIFIED — ${dq}`

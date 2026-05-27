@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState } from 'react';
-import { Tour, Role, Lead, Booking, Room, RoomBlock, Property } from './types';
-import { tours as initialTours, initialLeads, initialBookings } from './mock-data';
-import { rooms as initialRooms, initialBlocks } from './properties-seed';
+import React, { createContext, useContext, useState } from "react";
+import { Tour, Role, Lead, Booking, Room, RoomBlock, Property } from "./types";
+import { tours as initialTours, initialLeads, initialBookings } from "./mock-data";
+import { rooms as initialRooms, initialBlocks } from "./properties-seed";
 
 interface AppState {
   tours: Tour[];
@@ -37,23 +37,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [blocks, setBlocks] = useState<RoomBlock[]>(initialBlocks);
   const [managedProperties, setManagedProperties] = useState<Property[]>([]);
   const [managedRooms, setManagedRooms] = useState<Room[]>([]);
-  const [currentRole, setCurrentRole] = useState<Role>('hr');
+  const [currentRole, setCurrentRole] = useState<Role>("hr");
   const [currentMemberId, setCurrentMemberId] = useState<string | null>(null);
   const [globalZoneFilter, setGlobalZoneFilter] = useState<string | null>(null);
 
   return (
-    <AppContext.Provider value={{
-      tours, setTours,
-      leads, setLeads,
-      bookings, setBookings,
-      rooms, setRooms,
-      blocks, setBlocks,
-      managedProperties, setManagedProperties,
-      managedRooms, setManagedRooms,
-      currentRole, setCurrentRole,
-      currentMemberId, setCurrentMemberId,
-      globalZoneFilter, setGlobalZoneFilter,
-    }}>
+    <AppContext.Provider
+      value={{
+        tours,
+        setTours,
+        leads,
+        setLeads,
+        bookings,
+        setBookings,
+        rooms,
+        setRooms,
+        blocks,
+        setBlocks,
+        managedProperties,
+        setManagedProperties,
+        managedRooms,
+        setManagedRooms,
+        currentRole,
+        setCurrentRole,
+        currentMemberId,
+        setCurrentMemberId,
+        globalZoneFilter,
+        setGlobalZoneFilter,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );
@@ -61,6 +73,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
 export function useAppState() {
   const ctx = useContext(AppContext);
-  if (!ctx) throw new Error('useAppState must be used within AppProvider');
+  if (!ctx) throw new Error("useAppState must be used within AppProvider");
   return ctx;
 }

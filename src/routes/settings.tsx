@@ -6,7 +6,11 @@ export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
       { title: "Settings — Gharpayy" },
-      { name: "description", content: "Operational settings for matching, reminders, templates, custom fields, and scoring." },
+      {
+        name: "description",
+        content:
+          "Operational settings for matching, reminders, templates, custom fields, and scoring.",
+      },
     ],
   }),
   component: () => (

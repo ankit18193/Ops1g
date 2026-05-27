@@ -38,7 +38,10 @@ export interface Persona {
 
 const HR: Persona[] = [
   {
-    id: "hr-1", name: "Anita Khanna", role: "hr", focus: "People & coaching",
+    id: "hr-1",
+    name: "Anita Khanna",
+    role: "hr",
+    focus: "People & coaching",
     coachTone: "warm-mentor",
     strengths: ["1:1s", "spotting burnout", "calm under fire"],
     weakSpots: ["delays hard feedback", "lets revenue slip down list"],
@@ -50,7 +53,10 @@ const HR: Persona[] = [
     missionCap: 8,
   },
   {
-    id: "hr-2", name: "Vivek Sharma", role: "hr", focus: "Ops & SLAs",
+    id: "hr-2",
+    name: "Vivek Sharma",
+    role: "hr",
+    focus: "Ops & SLAs",
     coachTone: "drill-sgt",
     strengths: ["SLA enforcement", "process design"],
     weakSpots: ["talks past empathy", "low patience for soft signals"],
@@ -62,7 +68,10 @@ const HR: Persona[] = [
     missionCap: 10,
   },
   {
-    id: "hr-3", name: "Sara Pillai", role: "hr", focus: "Revenue & forecast",
+    id: "hr-3",
+    name: "Sara Pillai",
+    role: "hr",
+    focus: "Revenue & forecast",
     coachTone: "data-nerd",
     strengths: ["pipeline math", "weekly forecast"],
     weakSpots: ["over-trusts hot tags", "skips on-the-floor color"],
@@ -74,7 +83,10 @@ const HR: Persona[] = [
     missionCap: 9,
   },
   {
-    id: "hr-4", name: "Kunal Bhatt", role: "hr", focus: "Owners & supply",
+    id: "hr-4",
+    name: "Kunal Bhatt",
+    role: "hr",
+    focus: "Owners & supply",
     coachTone: "stoic",
     strengths: ["owner relationships", "supply unlocks"],
     weakSpots: ["misses TCM-side fires", "buried in WhatsApp"],
@@ -89,7 +101,10 @@ const HR: Persona[] = [
 
 const FLOW_OPS: Persona[] = [
   {
-    id: "fo-1", name: "Riya Kapoor", role: "flow-ops", focus: "Inbound triage",
+    id: "fo-1",
+    name: "Riya Kapoor",
+    role: "flow-ops",
+    focus: "Inbound triage",
     coachTone: "hype-friend",
     strengths: ["fast routing", "clean handoffs"],
     weakSpots: ["over-routes to Aarav", "skimps on lead notes"],
@@ -101,7 +116,10 @@ const FLOW_OPS: Persona[] = [
     missionCap: 12,
   },
   {
-    id: "fo-2", name: "Aman Joshi", role: "flow-ops", focus: "Tour scheduling",
+    id: "fo-2",
+    name: "Aman Joshi",
+    role: "flow-ops",
+    focus: "Tour scheduling",
     coachTone: "warm-mentor",
     strengths: ["calendar Tetris", "owner coordination"],
     weakSpots: ["lets confirmations slide", "double-books in HSR"],
@@ -113,7 +131,10 @@ const FLOW_OPS: Persona[] = [
     missionCap: 10,
   },
   {
-    id: "fo-3", name: "Pooja Nair", role: "flow-ops", focus: "Reassignment",
+    id: "fo-3",
+    name: "Pooja Nair",
+    role: "flow-ops",
+    focus: "Reassignment",
     coachTone: "data-nerd",
     strengths: ["spotting drift", "balance loads"],
     weakSpots: ["slow to escalate", "averse to confrontation"],
@@ -125,7 +146,10 @@ const FLOW_OPS: Persona[] = [
     missionCap: 9,
   },
   {
-    id: "fo-4", name: "Tushar Rao", role: "flow-ops", focus: "Revival & cold leads",
+    id: "fo-4",
+    name: "Tushar Rao",
+    role: "flow-ops",
+    focus: "Revival & cold leads",
     coachTone: "stoic",
     strengths: ["patient outreach", "revival sequences"],
     weakSpots: ["chases ghosts too long", "low energy on hot leads"],
@@ -140,7 +164,10 @@ const FLOW_OPS: Persona[] = [
 
 const TCMS: Persona[] = [
   {
-    id: "tcm-1", name: "Aarav Mehta", role: "tcm", focus: "Koramangala · closer",
+    id: "tcm-1",
+    name: "Aarav Mehta",
+    role: "tcm",
+    focus: "Koramangala · closer",
     coachTone: "hype-friend",
     strengths: ["closing", "objection handling", "reading rooms"],
     weakSpots: ["sloppy notes", "skips post-tour updates when hot"],
@@ -152,7 +179,10 @@ const TCMS: Persona[] = [
     missionCap: 6,
   },
   {
-    id: "tcm-2", name: "Priya Shah", role: "tcm", focus: "Indiranagar · nurturer",
+    id: "tcm-2",
+    name: "Priya Shah",
+    role: "tcm",
+    focus: "Indiranagar · nurturer",
     coachTone: "warm-mentor",
     strengths: ["second tours", "parents in the loop", "long nurturing"],
     weakSpots: ["over-nurtures past decision date", "soft on price"],
@@ -164,7 +194,10 @@ const TCMS: Persona[] = [
     missionCap: 6,
   },
   {
-    id: "tcm-3", name: "Rohan Iyer", role: "tcm", focus: "HSR · improving",
+    id: "tcm-3",
+    name: "Rohan Iyer",
+    role: "tcm",
+    focus: "HSR · improving",
     coachTone: "stoic",
     strengths: ["honest with leads", "good at site walkthroughs"],
     weakSpots: ["slow first-response", "lets follow-ups slip", "anxious closer"],
@@ -176,7 +209,10 @@ const TCMS: Persona[] = [
     missionCap: 5,
   },
   {
-    id: "tcm-4", name: "Neha Verma", role: "tcm", focus: "Whitefield · hot streak",
+    id: "tcm-4",
+    name: "Neha Verma",
+    role: "tcm",
+    focus: "Whitefield · hot streak",
     coachTone: "drill-sgt",
     strengths: ["high-velocity tours", "tight calendar", "no excuses"],
     weakSpots: ["doesn't share wins", "skips peer assists"],
@@ -191,7 +227,10 @@ const TCMS: Persona[] = [
 
 const OWNERS: Persona[] = [
   {
-    id: "own-1", name: "Rakesh Sharma", role: "owner", focus: "Koramangala 5B",
+    id: "own-1",
+    name: "Rakesh Sharma",
+    role: "owner",
+    focus: "Koramangala 5B",
     coachTone: "warm-mentor",
     strengths: ["responsive", "fair pricing"],
     weakSpots: ["last-minute blocks", "hates phone calls"],
@@ -203,7 +242,10 @@ const OWNERS: Persona[] = [
     missionCap: 4,
   },
   {
-    id: "own-2", name: "Meera Iyer", role: "owner", focus: "Indiranagar 100ft",
+    id: "own-2",
+    name: "Meera Iyer",
+    role: "owner",
+    focus: "Indiranagar 100ft",
     coachTone: "stoic",
     strengths: ["deep maintenance knowledge"],
     weakSpots: ["slow to respond on blocks", "skeptical of TCMs"],
@@ -215,7 +257,10 @@ const OWNERS: Persona[] = [
     missionCap: 4,
   },
   {
-    id: "own-3", name: "Ankit Verma", role: "owner", focus: "HSR Sector 2",
+    id: "own-3",
+    name: "Ankit Verma",
+    role: "owner",
+    focus: "HSR Sector 2",
     coachTone: "data-nerd",
     strengths: ["analytical", "open to dynamic pricing"],
     weakSpots: ["over-negotiates", "blocks rooms for relatives"],
@@ -227,7 +272,10 @@ const OWNERS: Persona[] = [
     missionCap: 4,
   },
   {
-    id: "own-4", name: "Deepa Krishnan", role: "owner", focus: "Whitefield ITPL",
+    id: "own-4",
+    name: "Deepa Krishnan",
+    role: "owner",
+    focus: "Whitefield ITPL",
     coachTone: "hype-friend",
     strengths: ["fast block decisions", "tenant-friendly"],
     weakSpots: ["under-prices", "doesn't read the market"],
@@ -242,8 +290,9 @@ const OWNERS: Persona[] = [
 
 export const PERSONAS: Persona[] = [...HR, ...FLOW_OPS, ...TCMS, ...OWNERS];
 
-export const PERSONA_BY_ID: Record<string, Persona> =
-  Object.fromEntries(PERSONAS.map((p) => [p.id, p]));
+export const PERSONA_BY_ID: Record<string, Persona> = Object.fromEntries(
+  PERSONAS.map((p) => [p.id, p]),
+);
 
 /** Find the active persona for a (role, id) pair. Falls back to a synthetic one.
  *  Strict on role match — passing a tcm id while role==='hr' falls back to first hr persona.
@@ -280,7 +329,9 @@ export interface CoachVoice {
   playbookTip: string;
 }
 
-function pick<T>(arr: T[], seed: number): T { return arr[Math.abs(seed) % arr.length]; }
+function pick<T>(arr: T[], seed: number): T {
+  return arr[Math.abs(seed) % arr.length];
+}
 function dayKey(): number {
   const d = new Date();
   return d.getFullYear() * 1000 + d.getMonth() * 31 + d.getDate();
@@ -311,7 +362,7 @@ export function voiceFor(p: Persona, missionDone: number, missionTarget: number)
       `Let's gooo, ${p.name.split(" ")[0]} 🔥`,
       `${p.name.split(" ")[0]}, today is yours.`,
     ],
-    "stoic": [
+    stoic: [
       `${p.name.split(" ")[0]}.`,
       `One step at a time, ${p.name.split(" ")[0]}.`,
       `Begin, ${p.name.split(" ")[0]}.`,
@@ -319,17 +370,24 @@ export function voiceFor(p: Persona, missionDone: number, missionTarget: number)
   };
 
   const sublineByRatio =
-    ratio >= 1   ? `Mission complete. ${p.signature}`
-    : ratio >= 0.6 ? `On pace. ${p.signature}`
-    : ratio >= 0.3 ? `Behind by a step. ${p.weakSpots[0] ? `Watch the ${p.weakSpots[0]}.` : p.signature}`
-    : `Cold start. ${p.weakSpots[0] ? `Don't let ${p.weakSpots[0]} bite again.` : p.signature}`;
+    ratio >= 1
+      ? `Mission complete. ${p.signature}`
+      : ratio >= 0.6
+        ? `On pace. ${p.signature}`
+        : ratio >= 0.3
+          ? `Behind by a step. ${p.weakSpots[0] ? `Watch the ${p.weakSpots[0]}.` : p.signature}`
+          : `Cold start. ${p.weakSpots[0] ? `Don't let ${p.weakSpots[0]} bite again.` : p.signature}`;
 
   const missionLine =
-    p.coachTone === "drill-sgt" ? `Target ${missionTarget}. Done ${missionDone}. No excuses.`
-    : p.coachTone === "data-nerd" ? `${missionDone}/${missionTarget} — completion ${Math.round(ratio * 100)}%.`
-    : p.coachTone === "hype-friend" ? `${missionDone} of ${missionTarget} — keep the energy 💥`
-    : p.coachTone === "stoic" ? `${missionDone}/${missionTarget}.`
-    : `${missionDone} done, ${Math.max(0, missionTarget - missionDone)} to go.`;
+    p.coachTone === "drill-sgt"
+      ? `Target ${missionTarget}. Done ${missionDone}. No excuses.`
+      : p.coachTone === "data-nerd"
+        ? `${missionDone}/${missionTarget} — completion ${Math.round(ratio * 100)}%.`
+        : p.coachTone === "hype-friend"
+          ? `${missionDone} of ${missionTarget} — keep the energy 💥`
+          : p.coachTone === "stoic"
+            ? `${missionDone}/${missionTarget}.`
+            : `${missionDone} done, ${Math.max(0, missionTarget - missionDone)} to go.`;
 
   const tipsByTone: Record<CoachTone, string[]> = {
     "drill-sgt": [
@@ -348,10 +406,7 @@ export function voiceFor(p: Persona, missionDone: number, missionTarget: number)
       `${p.motivators[0] ? `Imagine ${p.motivators[0]} when you close this one.` : "You got this."}`,
       `Stack 3 quick wins before noon and momentum carries the rest.`,
     ],
-    "stoic": [
-      `${p.ritual}`,
-      `Pick the smallest action. Do it now.`,
-    ],
+    stoic: [`${p.ritual}`, `Pick the smallest action. Do it now.`],
   };
 
   return {

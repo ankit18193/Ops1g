@@ -12,11 +12,22 @@ export type FurnishingPref = "ac" | "non-ac" | "semi" | "any";
 export type FoodPref = "veg" | "non-veg" | "no-food" | "any";
 export type LangPref = "english" | "hindi" | "kannada" | "other";
 export type LeadSource =
-  | "whatsapp" | "website" | "referral" | "indiamart" | "google" | "walk-in" | "other";
+  | "whatsapp"
+  | "website"
+  | "referral"
+  | "indiamart"
+  | "google"
+  | "walk-in"
+  | "other";
 export type DecisionAuthority = "self" | "parents" | "company-hr";
 export type FlexibilityScore = 1 | 2 | 3 | 4 | 5;
 export type CallOutcome =
-  | "answered" | "not-answered" | "busy" | "switched-off" | "wrong-number" | "callback-requested";
+  | "answered"
+  | "not-answered"
+  | "busy"
+  | "switched-off"
+  | "wrong-number"
+  | "callback-requested";
 export type ObjectionCode =
   | "price-too-high"
   | "location-not-suitable"
@@ -34,9 +45,9 @@ export type ObjectionResolution = "yes" | "partially" | "no";
 
 /** Versioned shifting-date record. Old entries are NEVER removed. */
 export interface ShiftingDateEntry {
-  ts: string;            // when this update was logged
-  shiftingDate: string;  // ISO date the lead intends to shift on
-  reason?: string;       // free text e.g. "parents wanted next month"
+  ts: string; // when this update was logged
+  shiftingDate: string; // ISO date the lead intends to shift on
+  reason?: string; // free text e.g. "parents wanted next month"
   loggedBy: string;
 }
 
@@ -52,7 +63,7 @@ export interface DeepLeadProfile {
   companyOrCollege?: string;
   source?: LeadSource;
   referralName?: string;
-  preferredMoveInDate?: string;     // current/active shifting date (ISO)
+  preferredMoveInDate?: string; // current/active shifting date (ISO)
   shiftingHistory?: ShiftingDateEntry[]; // versioned trail — Gharpayy never forgets
   flexible?: boolean;
   budgetStated?: number;
@@ -76,8 +87,8 @@ export interface ObjectionRecord {
   loggedBy: string;
   context: "call" | "visit" | "whatsapp";
   code: ObjectionCode;
-  leadWords: string;            // exact words
-  handling: string;             // how the agent handled it
+  leadWords: string; // exact words
+  handling: string; // how the agent handled it
   resolution: ObjectionResolution;
 }
 
@@ -107,8 +118,8 @@ export interface VisitIntel {
   // post
   roomShown?: string;
   reaction?: "loved" | "liked" | "neutral" | "disappointed";
-  competitorsVisited?: string[];   // e.g. ["Stanza Hebbal", "Colive Indiranagar"]
-  bookProbability?: number;        // 0-100 agent gut estimate
+  competitorsVisited?: string[]; // e.g. ["Stanza Hebbal", "Colive Indiranagar"]
+  bookProbability?: number; // 0-100 agent gut estimate
   updatedAt?: string;
 }
 
@@ -117,7 +128,7 @@ export interface LeadCommitment {
   id: string;
   leadId: string;
   ts: string;
-  decisionBy: string;        // ISO date — "I'll decide by Thursday"
+  decisionBy: string; // ISO date — "I'll decide by Thursday"
   exactWords: string;
   status: "pending" | "kept" | "missed";
 }
@@ -139,8 +150,12 @@ export interface AssignmentRecord {
   fromTcmId: string | null;
   toTcmId: string;
   reasonCategory:
-    | "out-of-area" | "capacity-full" | "lead-quality-mismatch"
-    | "specialized-pg" | "manager-override" | "auto-route";
+    | "out-of-area"
+    | "capacity-full"
+    | "lead-quality-mismatch"
+    | "specialized-pg"
+    | "manager-override"
+    | "auto-route";
   note?: string;
   zone: "extra-zone" | "my-zone" | "pool";
 }
@@ -165,11 +180,11 @@ export interface MessageOutcome {
   id: string;
   leadId: string;
   ts: string;
-  stage: string;             // template stage id (e.g. "follow-up")
-  language: string;          // "english" | "hindi"
+  stage: string; // template stage id (e.g. "follow-up")
+  language: string; // "english" | "hindi"
   loggedBy: string;
   replied: boolean;
-  bookedAfter: boolean;      // lead booked within 14 days of THIS send
+  bookedAfter: boolean; // lead booked within 14 days of THIS send
   attributedBookingId?: string; // safety: which booking earned the credit
   notes?: string;
 }

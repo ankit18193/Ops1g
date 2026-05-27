@@ -15,16 +15,21 @@ import type { CallRecord, ObjectionRecord, MessageOutcome } from "./types";
  * Powers the "where leads slow down" timeline on Manager Dash.
  * ============================================================ */
 const STAGE_ORDER: Lead["stage"][] = [
-  "new", "contacted", "tour-scheduled", "tour-done", "negotiation", "booked",
+  "new",
+  "contacted",
+  "tour-scheduled",
+  "tour-done",
+  "negotiation",
+  "booked",
 ];
 
 export interface FunnelVelocityRow {
   fromStage: Lead["stage"];
   toStage: Lead["stage"];
-  avgDays: number;     // average dwell time at fromStage
-  sample: number;      // number of leads observed
-  dropOffPct: number;  // % of leads that never reached toStage
-  cohortConv: number;  // % of leads that DID reach toStage
+  avgDays: number; // average dwell time at fromStage
+  sample: number; // number of leads observed
+  dropOffPct: number; // % of leads that never reached toStage
+  cohortConv: number; // % of leads that DID reach toStage
 }
 
 export function funnelVelocity(leads: Lead[]): FunnelVelocityRow[] {
@@ -37,13 +42,17 @@ export function funnelVelocity(leads: Lead[]): FunnelVelocityRow[] {
     const dropOffPct = 100 - cohortConv;
     // Approximate dwell using updatedAt − createdAt for those that advanced.
     const advanced = reachedTo;
-    const avgDays = advanced.length === 0
-      ? 0
-      : Math.round(
-          advanced.reduce((acc, l) => acc + (
-            +new Date(l.updatedAt) - +new Date(l.createdAt)
-          ) / 86_400_000, 0) / advanced.length / Math.max(1, i + 1),
-        );
+    const avgDays =
+      advanced.length === 0
+        ? 0
+        : Math.round(
+            advanced.reduce(
+              (acc, l) => acc + (+new Date(l.updatedAt) - +new Date(l.createdAt)) / 86_400_000,
+              0,
+            ) /
+              advanced.length /
+              Math.max(1, i + 1),
+          );
     return { fromStage: from, toStage: to, avgDays, sample, dropOffPct, cohortConv };
   });
 }
@@ -103,13 +112,13 @@ export interface AgentCohortRow {
   zone: string;
   leads: number;
   bookings: number;
-  conv: number;          // %
+  conv: number; // %
   objectionsLogged: number;
   objectionsResolved: number;
   resolutionRate: number; // %
   callsPerLead: number;
   avgFirstResponseMins: number;
-  cohortRank: number;     // 1 = best
+  cohortRank: number; // 1 = best
 }
 
 export function agentCohort(
@@ -124,9 +133,10 @@ export function agentCohort(
     const myCalls = calls.filter((c) => myLeads.some((l) => l.id === c.leadId));
     const myObj = objections.filter((o) => myLeads.some((l) => l.id === o.leadId));
     const resolved = myObj.filter((o) => o.resolution === "yes").length;
-    const avgResp = myLeads.length === 0
-      ? 0
-      : Math.round(myLeads.reduce((acc, l) => acc + l.responseSpeedMins, 0) / myLeads.length);
+    const avgResp =
+      myLeads.length === 0
+        ? 0
+        : Math.round(myLeads.reduce((acc, l) => acc + l.responseSpeedMins, 0) / myLeads.length);
     return {
       tcmId: t.id,
       name: t.name,
@@ -145,7 +155,8 @@ export function agentCohort(
   // Composite rank: conv (60%), resolution (25%), responsiveness (15% inverse).
   const scored = rows.map((r) => ({
     ...r,
-    _score: r.conv * 0.6 + r.resolutionRate * 0.25 + Math.max(0, 100 - r.avgFirstResponseMins * 4) * 0.15,
+    _score:
+      r.conv * 0.6 + r.resolutionRate * 0.25 + Math.max(0, 100 - r.avgFirstResponseMins * 4) * 0.15,
   }));
   scored.sort((a, b) => b._score - a._score);
   return scored.map((r, i) => ({ ...r, cohortRank: i + 1, _score: undefined as never }));
@@ -212,7 +223,7 @@ export function weeklyRecommendations(input: {
 
   // 4. Never-called pile-up
   const idle = input.leads.filter(
-    (l) => l.stage === "new" && (Date.now() - +new Date(l.createdAt)) > 24 * 3_600_000,
+    (l) => l.stage === "new" && Date.now() - +new Date(l.createdAt) > 24 * 3_600_000,
   );
   if (idle.length >= 3) {
     recs.push({
@@ -238,11 +249,11 @@ export interface ZoneSnapshot {
   leadCount: number;
   activeLeads: number;
   bookings: number;
-  revenueINR: number;          // sum of monthly rents booked
-  conversion: number;          // %
+  revenueINR: number; // sum of monthly rents booked
+  conversion: number; // %
   avgFirstResponseMins: number;
-  loadPerTcm: number;          // active leads / tcm count
-  slaBreaches: number;         // never-contacted >24h leads
+  loadPerTcm: number; // active leads / tcm count
+  slaBreaches: number; // never-contacted >24h leads
   recommendation: string;
   pressureLevel: "balanced" | "overloaded" | "underloaded" | "leaking";
 }
@@ -261,12 +272,14 @@ export function zoneSnapshots(input: {
     const myBookings = bookings.filter((b) => z.tcmIds.includes(b.tcmId));
     const revenueINR = myBookings.reduce((acc, b) => acc + b.amount, 0);
     const conv = myLeads.length === 0 ? 0 : Math.round((myBookings.length / myLeads.length) * 100);
-    const avgResp = myLeads.length === 0
-      ? 0
-      : Math.round(myLeads.reduce((a, l) => a + l.responseSpeedMins, 0) / myLeads.length);
-    const loadPerTcm = zoneTcms.length === 0 ? active.length : +(active.length / zoneTcms.length).toFixed(1);
+    const avgResp =
+      myLeads.length === 0
+        ? 0
+        : Math.round(myLeads.reduce((a, l) => a + l.responseSpeedMins, 0) / myLeads.length);
+    const loadPerTcm =
+      zoneTcms.length === 0 ? active.length : +(active.length / zoneTcms.length).toFixed(1);
     const slaBreaches = myLeads.filter(
-      (l) => l.stage === "new" && (Date.now() - +new Date(l.createdAt)) > 24 * 3_600_000,
+      (l) => l.stage === "new" && Date.now() - +new Date(l.createdAt) > 24 * 3_600_000,
     ).length;
 
     let pressureLevel: ZoneSnapshot["pressureLevel"] = "balanced";
@@ -313,9 +326,16 @@ export function zoneSnapshots(input: {
  * ============================================================ */
 export type TemplateRecommendation = {
   stage:
-    | "first-intro" | "follow-up" | "visit-confirm" | "post-visit"
-    | "price-offer" | "booking-confirm" | "check-in-welcome"
-    | "revival-30d" | "revival-60d" | "revival-90d";
+    | "first-intro"
+    | "follow-up"
+    | "visit-confirm"
+    | "post-visit"
+    | "price-offer"
+    | "booking-confirm"
+    | "check-in-welcome"
+    | "revival-30d"
+    | "revival-60d"
+    | "revival-90d";
   reason: string;
   urgency: "high" | "medium" | "low";
 };
@@ -331,19 +351,39 @@ export function recommendTemplate(input: {
   const moveDays = (+new Date(lead.moveInDate) - Date.now()) / 86_400_000;
 
   if (lead.stage === "booked") {
-    return { stage: "booking-confirm", reason: "Lead just booked — send confirmation + welcome.", urgency: "high" };
+    return {
+      stage: "booking-confirm",
+      reason: "Lead just booked — send confirmation + welcome.",
+      urgency: "high",
+    };
   }
   if (upcomingTour) {
-    return { stage: "visit-confirm", reason: "Upcoming visit — auto-confirm to reduce no-show.", urgency: "high" };
+    return {
+      stage: "visit-confirm",
+      reason: "Upcoming visit — auto-confirm to reduce no-show.",
+      urgency: "high",
+    };
   }
   if (completedTour && lastContactDays >= 1) {
-    return { stage: "post-visit", reason: "Tour done — check reaction + push for decision.", urgency: "high" };
+    return {
+      stage: "post-visit",
+      reason: "Tour done — check reaction + push for decision.",
+      urgency: "high",
+    };
   }
   if (lead.stage === "negotiation") {
-    return { stage: "price-offer", reason: "In negotiation — send time-bound price offer.", urgency: "high" };
+    return {
+      stage: "price-offer",
+      reason: "In negotiation — send time-bound price offer.",
+      urgency: "high",
+    };
   }
   if (lead.stage === "new" || lastContactDays === Infinity) {
-    return { stage: "first-intro", reason: "First touch — open with intro + budget hook.", urgency: "high" };
+    return {
+      stage: "first-intro",
+      reason: "First touch — open with intro + budget hook.",
+      urgency: "high",
+    };
   }
   if (lastContactDays >= 90) {
     return { stage: "revival-90d", reason: "Cold 90d+ — last-attempt revival.", urgency: "low" };
@@ -352,10 +392,18 @@ export function recommendTemplate(input: {
     return { stage: "revival-60d", reason: "Cold 60d — fresh inventory bait.", urgency: "low" };
   }
   if (lastContactDays >= 30) {
-    return { stage: "revival-30d", reason: "Cold 30d — re-engage with price-drop angle.", urgency: "medium" };
+    return {
+      stage: "revival-30d",
+      reason: "Cold 30d — re-engage with price-drop angle.",
+      urgency: "medium",
+    };
   }
   if (moveDays <= 7) {
-    return { stage: "follow-up", reason: "Move-in close — push follow-up before they decide elsewhere.", urgency: "high" };
+    return {
+      stage: "follow-up",
+      reason: "Move-in close — push follow-up before they decide elsewhere.",
+      urgency: "high",
+    };
   }
   return { stage: "follow-up", reason: "Standard follow-up cadence.", urgency: "medium" };
 }
@@ -369,8 +417,8 @@ export interface TemplatePerf {
   sent: number;
   replies: number;
   bookings: number;
-  replyRate: number;   // %
-  bookRate: number;    // %
+  replyRate: number; // %
+  bookRate: number; // %
 }
 
 export function templatePerformance(outcomes: MessageOutcome[]): TemplatePerf[] {

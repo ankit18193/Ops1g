@@ -15,15 +15,15 @@ import { cn } from "@/lib/utils";
  * Hides automatically inside the LeadControlPanel sheet to avoid stacking.
  */
 export function CoachWidget() {
-  const role         = useApp((s) => s.role);
+  const role = useApp((s) => s.role);
   const currentTcmId = useApp((s) => s.currentTcmId);
-  const tcms         = useApp((s) => s.tcms);
-  const leads        = useApp((s) => s.leads);
-  const tours        = useApp((s) => s.tours);
-  const followUps    = useApp((s) => s.followUps);
-  const activities   = useApp((s) => s.activities);
-  const bookings     = useApp((s) => s.bookings);
-  const handoffs     = useApp((s) => s.handoffs);
+  const tcms = useApp((s) => s.tcms);
+  const leads = useApp((s) => s.leads);
+  const tours = useApp((s) => s.tours);
+  const followUps = useApp((s) => s.followUps);
+  const activities = useApp((s) => s.activities);
+  const bookings = useApp((s) => s.bookings);
+  const handoffs = useApp((s) => s.handoffs);
   const shownIntro = useGame((s) => s.shownIntro);
   const setShownIntro = useGame((s) => s.setShownIntro);
   const rolloverIfNeeded = useGame((s) => s.rolloverIfNeeded);
@@ -35,13 +35,29 @@ export function CoachWidget() {
   const userSlot = useGame((s) => s.byUser[who]);
   const stats = mounted
     ? useGame.getState().getStats(who)
-    : { xp: 0, streak: 0, xpToday: 0, bookingsClosed: 0, cleared: {}, lastWinDate: null, todayKey: null };
+    : {
+        xp: 0,
+        streak: 0,
+        xpToday: 0,
+        bookingsClosed: 0,
+        cleared: {},
+        lastWinDate: null,
+        todayKey: null,
+      };
   void userSlot;
 
   const report = mounted
     ? buildCoachReport({
-        role, currentTcmId, tcms, leads, tours, followUps,
-        activities, bookings, handoffs, now,
+        role,
+        currentTcmId,
+        tcms,
+        leads,
+        tours,
+        followUps,
+        activities,
+        bookings,
+        handoffs,
+        now,
         ownerSignals: { staleRooms: 0, pendingBlocks: 0 },
       })
     : null;
@@ -68,7 +84,11 @@ export function CoachWidget() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
-      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+      if (
+        target &&
+        (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)
+      )
+        return;
       if (e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey && e.key.toLowerCase() === "c") {
         e.preventDefault();
         setOpen((v) => !v);
@@ -99,14 +119,20 @@ export function CoachWidget() {
           {/* Progress ring */}
           <svg className="absolute inset-0 -rotate-90" viewBox="0 0 56 56">
             <circle
-              cx="28" cy="28" r="25"
-              fill="none" stroke="currentColor"
+              cx="28"
+              cy="28"
+              r="25"
+              fill="none"
+              stroke="currentColor"
               className="text-accent-foreground/20"
               strokeWidth="3"
             />
             <circle
-              cx="28" cy="28" r="25"
-              fill="none" stroke="currentColor"
+              cx="28"
+              cy="28"
+              r="25"
+              fill="none"
+              stroke="currentColor"
               className="text-background transition-all duration-500"
               strokeWidth="3"
               strokeDasharray={2 * Math.PI * 25}

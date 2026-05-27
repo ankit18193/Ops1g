@@ -3,7 +3,15 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePip, type PipMode } from "./PipProvider";
 
-export function PipButton({ className, mode = "dashboard", label }: { className?: string; mode?: PipMode; label?: string }) {
+export function PipButton({
+  className,
+  mode = "dashboard",
+  label,
+}: {
+  className?: string;
+  mode?: PipMode;
+  label?: string;
+}) {
   const { open, close, active, supported, mode: activeMode } = usePip();
 
   return (
@@ -21,16 +29,22 @@ export function PipButton({ className, mode = "dashboard", label }: { className?
         !supported
           ? "PiP needs Chrome, Edge, Brave or Opera on desktop"
           : active && activeMode === mode
-          ? "Close this Picture-in-Picture window"
-          : mode === "capture"
-          ? "Open lead capture PiP over WhatsApp"
-          : mode === "manage"
-          ? "Open lead management PiP over WhatsApp"
-          : "Pop the dashboard out as a floating always-on-top window over WhatsApp"
+            ? "Close this Picture-in-Picture window"
+            : mode === "capture"
+              ? "Open lead capture PiP over WhatsApp"
+              : mode === "manage"
+                ? "Open lead management PiP over WhatsApp"
+                : "Pop the dashboard out as a floating always-on-top window over WhatsApp"
       }
     >
-      {active && activeMode === mode ? <X className="h-3.5 w-3.5" /> : <PictureInPicture2 className="h-3.5 w-3.5" />}
-      <span className="hidden sm:inline">{active && activeMode === mode ? "Exit PiP" : (label ?? "PiP mode")}</span>
+      {active && activeMode === mode ? (
+        <X className="h-3.5 w-3.5" />
+      ) : (
+        <PictureInPicture2 className="h-3.5 w-3.5" />
+      )}
+      <span className="hidden sm:inline">
+        {active && activeMode === mode ? "Exit PiP" : (label ?? "PiP mode")}
+      </span>
     </Button>
   );
 }

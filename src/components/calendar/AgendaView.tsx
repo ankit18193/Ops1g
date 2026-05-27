@@ -43,8 +43,14 @@ export function AgendaView({ events, onEventClick }: Props) {
           const today = isSameDay(day, new Date());
           return (
             <li key={key}>
-              <div className={cn("sticky top-0 bg-card/90 backdrop-blur px-4 py-2 text-xs font-semibold uppercase tracking-wide", today ? "text-primary" : "text-muted-foreground")}>
-                {format(day, "EEEE, MMMM d")}{today && " · Today"}
+              <div
+                className={cn(
+                  "sticky top-0 bg-card/90 backdrop-blur px-4 py-2 text-xs font-semibold uppercase tracking-wide",
+                  today ? "text-primary" : "text-muted-foreground",
+                )}
+              >
+                {format(day, "EEEE, MMMM d")}
+                {today && " · Today"}
               </div>
               <ul>
                 {list.map((e) => {
@@ -55,7 +61,10 @@ export function AgendaView({ events, onEventClick }: Props) {
                         onClick={() => onEventClick(e)}
                         className="w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-accent/40"
                       >
-                        <span className="mt-1 inline-block h-3 w-3 rounded-full flex-shrink-0" style={{ background: m.color }} />
+                        <span
+                          className="mt-1 inline-block h-3 w-3 rounded-full flex-shrink-0"
+                          style={{ background: m.color }}
+                        />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-baseline justify-between gap-3">
                             <span className="font-medium truncate">{e.title}</span>
@@ -66,12 +75,20 @@ export function AgendaView({ events, onEventClick }: Props) {
                             </span>
                           </div>
                           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mt-0.5">
-                            <span className={cn("rounded px-1.5 py-0.5", m.bg, m.text)}>{m.label}</span>
+                            <span className={cn("rounded px-1.5 py-0.5", m.bg, m.text)}>
+                              {m.label}
+                            </span>
                             {e.location && (
-                              <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{e.location}</span>
+                              <span className="inline-flex items-center gap-1">
+                                <MapPin className="h-3 w-3" />
+                                {e.location}
+                              </span>
                             )}
                             {e.attendees && e.attendees.length > 0 && (
-                              <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" />{e.attendees.length}</span>
+                              <span className="inline-flex items-center gap-1">
+                                <Users className="h-3 w-3" />
+                                {e.attendees.length}
+                              </span>
                             )}
                             {e.externalSource && e.externalSource !== "local" && (
                               <span className="uppercase tracking-wide">{e.externalSource}</span>

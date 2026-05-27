@@ -2,14 +2,22 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useApp, getProperty, getTcm } from "@/lib/store";
 import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -23,10 +31,26 @@ import { CommitmentBanner } from "./crm10x/CommitmentBanner";
 import { ObjectionTag } from "./crm10x/ObjectionLogger";
 import { LeadDossierPanel } from "./crm10x/LeadDossierPanel";
 import {
-  Phone, MessageSquare, Calendar as CalendarIcon, Tag, ClipboardCheck,
-  AlertTriangle, CheckCircle2, X, Activity as ActivityIcon, MapPin,
-  Wallet, Send, Zap, IndianRupee, BellRing, ExternalLink, Plus,
-  Building2, Video, Briefcase,
+  Phone,
+  MessageSquare,
+  Calendar as CalendarIcon,
+  Tag,
+  ClipboardCheck,
+  AlertTriangle,
+  CheckCircle2,
+  X,
+  Activity as ActivityIcon,
+  MapPin,
+  Wallet,
+  Send,
+  Zap,
+  IndianRupee,
+  BellRing,
+  ExternalLink,
+  Plus,
+  Building2,
+  Video,
+  Briefcase,
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import type { Lead, LeadStage, FollowUpPriority, SequenceKind } from "@/lib/types";
@@ -35,8 +59,22 @@ import { useMountedNow } from "@/hooks/use-now";
 import { sendTourMessage as sendOwnerTourMessage } from "@/owner/messaging";
 import { useSettings } from "@/myt/lib/settings-context";
 
-const TAG_OPTIONS = ["price-issue", "location-mismatch", "parents-involved", "urgent", "budget-low"];
-const OBJECTIONS = ["Budget", "Location", "Amenities", "Timing", "Parents", "Comparing options", "Other"];
+const TAG_OPTIONS = [
+  "price-issue",
+  "location-mismatch",
+  "parents-involved",
+  "urgent",
+  "budget-low",
+];
+const OBJECTIONS = [
+  "Budget",
+  "Location",
+  "Amenities",
+  "Timing",
+  "Parents",
+  "Comparing options",
+  "Other",
+];
 const ROOM_TYPES = ["Single", "Double Sharing", "Triple Sharing", "Studio"];
 const BOOKING_SOURCES = ["ad", "referral", "organic", "whatsapp", "call", "walk-in"];
 const DECISION_MAKERS = ["self", "parent", "group"];
@@ -46,9 +84,21 @@ const TOUR_TYPES = [
   { value: "pre-book-pitch", label: "Pre-book", icon: Briefcase },
 ];
 const TEMPLATES = [
-  { id: "tour-confirm", label: "Tour confirmation", body: "Hi! Confirming your tour today. Looking forward to meeting you." },
-  { id: "post-tour", label: "Post-tour check-in", body: "Hi! How did you find the property? Happy to answer any questions." },
-  { id: "scarcity", label: "Scarcity", body: "Just a heads-up — only a couple of beds left at this price." },
+  {
+    id: "tour-confirm",
+    label: "Tour confirmation",
+    body: "Hi! Confirming your tour today. Looking forward to meeting you.",
+  },
+  {
+    id: "post-tour",
+    label: "Post-tour check-in",
+    body: "Hi! How did you find the property? Happy to answer any questions.",
+  },
+  {
+    id: "scarcity",
+    label: "Scarcity",
+    body: "Just a heads-up — only a couple of beds left at this price.",
+  },
 ];
 
 type DrawerScheduleAnswers = {
@@ -70,15 +120,38 @@ type DrawerScheduleAnswers = {
 
 export function LeadControlPanel() {
   const {
-    selectedLeadId, selectLead, leads, properties, tours, activities, tcms,
-    setLeadStage, setLeadIntent, setLeadFollowUp, addLeadTag, removeLeadTag,
-    scheduleTour, cancelTour, rescheduleTour, completeTour, setDecision, updatePostTour,
-    addNote, logCall, sendMessage, autoAssignLead, startSequence, closeDeal,
+    selectedLeadId,
+    selectLead,
+    leads,
+    properties,
+    tours,
+    activities,
+    tcms,
+    setLeadStage,
+    setLeadIntent,
+    setLeadFollowUp,
+    addLeadTag,
+    removeLeadTag,
+    scheduleTour,
+    cancelTour,
+    rescheduleTour,
+    completeTour,
+    setDecision,
+    updatePostTour,
+    addNote,
+    logCall,
+    sendMessage,
+    autoAssignLead,
+    startSequence,
+    closeDeal,
     markHandoffsRead,
   } = useApp();
   const { settings } = useSettings();
 
-  const lead = useMemo(() => leads.find((l) => l.id === selectedLeadId) ?? null, [leads, selectedLeadId]);
+  const lead = useMemo(
+    () => leads.find((l) => l.id === selectedLeadId) ?? null,
+    [leads, selectedLeadId],
+  );
 
   // Mark handoffs read when this lead opens
   useEffect(() => {
@@ -86,7 +159,12 @@ export function LeadControlPanel() {
   }, [selectedLeadId, markHandoffsRead]);
 
   const leadTours = useMemo(
-    () => (lead ? tours.filter((t) => t.leadId === lead.id).sort((a, b) => +new Date(b.scheduledAt) - +new Date(a.scheduledAt)) : []),
+    () =>
+      lead
+        ? tours
+            .filter((t) => t.leadId === lead.id)
+            .sort((a, b) => +new Date(b.scheduledAt) - +new Date(a.scheduledAt))
+        : [],
     [tours, lead],
   );
   const leadActivities = useMemo(
@@ -122,9 +200,7 @@ export function LeadControlPanel() {
   const [note, setNote] = useState("");
   const [customMsg, setCustomMsg] = useState("");
 
-  const pendingPostTour = leadTours.find(
-    (t) => t.status === "completed" && !t.postTour.filledAt,
-  );
+  const pendingPostTour = leadTours.find((t) => t.status === "completed" && !t.postTour.filledAt);
   const upcomingTour = leadTours.find((t) => t.status === "scheduled");
 
   useEffect(() => {
@@ -152,8 +228,15 @@ export function LeadControlPanel() {
       toast.error("Property, TCM and time are required");
       return;
     }
-    scheduleTour({ leadId: lead.id, propertyId, tcmId, scheduledAt: new Date(scheduledAt).toISOString() });
-    setPropertyId(""); setTcmId(""); setScheduledAt("");
+    scheduleTour({
+      leadId: lead.id,
+      propertyId,
+      tcmId,
+      scheduledAt: new Date(scheduledAt).toISOString(),
+    });
+    setPropertyId("");
+    setTcmId("");
+    setScheduledAt("");
     setIsSchedulingAnother(false);
     toast.success("Tour scheduled");
   };
@@ -193,11 +276,17 @@ export function LeadControlPanel() {
             <ObjectionTag leadId={lead.id} />
           </div>
           <div className="grid grid-cols-3 gap-2 pt-1 text-xs">
-            <Meta icon={CalendarIcon} label="Move-in" value={format(new Date(lead.moveInDate), "MMM d")} />
+            <Meta
+              icon={CalendarIcon}
+              label="Move-in"
+              value={format(new Date(lead.moveInDate), "MMM d")}
+            />
             <Meta icon={Wallet} label="Budget" value={`₹${(lead.budget / 1000).toFixed(0)}k`} />
             <Meta icon={MapPin} label="Area" value={lead.preferredArea} />
           </div>
-          <div className="text-[11px] text-muted-foreground">Assigned · {tcm?.name ?? "—"} ({tcm?.zone ?? "—"})</div>
+          <div className="text-[11px] text-muted-foreground">
+            Assigned · {tcm?.name ?? "—"} ({tcm?.zone ?? "—"})
+          </div>
         </SheetHeader>
 
         {/* CRM 10x — commitment banner + 48h post-visit gate */}
@@ -211,8 +300,11 @@ export function LeadControlPanel() {
             <div className="text-xs">
               <div className="font-semibold text-destructive">Post-tour update missing</div>
               <div className="text-muted-foreground">
-                Tour completed {mounted ? formatDistanceToNow(new Date(pendingPostTour.scheduledAt), { addSuffix: true }) : "recently"}.
-                TCM must fill the form below.
+                Tour completed{" "}
+                {mounted
+                  ? formatDistanceToNow(new Date(pendingPostTour.scheduledAt), { addSuffix: true })
+                  : "recently"}
+                . TCM must fill the form below.
               </div>
             </div>
           </div>
@@ -222,15 +314,30 @@ export function LeadControlPanel() {
         <div className="flex-1 overflow-y-auto scrollbar-thin">
           <Tabs value={tab} onValueChange={setTab} className="px-5 py-4">
             <TabsList className="grid h-auto w-full grid-cols-4 gap-1 sm:grid-cols-7">
-              <TabsTrigger value="best-fit" className="text-xs">Best Fit</TabsTrigger>
-              <TabsTrigger value="dossier" className="text-xs">Dossier</TabsTrigger>
-              <TabsTrigger value="control" className="text-xs">Control</TabsTrigger>
-              <TabsTrigger value="tour" className="text-xs">Tour</TabsTrigger>
-              <TabsTrigger value="post" className="text-xs">
-                Post {pendingPostTour && <span className="ml-1 h-1.5 w-1.5 rounded-full bg-destructive" />}
+              <TabsTrigger value="best-fit" className="text-xs">
+                Best Fit
               </TabsTrigger>
-              <TabsTrigger value="handoff" className="text-xs">Handoff</TabsTrigger>
-              <TabsTrigger value="log" className="text-xs">Log</TabsTrigger>
+              <TabsTrigger value="dossier" className="text-xs">
+                Dossier
+              </TabsTrigger>
+              <TabsTrigger value="control" className="text-xs">
+                Control
+              </TabsTrigger>
+              <TabsTrigger value="tour" className="text-xs">
+                Tour
+              </TabsTrigger>
+              <TabsTrigger value="post" className="text-xs">
+                Post{" "}
+                {pendingPostTour && (
+                  <span className="ml-1 h-1.5 w-1.5 rounded-full bg-destructive" />
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="handoff" className="text-xs">
+                Handoff
+              </TabsTrigger>
+              <TabsTrigger value="log" className="text-xs">
+                Log
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="dossier" className="space-y-4 pt-4">
@@ -250,50 +357,82 @@ export function LeadControlPanel() {
               <Section title="Routing">
                 <div className="flex gap-2">
                   <Button
-                    variant="outline" size="sm" className="flex-1"
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
                     onClick={() => {
                       const r = autoAssignLead(lead.id);
                       const tcm = tcms.find((t) => t.id === r.tcmId);
-                      toast.success(`Auto-routed to ${tcm?.name ?? "TCM"}`, { description: r.reasons.join(" · ") });
+                      toast.success(`Auto-routed to ${tcm?.name ?? "TCM"}`, {
+                        description: r.reasons.join(" · "),
+                      });
                     }}
                   >
                     <Zap className="h-3.5 w-3.5 mr-1.5" /> Auto-route to best TCM
                   </Button>
                 </div>
                 <div className="text-[11px] text-muted-foreground">
-                  Currently with <span className="text-foreground font-medium">{tcm?.name ?? "—"}</span> · {tcm?.zone ?? "—"} · {Math.round((tcm?.conversionRate ?? 0) * 100)}% conv
+                  Currently with{" "}
+                  <span className="text-foreground font-medium">{tcm?.name ?? "—"}</span> ·{" "}
+                  {tcm?.zone ?? "—"} · {Math.round((tcm?.conversionRate ?? 0) * 100)}% conv
                 </div>
               </Section>
 
               <Section title="Status engine">
-                <Select value={lead.stage} onValueChange={(v) => {
-                  const prev = lead.stage;
-                  setLeadStage(lead.id, v as LeadStage);
-                  if (v === "dropped") {
-                    toast("Marked dropped", {
-                      description: `${lead.name} → dropped`,
-                      action: {
-                        label: "Undo",
-                        onClick: () => { setLeadStage(lead.id, prev); toast.success("Restored"); },
-                      },
-                      duration: 5000,
-                    });
-                  }
-                }}>
+                <Select
+                  value={lead.stage}
+                  onValueChange={(v) => {
+                    const prev = lead.stage;
+                    setLeadStage(lead.id, v as LeadStage);
+                    if (v === "dropped") {
+                      toast("Marked dropped", {
+                        description: `${lead.name} → dropped`,
+                        action: {
+                          label: "Undo",
+                          onClick: () => {
+                            setLeadStage(lead.id, prev);
+                            toast.success("Restored");
+                          },
+                        },
+                        duration: 5000,
+                      });
+                    }
+                  }}
+                >
                   <SelectTrigger className="h-9 text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {(["new","contacted","tour-scheduled","tour-done","negotiation","booked","dropped"] as LeadStage[]).map((s) => (
-                      <SelectItem key={s} value={s} className="text-sm capitalize">{s.replace("-", " ")}</SelectItem>
+                    {(
+                      [
+                        "new",
+                        "contacted",
+                        "tour-scheduled",
+                        "tour-done",
+                        "negotiation",
+                        "booked",
+                        "dropped",
+                      ] as LeadStage[]
+                    ).map((s) => (
+                      <SelectItem key={s} value={s} className="text-sm capitalize">
+                        {s.replace("-", " ")}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 <div className="grid grid-cols-2 gap-2 pt-1">
-                  {(["first-contact","post-tour","pre-decision","cold-revival"] as SequenceKind[]).map((k) => (
+                  {(
+                    ["first-contact", "post-tour", "pre-decision", "cold-revival"] as SequenceKind[]
+                  ).map((k) => (
                     <Button
-                      key={k} size="sm" variant="outline" className="h-7 text-[11px]"
-                      onClick={() => { startSequence(lead.id, k); toast.success(`Started ${k} sequence`); }}
+                      key={k}
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-[11px]"
+                      onClick={() => {
+                        startSequence(lead.id, k);
+                        toast.success(`Started ${k} sequence`);
+                      }}
                     >
                       Start {k}
                     </Button>
@@ -303,20 +442,42 @@ export function LeadControlPanel() {
 
               <Section title="Action engine">
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" onClick={() => { logCall(lead.id); toast.success("Call logged"); }}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      logCall(lead.id);
+                      toast.success("Call logged");
+                    }}
+                  >
                     <Phone className="h-3.5 w-3.5 mr-1.5" /> Call
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => { sendMessage(lead.id, "WhatsApp template sent"); toast.success("Message sent"); }}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      sendMessage(lead.id, "WhatsApp template sent");
+                      toast.success("Message sent");
+                    }}
+                  >
                     <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> WhatsApp
                   </Button>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Templates</Label>
+                  <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                    Templates
+                  </Label>
                   <div className="flex flex-wrap gap-1.5">
                     {TEMPLATES.map((t) => (
                       <Button
-                        key={t.id} variant="secondary" size="sm" className="h-7 text-[11px]"
-                        onClick={() => { sendMessage(lead.id, t.body); toast.success(`Sent: ${t.label}`); }}
+                        key={t.id}
+                        variant="secondary"
+                        size="sm"
+                        className="h-7 text-[11px]"
+                        onClick={() => {
+                          sendMessage(lead.id, t.body);
+                          toast.success(`Sent: ${t.label}`);
+                        }}
                       >
                         {t.label}
                       </Button>
@@ -325,12 +486,19 @@ export function LeadControlPanel() {
                 </div>
                 <div className="flex gap-2">
                   <Input
-                    value={customMsg} onChange={(e) => setCustomMsg(e.target.value)}
-                    placeholder="Custom message…" className="h-9 text-sm"
+                    value={customMsg}
+                    onChange={(e) => setCustomMsg(e.target.value)}
+                    placeholder="Custom message…"
+                    className="h-9 text-sm"
                   />
                   <Button
-                    size="sm" disabled={!customMsg.trim()}
-                    onClick={() => { sendMessage(lead.id, customMsg); setCustomMsg(""); toast.success("Sent"); }}
+                    size="sm"
+                    disabled={!customMsg.trim()}
+                    onClick={() => {
+                      sendMessage(lead.id, customMsg);
+                      setCustomMsg("");
+                      toast.success("Sent");
+                    }}
                   >
                     <Send className="h-3.5 w-3.5" />
                   </Button>
@@ -340,24 +508,41 @@ export function LeadControlPanel() {
               <Section title="Follow-up engine">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Next follow-up</Label>
+                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                      Next follow-up
+                    </Label>
                     <Input
                       type="datetime-local"
                       defaultValue={lead.nextFollowUpAt ? toLocal(lead.nextFollowUpAt) : ""}
                       onChange={(e) => {
                         if (!e.target.value) return;
-                        setLeadFollowUp(lead.id, new Date(e.target.value).toISOString(), priorityFor(lead.confidence));
+                        setLeadFollowUp(
+                          lead.id,
+                          new Date(e.target.value).toISOString(),
+                          priorityFor(lead.confidence),
+                        );
                       }}
                       className="h-9 text-sm"
                     />
                   </div>
                   <div>
-                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Priority</Label>
+                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                      Priority
+                    </Label>
                     <Select
-                      value={lead.intent === "hot" ? "high" : lead.intent === "warm" ? "medium" : "low"}
-                      onValueChange={(v) => setLeadIntent(lead.id, v === "high" ? "hot" : v === "medium" ? "warm" : "cold")}
+                      value={
+                        lead.intent === "hot" ? "high" : lead.intent === "warm" ? "medium" : "low"
+                      }
+                      onValueChange={(v) =>
+                        setLeadIntent(
+                          lead.id,
+                          v === "high" ? "hot" : v === "medium" ? "warm" : "cold",
+                        )
+                      }
                     >
-                      <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="high">Hot</SelectItem>
                         <SelectItem value="medium">Warm</SelectItem>
@@ -368,7 +553,10 @@ export function LeadControlPanel() {
                 </div>
                 {lead.nextFollowUpAt && (
                   <div className="text-[11px] text-muted-foreground">
-                    Due {mounted ? formatDistanceToNow(new Date(lead.nextFollowUpAt), { addSuffix: true }) : "soon"}
+                    Due{" "}
+                    {mounted
+                      ? formatDistanceToNow(new Date(lead.nextFollowUpAt), { addSuffix: true })
+                      : "soon"}
                   </div>
                 )}
               </Section>
@@ -379,7 +567,10 @@ export function LeadControlPanel() {
                     <Badge key={t} variant="secondary" className="text-[10px] gap-1">
                       <Tag className="h-2.5 w-2.5" />
                       {t}
-                      <button onClick={() => removeLeadTag(lead.id, t)} className="hover:text-destructive">
+                      <button
+                        onClick={() => removeLeadTag(lead.id, t)}
+                        className="hover:text-destructive"
+                      >
                         <X className="h-2.5 w-2.5" />
                       </button>
                     </Badge>
@@ -388,7 +579,8 @@ export function LeadControlPanel() {
                 <div className="flex flex-wrap gap-1.5">
                   {TAG_OPTIONS.filter((t) => !lead.tags.includes(t)).map((t) => (
                     <button
-                      key={t} onClick={() => addLeadTag(lead.id, t)}
+                      key={t}
+                      onClick={() => addLeadTag(lead.id, t)}
                       className="text-[10px] px-2 py-0.5 rounded-md border border-dashed border-border text-muted-foreground hover:border-accent hover:text-accent transition-colors"
                     >
                       + {t}
@@ -397,12 +589,20 @@ export function LeadControlPanel() {
                 </div>
                 <div className="flex gap-2">
                   <Textarea
-                    value={note} onChange={(e) => setNote(e.target.value)}
-                    placeholder="Add a note…" rows={2} className="text-sm resize-none"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Add a note…"
+                    rows={2}
+                    className="text-sm resize-none"
                   />
                   <Button
-                    size="sm" disabled={!note.trim()}
-                    onClick={() => { addNote(lead.id, note); setNote(""); toast.success("Note added"); }}
+                    size="sm"
+                    disabled={!note.trim()}
+                    onClick={() => {
+                      addNote(lead.id, note);
+                      setNote("");
+                      toast.success("Note added");
+                    }}
                   >
                     Add
                   </Button>
@@ -413,7 +613,12 @@ export function LeadControlPanel() {
             {/* TOUR */}
             <TabsContent value="tour" className="space-y-4 pt-4">
               {leadTours.length > 0 && (
-                <Button variant="secondary" size="sm" className="w-full gap-1.5" onClick={startAnotherTour}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="w-full gap-1.5"
+                  onClick={startAnotherTour}
+                >
                   <Plus className="h-3.5 w-3.5" /> Schedule another Tour for this lead
                 </Button>
               )}
@@ -443,7 +648,9 @@ export function LeadControlPanel() {
                             // restore by rescheduling — store doesn't track 'cancelled' undo cleanly
                             useApp.getState().rescheduleTour(tourId, prevAt);
                             useApp.setState((s) => ({
-                              tours: s.tours.map((x) => x.id === tourId ? { ...x, status: "scheduled" } : x),
+                              tours: s.tours.map((x) =>
+                                x.id === tourId ? { ...x, status: "scheduled" } : x,
+                              ),
                             }));
                             toast.success("Tour restored");
                           },
@@ -451,16 +658,16 @@ export function LeadControlPanel() {
                         duration: 5000,
                       });
                     }}
-                     onComplete={() => {
-                       completeTour(upcomingTour.id);
-                       setTab("post");
-                       toast.success("Tour completed — fill the post-tour form");
-                     }}
+                    onComplete={() => {
+                      completeTour(upcomingTour.id);
+                      setTab("post");
+                      toast.success("Tour completed — fill the post-tour form");
+                    }}
                   />
                 </Section>
               ) : null}
 
-              {(!upcomingTour || isSchedulingAnother) ? (
+              {!upcomingTour || isSchedulingAnother ? (
                 <InlineScheduleTour
                   lead={lead}
                   properties={properties}
@@ -469,7 +676,9 @@ export function LeadControlPanel() {
                   tcmId={tcmId}
                   scheduledAt={scheduledAt}
                   answers={scheduleAnswers}
-                  onAnswersChange={(patch: Partial<DrawerScheduleAnswers>) => setScheduleAnswers((answers) => ({ ...answers, ...patch }))}
+                  onAnswersChange={(patch: Partial<DrawerScheduleAnswers>) =>
+                    setScheduleAnswers((answers) => ({ ...answers, ...patch }))
+                  }
                   onPropertyChange={setPropertyId}
                   onTcmChange={setTcmId}
                   onScheduledAtChange={setScheduledAt}
@@ -483,18 +692,33 @@ export function LeadControlPanel() {
                     {leadTours.slice(upcomingTour ? 1 : 0).map((t) => {
                       const prop = getProperty(t.propertyId, properties);
                       return (
-                        <div key={t.id} className="rounded-lg border border-border bg-card p-3 text-xs space-y-1">
+                        <div
+                          key={t.id}
+                          className="rounded-lg border border-border bg-card p-3 text-xs space-y-1"
+                        >
                           <div className="flex items-center justify-between">
                             <span className="font-medium">{prop?.name}</span>
-                            <span className="text-muted-foreground">{format(new Date(t.scheduledAt), "MMM d, p")}</span>
+                            <span className="text-muted-foreground">
+                              {format(new Date(t.scheduledAt), "MMM d, p")}
+                            </span>
                           </div>
                           <div className="flex items-center gap-2 text-[11px]">
-                            <Badge variant="outline" className="capitalize">{t.status}</Badge>
-                            {t.decision && <Badge variant="outline" className="capitalize">{t.decision}</Badge>}
+                            <Badge variant="outline" className="capitalize">
+                              {t.status}
+                            </Badge>
+                            {t.decision && (
+                              <Badge variant="outline" className="capitalize">
+                                {t.decision}
+                              </Badge>
+                            )}
                             {t.postTour.filledAt ? (
-                              <span className="text-success inline-flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> Form complete</span>
+                              <span className="text-success inline-flex items-center gap-1">
+                                <CheckCircle2 className="h-3 w-3" /> Form complete
+                              </span>
                             ) : t.status === "completed" ? (
-                              <span className="text-destructive inline-flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> Form pending</span>
+                              <span className="text-destructive inline-flex items-center gap-1">
+                                <AlertTriangle className="h-3 w-3" /> Form pending
+                              </span>
                             ) : null}
                           </div>
                         </div>
@@ -512,7 +736,8 @@ export function LeadControlPanel() {
                 if (!target) {
                   return (
                     <div className="text-sm text-muted-foreground text-center py-8">
-                      No completed tours yet. The post-tour form appears here once a tour is marked complete.
+                      No completed tours yet. The post-tour form appears here once a tour is marked
+                      complete.
                     </div>
                   );
                 }
@@ -521,43 +746,58 @@ export function LeadControlPanel() {
                 return (
                   <div className="space-y-4">
                     <div className="text-xs text-muted-foreground">
-                      Tour at <span className="text-foreground font-medium">{prop?.name}</span> · {format(new Date(target.scheduledAt), "MMM d, p")}
+                      Tour at <span className="text-foreground font-medium">{prop?.name}</span> ·{" "}
+                      {format(new Date(target.scheduledAt), "MMM d, p")}
                     </div>
 
                     {/* Send updates / reminders — one row, always visible post-tour */}
                     <div className="flex flex-wrap gap-1.5">
                       <Button
-                        size="sm" variant="outline" className="h-8 text-xs gap-1.5"
+                        size="sm"
+                        variant="outline"
+                        className="h-8 text-xs gap-1.5"
                         disabled={!prop}
                         onClick={() => {
                           if (!prop) return;
-                          sendOwnerTourMessage('post_visit_thanks', {
-                            tourId: target.id, leadName: lead.name, phone: lead.phone,
-                            propertyName: prop.name, area: prop.area,
+                          sendOwnerTourMessage("post_visit_thanks", {
+                            tourId: target.id,
+                            leadName: lead.name,
+                            phone: lead.phone,
+                            propertyName: prop.name,
+                            area: prop.area,
                             tourDate: target.scheduledAt.slice(0, 10),
                             tourTime: target.scheduledAt.slice(11, 16),
                             tcmName: tcms.find((t) => t.id === target.tcmId)?.name,
                           });
-                          toast.success('Thank-you message opened');
+                          toast.success("Thank-you message opened");
                         }}
                       >
                         <ExternalLink className="h-3 w-3" /> Thank-you msg
                       </Button>
                       <Button
-                        size="sm" variant="outline" className="h-8 text-xs gap-1.5"
+                        size="sm"
+                        variant="outline"
+                        className="h-8 text-xs gap-1.5"
                         onClick={() => {
-                          sendMessage(lead.id, 'Quick update — any thoughts on the property?');
-                          toast.success('Update sent');
+                          sendMessage(lead.id, "Quick update — any thoughts on the property?");
+                          toast.success("Update sent");
                         }}
                       >
                         <Send className="h-3 w-3" /> Send update
                       </Button>
                       <Button
-                        size="sm" variant="outline" className="h-8 text-xs gap-1.5"
+                        size="sm"
+                        variant="outline"
+                        className="h-8 text-xs gap-1.5"
                         onClick={() => {
                           const dueAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-                          setLeadFollowUp(lead.id, dueAt, priorityFor(pt.confidence), 'Post-tour reminder');
-                          toast.success('Reminder set for tomorrow');
+                          setLeadFollowUp(
+                            lead.id,
+                            dueAt,
+                            priorityFor(pt.confidence),
+                            "Post-tour reminder",
+                          );
+                          toast.success("Reminder set for tomorrow");
                         }}
                       >
                         <BellRing className="h-3 w-3" /> Set reminder
@@ -566,22 +806,50 @@ export function LeadControlPanel() {
 
                     <Section title="Outcome (mandatory · explicit)">
                       <div className="text-[11px] text-muted-foreground mb-1.5">
-                        Choose carefully — the lead's stage <em>and</em> closure status update only when you click here.
-                        Nothing is auto-assigned by the system.
+                        Choose carefully — the lead's stage <em>and</em> closure status update only
+                        when you click here. Nothing is auto-assigned by the system.
                       </div>
                       <div className="grid grid-cols-2 gap-2">
-                        {([
-                          { o: "booked", label: "Booked ✓", tone: "default" as const, decision: "booked" as const },
-                          { o: "thinking", label: "Still deciding", tone: "outline" as const, decision: "thinking" as const },
-                          { o: "not-interested", label: "Not interested", tone: "outline" as const, decision: "dropped" as const },
-                          { o: null, label: "Awaiting outcome (no change)", tone: "ghost" as const, decision: null },
-                        ] as const).map((opt) => (
+                        {(
+                          [
+                            {
+                              o: "booked",
+                              label: "Booked ✓",
+                              tone: "default" as const,
+                              decision: "booked" as const,
+                            },
+                            {
+                              o: "thinking",
+                              label: "Still deciding",
+                              tone: "outline" as const,
+                              decision: "thinking" as const,
+                            },
+                            {
+                              o: "not-interested",
+                              label: "Not interested",
+                              tone: "outline" as const,
+                              decision: "dropped" as const,
+                            },
+                            {
+                              o: null,
+                              label: "Awaiting outcome (no change)",
+                              tone: "ghost" as const,
+                              decision: null,
+                            },
+                          ] as const
+                        ).map((opt) => (
                           <Button
                             key={opt.label}
                             variant={pt.outcome === opt.o ? "default" : opt.tone}
-                            size="sm" className="capitalize"
+                            size="sm"
+                            className="capitalize"
                             onClick={() => {
-                              if (!confirm(`Confirm outcome: ${opt.label}? This updates the lead stage.`)) return;
+                              if (
+                                !confirm(
+                                  `Confirm outcome: ${opt.label}? This updates the lead stage.`,
+                                )
+                              )
+                                return;
                               updatePostTour(target.id, { outcome: opt.o });
                               if (opt.decision) setDecision(target.id, opt.decision);
                               toast.success(`Outcome set: ${opt.label}`);
@@ -595,7 +863,10 @@ export function LeadControlPanel() {
 
                     <Section title={`Deal confidence — ${pt.confidence}%`}>
                       <input
-                        type="range" min={0} max={100} value={pt.confidence}
+                        type="range"
+                        min={0}
+                        max={100}
+                        value={pt.confidence}
                         onChange={(e) => updatePostTour(target.id, { confidence: +e.target.value })}
                         className="w-full accent-[var(--color-accent)]"
                       />
@@ -606,14 +877,24 @@ export function LeadControlPanel() {
                         value={pt.objection ?? ""}
                         onValueChange={(v) => updatePostTour(target.id, { objection: v })}
                       >
-                        <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select objection" /></SelectTrigger>
+                        <SelectTrigger className="h-9 text-sm">
+                          <SelectValue placeholder="Select objection" />
+                        </SelectTrigger>
                         <SelectContent>
-                          {OBJECTIONS.map((o) => <SelectItem key={o} value={o} className="text-sm">{o}</SelectItem>)}
+                          {OBJECTIONS.map((o) => (
+                            <SelectItem key={o} value={o} className="text-sm">
+                              {o}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <Textarea
-                        rows={2} placeholder="Note…" value={pt.objectionNote}
-                        onChange={(e) => updatePostTour(target.id, { objectionNote: e.target.value })}
+                        rows={2}
+                        placeholder="Note…"
+                        value={pt.objectionNote}
+                        onChange={(e) =>
+                          updatePostTour(target.id, { objectionNote: e.target.value })
+                        }
                         className="text-sm resize-none mt-2"
                       />
                     </Section>
@@ -623,7 +904,13 @@ export function LeadControlPanel() {
                         <Input
                           type="date"
                           value={pt.expectedDecisionAt ? pt.expectedDecisionAt.slice(0, 10) : ""}
-                          onChange={(e) => updatePostTour(target.id, { expectedDecisionAt: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                          onChange={(e) =>
+                            updatePostTour(target.id, {
+                              expectedDecisionAt: e.target.value
+                                ? new Date(e.target.value).toISOString()
+                                : null,
+                            })
+                          }
                           className="h-9 text-sm"
                         />
                       </Section>
@@ -631,7 +918,13 @@ export function LeadControlPanel() {
                         <Input
                           type="datetime-local"
                           value={pt.nextFollowUpAt ? toLocal(pt.nextFollowUpAt) : ""}
-                          onChange={(e) => updatePostTour(target.id, { nextFollowUpAt: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                          onChange={(e) =>
+                            updatePostTour(target.id, {
+                              nextFollowUpAt: e.target.value
+                                ? new Date(e.target.value).toISOString()
+                                : null,
+                            })
+                          }
                           className="h-9 text-sm"
                         />
                       </Section>
@@ -640,19 +933,27 @@ export function LeadControlPanel() {
                     {pt.filledAt ? (
                       <div className="rounded-lg border border-success/30 bg-success/5 p-3 flex items-center gap-2 text-xs">
                         <CheckCircle2 className="h-4 w-4 text-success" />
-                        <span>Form complete · saved {mounted ? formatDistanceToNow(new Date(pt.filledAt), { addSuffix: true }) : "recently"}</span>
+                        <span>
+                          Form complete · saved{" "}
+                          {mounted
+                            ? formatDistanceToNow(new Date(pt.filledAt), { addSuffix: true })
+                            : "recently"}
+                        </span>
                       </div>
                     ) : (
                       <div className="rounded-lg border border-warning/40 bg-warning/10 p-3 flex items-center gap-2 text-xs">
                         <ClipboardCheck className="h-4 w-4" />
-                        <span>Fill all four fields to mark this lead complete and silence the alert.</span>
+                        <span>
+                          Fill all four fields to mark this lead complete and silence the alert.
+                        </span>
                       </div>
                     )}
 
                     {/* Close deal — one click, blocks the bed, fires the booking */}
                     {lead.stage !== "booked" && (
                       <Button
-                        size="lg" className="w-full bg-success text-success-foreground hover:bg-success/90"
+                        size="lg"
+                        className="w-full bg-success text-success-foreground hover:bg-success/90"
                         onClick={() => {
                           closeDeal({
                             leadId: lead.id,
@@ -666,7 +967,8 @@ export function LeadControlPanel() {
                           });
                         }}
                       >
-                        <IndianRupee className="h-4 w-4 mr-1.5" /> Close deal · ₹{((prop?.pricePerBed ?? 12000) / 1000).toFixed(0)}k/mo
+                        <IndianRupee className="h-4 w-4 mr-1.5" /> Close deal · ₹
+                        {((prop?.pricePerBed ?? 12000) / 1000).toFixed(0)}k/mo
                       </Button>
                     )}
                     {lead.stage === "booked" && (
@@ -696,12 +998,18 @@ export function LeadControlPanel() {
                     <div className="text-xs text-muted-foreground">No activity yet.</div>
                   )}
                   {leadActivities.map((a) => (
-                    <div key={a.id} className="flex gap-2 text-xs border-l-2 border-border pl-3 py-1">
+                    <div
+                      key={a.id}
+                      className="flex gap-2 text-xs border-l-2 border-border pl-3 py-1"
+                    >
                       <ActivityIcon className="h-3 w-3 mt-0.5 text-muted-foreground shrink-0" />
                       <div className="flex-1">
                         <div className="text-foreground">{a.text}</div>
                         <div className="text-muted-foreground text-[10px] mt-0.5">
-                          {format(new Date(a.ts), "MMM d, p")} · {a.actor === "system" ? "system" : tcms.find((t) => t.id === a.actor)?.name ?? a.actor}
+                          {format(new Date(a.ts), "MMM d, p")} ·{" "}
+                          {a.actor === "system"
+                            ? "system"
+                            : (tcms.find((t) => t.id === a.actor)?.name ?? a.actor)}
                         </div>
                       </div>
                     </div>
@@ -719,7 +1027,9 @@ export function LeadControlPanel() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="space-y-2">
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">{title}</div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+        {title}
+      </div>
       <div className="space-y-2">{children}</div>
     </section>
   );
@@ -734,7 +1044,15 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Meta({ icon: Icon, label, value }: { icon: typeof CalendarIcon; label: string; value: string }) {
+function Meta({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof CalendarIcon;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="rounded-md bg-muted/60 px-2 py-1.5">
       <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -746,7 +1064,12 @@ function Meta({ icon: Icon, label, value }: { icon: typeof CalendarIcon; label: 
 }
 
 function UpcomingTourCard({
-  tour, scheduledAt, onScheduledAtChange, onReschedule, onCancel, onComplete,
+  tour,
+  scheduledAt,
+  onScheduledAtChange,
+  onReschedule,
+  onCancel,
+  onComplete,
 }: {
   tour: import("@/lib/types").Tour;
   scheduledAt: string;
@@ -774,19 +1097,35 @@ function UpcomingTourCard({
           onChange={(e) => onScheduledAtChange(e.target.value)}
           className="h-8 text-xs"
         />
-        <Button size="sm" variant="outline" onClick={onReschedule}>Reschedule</Button>
+        <Button size="sm" variant="outline" onClick={onReschedule}>
+          Reschedule
+        </Button>
       </div>
       <div className="flex gap-2 pt-1">
-        <Button size="sm" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
-        <Button size="sm" className="flex-1" onClick={onComplete}>Mark complete</Button>
+        <Button size="sm" variant="outline" className="flex-1" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button size="sm" className="flex-1" onClick={onComplete}>
+          Mark complete
+        </Button>
       </div>
     </div>
   );
 }
 
 function InlineScheduleTour({
-  lead, properties, tcms, propertyId, tcmId, scheduledAt, answers, onAnswersChange,
-  onPropertyChange, onTcmChange, onScheduledAtChange, onSchedule,
+  lead,
+  properties,
+  tcms,
+  propertyId,
+  tcmId,
+  scheduledAt,
+  answers,
+  onAnswersChange,
+  onPropertyChange,
+  onTcmChange,
+  onScheduledAtChange,
+  onSchedule,
 }: {
   lead: Lead;
   properties: import("@/lib/types").Property[];
@@ -804,68 +1143,221 @@ function InlineScheduleTour({
   return (
     <Section title="Schedule Tour in drawer">
       <div className="rounded-lg border border-border bg-card p-3 space-y-3">
-        <div className="text-xs text-muted-foreground">Lead is already known: <span className="font-medium text-foreground">{lead.name}</span>. Add any property Tour without re-entering phone or QuickAD answers.</div>
+        <div className="text-xs text-muted-foreground">
+          Lead is already known: <span className="font-medium text-foreground">{lead.name}</span>.
+          Add any property Tour without re-entering phone or QuickAD answers.
+        </div>
         <div className="grid grid-cols-3 gap-2 text-[11px]">
-          <div className="rounded-md bg-muted/60 px-2 py-1.5"><span className="block text-muted-foreground">Phone</span><span className="font-medium text-foreground">{lead.phone}</span></div>
-          <div className="rounded-md bg-muted/60 px-2 py-1.5"><span className="block text-muted-foreground">Budget</span><span className="font-medium text-foreground">₹{(lead.budget / 1000).toFixed(0)}k</span></div>
-          <div className="rounded-md bg-muted/60 px-2 py-1.5"><span className="block text-muted-foreground">Area</span><span className="font-medium text-foreground">{lead.preferredArea}</span></div>
+          <div className="rounded-md bg-muted/60 px-2 py-1.5">
+            <span className="block text-muted-foreground">Phone</span>
+            <span className="font-medium text-foreground">{lead.phone}</span>
+          </div>
+          <div className="rounded-md bg-muted/60 px-2 py-1.5">
+            <span className="block text-muted-foreground">Budget</span>
+            <span className="font-medium text-foreground">₹{(lead.budget / 1000).toFixed(0)}k</span>
+          </div>
+          <div className="rounded-md bg-muted/60 px-2 py-1.5">
+            <span className="block text-muted-foreground">Area</span>
+            <span className="font-medium text-foreground">{lead.preferredArea}</span>
+          </div>
         </div>
         <div className="rounded-md border border-border bg-background/60 p-2 space-y-2">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">MYT Schedule questions</div>
-          <div className="grid gap-2 sm:grid-cols-2">
-            <Field label="Source"><Select value={answers.bookingSource} onValueChange={(v) => onAnswersChange({ bookingSource: v })}><SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger><SelectContent>{BOOKING_SOURCES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent></Select></Field>
-            <Field label="Decision maker"><Select value={answers.decisionMaker} onValueChange={(v) => onAnswersChange({ decisionMaker: v })}><SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger><SelectContent>{DECISION_MAKERS.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent></Select></Field>
-            <Field label="Move-in"><Input type="date" value={answers.moveInDate} onChange={(e) => onAnswersChange({ moveInDate: e.target.value })} className="h-8 text-xs" /></Field>
-            <Field label="Budget"><Input type="number" value={answers.budget} onChange={(e) => onAnswersChange({ budget: e.target.value })} className="h-8 text-xs" /></Field>
-            <Field label="Work / College"><Input value={answers.occupation} onChange={(e) => onAnswersChange({ occupation: e.target.value })} className="h-8 text-xs" /></Field>
-            <Field label="Work location"><Input value={answers.workLocation} onChange={(e) => onAnswersChange({ workLocation: e.target.value })} className="h-8 text-xs" /></Field>
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            MYT Schedule questions
           </div>
-          <Field label="Room type"><Select value={answers.roomType} onValueChange={(v) => onAnswersChange({ roomType: v })}><SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger><SelectContent>{ROOM_TYPES.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent></Select></Field>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Field label="Source">
+              <Select
+                value={answers.bookingSource}
+                onValueChange={(v) => onAnswersChange({ bookingSource: v })}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {BOOKING_SOURCES.map((s) => (
+                    <SelectItem key={s} value={s} className="capitalize">
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="Decision maker">
+              <Select
+                value={answers.decisionMaker}
+                onValueChange={(v) => onAnswersChange({ decisionMaker: v })}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DECISION_MAKERS.map((s) => (
+                    <SelectItem key={s} value={s} className="capitalize">
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="Move-in">
+              <Input
+                type="date"
+                value={answers.moveInDate}
+                onChange={(e) => onAnswersChange({ moveInDate: e.target.value })}
+                className="h-8 text-xs"
+              />
+            </Field>
+            <Field label="Budget">
+              <Input
+                type="number"
+                value={answers.budget}
+                onChange={(e) => onAnswersChange({ budget: e.target.value })}
+                className="h-8 text-xs"
+              />
+            </Field>
+            <Field label="Work / College">
+              <Input
+                value={answers.occupation}
+                onChange={(e) => onAnswersChange({ occupation: e.target.value })}
+                className="h-8 text-xs"
+              />
+            </Field>
+            <Field label="Work location">
+              <Input
+                value={answers.workLocation}
+                onChange={(e) => onAnswersChange({ workLocation: e.target.value })}
+                className="h-8 text-xs"
+              />
+            </Field>
+          </div>
+          <Field label="Room type">
+            <Select
+              value={answers.roomType}
+              onValueChange={(v) => onAnswersChange({ roomType: v })}
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ROOM_TYPES.map((r) => (
+                  <SelectItem key={r} value={r}>
+                    {r}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
           <div className="grid gap-1.5">
-            {([
-              ["readyIn48h", "Ready to finalize within 48 hours"],
-              ["exploring", "Only exploring"],
-              ["comparing", "Comparing options"],
-              ["needsFamily", "Needs family approval"],
-            ] as const).map(([key, label]) => (
-              <label key={key} className="flex items-center gap-2 rounded-md border border-border bg-surface-2/40 px-2 py-1.5 text-xs">
-                <Checkbox checked={answers[key]} onCheckedChange={(v) => onAnswersChange({ [key]: v === true })} />
+            {(
+              [
+                ["readyIn48h", "Ready to finalize within 48 hours"],
+                ["exploring", "Only exploring"],
+                ["comparing", "Comparing options"],
+                ["needsFamily", "Needs family approval"],
+              ] as const
+            ).map(([key, label]) => (
+              <label
+                key={key}
+                className="flex items-center gap-2 rounded-md border border-border bg-surface-2/40 px-2 py-1.5 text-xs"
+              >
+                <Checkbox
+                  checked={answers[key]}
+                  onCheckedChange={(v) => onAnswersChange({ [key]: v === true })}
+                />
                 <span>{label}</span>
               </label>
             ))}
           </div>
-          <Field label="Will book today"><Select value={answers.willBookToday} onValueChange={(v) => onAnswersChange({ willBookToday: v })}><SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger><SelectContent>{["yes", "maybe", "no"].map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}</SelectContent></Select></Field>
-          <Field label="Key concern"><Input value={answers.keyConcern} onChange={(e) => onAnswersChange({ keyConcern: e.target.value })} className="h-8 text-xs" /></Field>
+          <Field label="Will book today">
+            <Select
+              value={answers.willBookToday}
+              onValueChange={(v) => onAnswersChange({ willBookToday: v })}
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {["yes", "maybe", "no"].map((s) => (
+                  <SelectItem key={s} value={s} className="capitalize">
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field label="Key concern">
+            <Input
+              value={answers.keyConcern}
+              onChange={(e) => onAnswersChange({ keyConcern: e.target.value })}
+              className="h-8 text-xs"
+            />
+          </Field>
         </div>
         <div>
-          <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Tour Type</Label>
+          <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">
+            Tour Type
+          </Label>
           <div className="mt-1 grid grid-cols-3 gap-2">
             {TOUR_TYPES.map(({ value, label, icon: Icon }) => (
-              <button key={value} type="button" onClick={() => onAnswersChange({ tourType: value })} className={`h-12 rounded-md border text-xs flex flex-col items-center justify-center gap-1 ${answers.tourType === value ? "border-primary bg-primary/10 text-primary" : "border-border bg-surface-2 text-muted-foreground"}`}>
-                <Icon className="h-3.5 w-3.5" />{label}
+              <button
+                key={value}
+                type="button"
+                onClick={() => onAnswersChange({ tourType: value })}
+                className={`h-12 rounded-md border text-xs flex flex-col items-center justify-center gap-1 ${answers.tourType === value ? "border-primary bg-primary/10 text-primary" : "border-border bg-surface-2 text-muted-foreground"}`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {label}
               </button>
             ))}
           </div>
         </div>
         <div className="grid gap-2 sm:grid-cols-2">
           <div>
-            <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Property</Label>
+            <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">
+              Property
+            </Label>
             <Select value={propertyId} onValueChange={onPropertyChange}>
-              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select property" /></SelectTrigger>
-              <SelectContent>{properties.map((p) => <SelectItem key={p.id} value={p.id}>{p.name} · {p.area}</SelectItem>)}</SelectContent>
+              <SelectTrigger className="h-9 text-sm">
+                <SelectValue placeholder="Select property" />
+              </SelectTrigger>
+              <SelectContent>
+                {properties.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.name} · {p.area}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
           </div>
           <div>
-            <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">TCM</Label>
+            <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">
+              TCM
+            </Label>
             <Select value={tcmId} onValueChange={onTcmChange}>
-              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Select TCM" /></SelectTrigger>
-              <SelectContent>{tcms.map((t) => <SelectItem key={t.id} value={t.id}>{t.name} · {t.zone}</SelectItem>)}</SelectContent>
+              <SelectTrigger className="h-9 text-sm">
+                <SelectValue placeholder="Select TCM" />
+              </SelectTrigger>
+              <SelectContent>
+                {tcms.map((t) => (
+                  <SelectItem key={t.id} value={t.id}>
+                    {t.name} · {t.zone}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
           </div>
         </div>
         <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
-          <Input type="datetime-local" value={scheduledAt} onChange={(e) => onScheduledAtChange(e.target.value)} className="h-9 text-sm" />
-          <Button size="sm" onClick={onSchedule} className="gap-1.5"><CalendarIcon className="h-3.5 w-3.5" /> Schedule Tour</Button>
+          <Input
+            type="datetime-local"
+            value={scheduledAt}
+            onChange={(e) => onScheduledAtChange(e.target.value)}
+            className="h-9 text-sm"
+          />
+          <Button size="sm" onClick={onSchedule} className="gap-1.5">
+            <CalendarIcon className="h-3.5 w-3.5" /> Schedule Tour
+          </Button>
         </div>
       </div>
     </Section>

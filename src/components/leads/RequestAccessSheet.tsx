@@ -17,7 +17,9 @@ export function RequestAccessSheet() {
       <h3 className="font-semibold text-sm flex items-center gap-2 mb-3">
         <Inbox className="h-4 w-4" /> Access requests
         {incoming.length > 0 && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">{incoming.length}</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+            {incoming.length}
+          </span>
         )}
       </h3>
       {incoming.length === 0 ? (
@@ -27,7 +29,10 @@ export function RequestAccessSheet() {
           {incoming.map((r) => {
             const lead = leads.find((l) => l.ulid === r.ulid);
             return (
-              <div key={r.id} className="flex items-center justify-between gap-2 p-2 rounded-lg bg-muted/30">
+              <div
+                key={r.id}
+                className="flex items-center justify-between gap-2 p-2 rounded-lg bg-muted/30"
+              >
                 <div className="min-w-0">
                   <div className="text-sm font-medium">{r.requesterName}</div>
                   <div className="text-[11px] text-muted-foreground">
@@ -36,12 +41,26 @@ export function RequestAccessSheet() {
                   </div>
                 </div>
                 <div className="flex gap-1 shrink-0">
-                  <Button size="sm" variant="outline" className="h-7 text-[11px] gap-1"
-                    onClick={() => { decideRequest(r.id, "approved"); toast.success("Granted"); }}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-[11px] gap-1"
+                    onClick={() => {
+                      decideRequest(r.id, "approved");
+                      toast.success("Granted");
+                    }}
+                  >
                     <Check className="h-3 w-3" /> Approve
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-7 text-[11px] gap-1"
-                    onClick={() => { decideRequest(r.id, "rejected"); toast.info("Rejected"); }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 text-[11px] gap-1"
+                    onClick={() => {
+                      decideRequest(r.id, "rejected");
+                      toast.info("Rejected");
+                    }}
+                  >
                     <X className="h-3 w-3" /> Reject
                   </Button>
                 </div>

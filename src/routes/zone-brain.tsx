@@ -6,7 +6,11 @@ export const Route = createFileRoute("/zone-brain")({
   head: () => ({
     meta: [
       { title: "Zone Brain — Gharpayy" },
-      { name: "description", content: "Per-zone P&L, conversion, SLA and TCM capacity with auto-rebalancing recommendations across all Bangalore zones." },
+      {
+        name: "description",
+        content:
+          "Per-zone P&L, conversion, SLA and TCM capacity with auto-rebalancing recommendations across all Bangalore zones.",
+      },
     ],
   }),
   component: () => (

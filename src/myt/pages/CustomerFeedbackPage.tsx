@@ -1,7 +1,11 @@
 import { useMemo, useState } from "react";
 import { Link, useParams } from "@/shims/react-router-dom";
 import { useAppState } from "@/myt/lib/app-context";
-import { useTourData, type CustomerFeedback, type CustomerSentiment } from "@/myt/lib/tour-data-context";
+import {
+  useTourData,
+  type CustomerFeedback,
+  type CustomerSentiment,
+} from "@/myt/lib/tour-data-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,14 +40,21 @@ export default function CustomerFeedbackPage() {
     }
     const f: CustomerFeedback = { tourId: id, sentiment, comment, at: new Date().toISOString() };
     setFeedback(f);
-    addEvent({ tourId: id, kind: "feedback_received", notes: `${sentiment}${comment ? " · " + comment.slice(0, 80) : ""}` });
+    addEvent({
+      tourId: id,
+      kind: "feedback_received",
+      notes: `${sentiment}${comment ? " · " + comment.slice(0, 80) : ""}`,
+    });
     setSubmitted(true);
     toast.success("Thanks for your feedback");
   }
 
   return (
     <div className="max-w-xl mx-auto space-y-4">
-      <Link to={`/myt/tour/${tour.id}`} className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+      <Link
+        to={`/myt/tour/${tour.id}`}
+        className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+      >
         <ArrowLeft className="h-4 w-4" /> Back to tour
       </Link>
 

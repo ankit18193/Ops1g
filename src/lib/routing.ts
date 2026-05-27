@@ -14,12 +14,7 @@ export interface RouteSuggestion {
   reasons: string[];
 }
 
-export function autoAssign(
-  lead: Lead,
-  tcms: TCM[],
-  leads: Lead[],
-  tours: Tour[],
-): RouteSuggestion {
+export function autoAssign(lead: Lead, tcms: TCM[], leads: Lead[], tours: Tour[]): RouteSuggestion {
   const ranked = tcms.map((t) => {
     const reasons: string[] = [];
     let score = 0;
@@ -66,12 +61,7 @@ export function autoAssign(
   return ranked[0];
 }
 
-export function rankAll(
-  lead: Lead,
-  tcms: TCM[],
-  leads: Lead[],
-  tours: Tour[],
-): RouteSuggestion[] {
+export function rankAll(lead: Lead, tcms: TCM[], leads: Lead[], tours: Tour[]): RouteSuggestion[] {
   return tcms
     .map(() => null)
     .map((_, i) => {

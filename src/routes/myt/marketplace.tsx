@@ -4,5 +4,9 @@ import LeadMarketplace from "@/myt/pages/LeadMarketplace";
 
 export const Route = createFileRoute("/myt/marketplace")({
   head: () => ({ meta: [{ title: "Lead Marketplace — MYT" }] }),
-  component: () => <AppShell><LeadMarketplace /></AppShell>,
+  component: () => (
+    <AppShell>
+      <LeadMarketplace />
+    </AppShell>
+  ),
 });

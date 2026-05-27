@@ -1,9 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type {
-  AssignmentRecord, CallRecord, CoachingNote, DeepLeadProfile,
-  DuplicateMerge, LeadCommitment, ObjectionRecord, VisitIntel,
-  MessageOutcome, ShiftingDateEntry,
+  AssignmentRecord,
+  CallRecord,
+  CoachingNote,
+  DeepLeadProfile,
+  DuplicateMerge,
+  LeadCommitment,
+  ObjectionRecord,
+  VisitIntel,
+  MessageOutcome,
+  ShiftingDateEntry,
 } from "./types";
 
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 8)}`;
@@ -12,7 +19,7 @@ interface CRM10xState {
   profiles: Record<string, DeepLeadProfile>;
   objections: ObjectionRecord[];
   calls: CallRecord[];
-  visits: Record<string, VisitIntel>;        // keyed by tourId
+  visits: Record<string, VisitIntel>; // keyed by tourId
   commitments: LeadCommitment[];
   assignments: AssignmentRecord[];
   merges: DuplicateMerge[];
@@ -20,10 +27,7 @@ interface CRM10xState {
   messageOutcomes: MessageOutcome[];
 
   upsertProfile: (p: Partial<DeepLeadProfile> & { leadId: string }) => void;
-  addShiftingDate: (
-    leadId: string,
-    entry: Omit<ShiftingDateEntry, "ts">,
-  ) => void;
+  addShiftingDate: (leadId: string, entry: Omit<ShiftingDateEntry, "ts">) => void;
 
   logObjection: (r: Omit<ObjectionRecord, "id" | "ts">) => ObjectionRecord;
   resolveObjection: (id: string, resolution: ObjectionRecord["resolution"]) => void;
@@ -41,13 +45,11 @@ interface CRM10xState {
 
   addCoachingNote: (n: Omit<CoachingNote, "id" | "ts">) => CoachingNote;
 
-  logMessageSend: (m: Omit<MessageOutcome, "id" | "ts" | "replied" | "bookedAfter" | "attributedBookingId">) => MessageOutcome;
+  logMessageSend: (
+    m: Omit<MessageOutcome, "id" | "ts" | "replied" | "bookedAfter" | "attributedBookingId">,
+  ) => MessageOutcome;
   markMessageReplied: (id: string) => void;
-  markMessageBookedAfter: (
-    leadId: string,
-    bookingId?: string,
-    bookingTs?: string,
-  ) => void;
+  markMessageBookedAfter: (leadId: string, bookingId?: string, bookingTs?: string) => void;
 
   // selectors
   unresolvedObjectionFor: (leadId: string) => ObjectionRecord | null;
@@ -73,7 +75,10 @@ export const useCRM10x = create<CRM10xState>()(
           profiles: {
             ...s.profiles,
             [p.leadId]: {
-              ...(s.profiles[p.leadId] ?? { leadId: p.leadId, updatedAt: new Date().toISOString() }),
+              ...(s.profiles[p.leadId] ?? {
+                leadId: p.leadId,
+                updatedAt: new Date().toISOString(),
+              }),
               ...p,
               updatedAt: new Date().toISOString(),
             },
@@ -88,7 +93,8 @@ export const useCRM10x = create<CRM10xState>()(
           const last = history[0];
           const lastDate = last ? new Date(last.shiftingDate).toISOString().slice(0, 10) : null;
           const lastTs = last ? +new Date(last.ts) : 0;
-          if (lastDate === incomingDate && Date.now() - lastTs < 60_000) return {} as Partial<CRM10xState>;
+          if (lastDate === incomingDate && Date.now() - lastTs < 60_000)
+            return {} as Partial<CRM10xState>;
           const newEntry: ShiftingDateEntry = { ...entry, ts: new Date().toISOString() };
           return {
             profiles: {
@@ -141,7 +147,10 @@ export const useCRM10x = create<CRM10xState>()(
 
       addCommitment: (c) => {
         const rec: LeadCommitment = {
-          ...c, id: uid("com"), ts: new Date().toISOString(), status: "pending",
+          ...c,
+          id: uid("com"),
+          ts: new Date().toISOString(),
+          status: "pending",
         };
         set((s) => ({ commitments: [rec, ...s.commitments] }));
         return rec;
@@ -171,15 +180,20 @@ export const useCRM10x = create<CRM10xState>()(
 
       logMessageSend: (m) => {
         const rec: MessageOutcome = {
-          ...m, id: uid("msg"), ts: new Date().toISOString(),
-          replied: false, bookedAfter: false,
+          ...m,
+          id: uid("msg"),
+          ts: new Date().toISOString(),
+          replied: false,
+          bookedAfter: false,
         };
         set((s) => ({ messageOutcomes: [rec, ...s.messageOutcomes] }));
         return rec;
       },
       markMessageReplied: (id) =>
         set((s) => ({
-          messageOutcomes: s.messageOutcomes.map((m) => (m.id === id ? { ...m, replied: true } : m)),
+          messageOutcomes: s.messageOutcomes.map((m) =>
+            m.id === id ? { ...m, replied: true } : m,
+          ),
         })),
       markMessageBookedAfter: (leadId, bookingId, bookingTs) => {
         const bookingTime = bookingTs ? +new Date(bookingTs) : Date.now();
@@ -204,10 +218,8 @@ export const useCRM10x = create<CRM10xState>()(
         );
         return list[0] ?? null;
       },
-      callAttemptsFor: (leadId) =>
-        get().calls.filter((c) => c.leadId === leadId).length,
-      reassignmentCount: (leadId) =>
-        get().assignments.filter((a) => a.leadId === leadId).length,
+      callAttemptsFor: (leadId) => get().calls.filter((c) => c.leadId === leadId).length,
+      reassignmentCount: (leadId) => get().assignments.filter((a) => a.leadId === leadId).length,
     }),
     {
       name: "gharpayy.crm10x.v1",

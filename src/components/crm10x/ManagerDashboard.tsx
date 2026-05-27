@@ -4,9 +4,7 @@ import { useCRM10x } from "@/lib/crm10x/store";
 import { funnelMetrics, topObjections, avgStageVelocity } from "@/lib/crm10x/intelligence";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Activity, AlertTriangle, ArrowRight, Phone, Trophy, Users, Zap,
-} from "lucide-react";
+import { Activity, AlertTriangle, ArrowRight, Phone, Trophy, Users, Zap } from "lucide-react";
 import { format } from "date-fns";
 import { ConversionIntelligence } from "./ConversionIntelligence";
 
@@ -34,63 +32,114 @@ export function ManagerDashboard() {
   const coachingNotes = useCRM10x((s) => s.coachingNotes);
 
   // ------- Today's pulse
-  const today = new Date(); today.setHours(0,0,0,0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const callsToday = calls.filter((c) => new Date(c.ts) >= today);
   const visitsToday = tours.filter((t) => {
-    const d = new Date(t.scheduledAt); d.setHours(0,0,0,0);
+    const d = new Date(t.scheduledAt);
+    d.setHours(0, 0, 0, 0);
     return +d === +today;
   });
-  const bookedThisWeek = leads.filter((l) => l.stage === "booked" &&
-    Date.now() - new Date(l.updatedAt).getTime() < 7 * 86400_000).length;
+  const bookedThisWeek = leads.filter(
+    (l) => l.stage === "booked" && Date.now() - new Date(l.updatedAt).getTime() < 7 * 86400_000,
+  ).length;
   const newToday = leads.filter((l) => new Date(l.createdAt) >= today).length;
-  const neverCalled = leads.filter((l) =>
-    new Date(l.createdAt) >= today && !calls.some((c) => c.leadId === l.id)).length;
+  const neverCalled = leads.filter(
+    (l) => new Date(l.createdAt) >= today && !calls.some((c) => c.leadId === l.id),
+  ).length;
 
   // ------- Funnel
   const funnel = funnelMetrics(leads);
 
   // ------- Agent table
-  const agentRows = useMemo(() => tcms.map((t) => {
-    const myLeads = leads.filter((l) => l.assignedTcmId === t.id);
-    const myCalls = calls.filter((c) => myLeads.some((l) => l.id === c.leadId));
-    const myVisits = tours.filter((tour) => tour.tcmId === t.id);
-    const booked = myLeads.filter((l) => l.stage === "booked");
-    const conv = myLeads.length === 0 ? 0 : Math.round((booked.length / myLeads.length) * 100);
-    const touchesPerLead = myLeads.length === 0 ? 0
-      : (myCalls.length / myLeads.length).toFixed(1);
-    const myBookedDays = booked.length === 0 ? 0 : Math.round(booked.reduce((acc, l) => {
-      return acc + (new Date(l.updatedAt).getTime() - new Date(l.createdAt).getTime()) / 86400_000;
-    }, 0) / booked.length);
-    return {
-      id: t.id, name: t.name, zone: t.zone,
-      leads: myLeads.length, touches: touchesPerLead,
-      visits: myVisits.length, booked: booked.length, conv, days: myBookedDays,
-    };
-  }).sort((a, b) => b.conv - a.conv), [tcms, leads, calls, tours]);
+  const agentRows = useMemo(
+    () =>
+      tcms
+        .map((t) => {
+          const myLeads = leads.filter((l) => l.assignedTcmId === t.id);
+          const myCalls = calls.filter((c) => myLeads.some((l) => l.id === c.leadId));
+          const myVisits = tours.filter((tour) => tour.tcmId === t.id);
+          const booked = myLeads.filter((l) => l.stage === "booked");
+          const conv =
+            myLeads.length === 0 ? 0 : Math.round((booked.length / myLeads.length) * 100);
+          const touchesPerLead =
+            myLeads.length === 0 ? 0 : (myCalls.length / myLeads.length).toFixed(1);
+          const myBookedDays =
+            booked.length === 0
+              ? 0
+              : Math.round(
+                  booked.reduce((acc, l) => {
+                    return (
+                      acc +
+                      (new Date(l.updatedAt).getTime() - new Date(l.createdAt).getTime()) /
+                        86400_000
+                    );
+                  }, 0) / booked.length,
+                );
+          return {
+            id: t.id,
+            name: t.name,
+            zone: t.zone,
+            leads: myLeads.length,
+            touches: touchesPerLead,
+            visits: myVisits.length,
+            booked: booked.length,
+            conv,
+            days: myBookedDays,
+          };
+        })
+        .sort((a, b) => b.conv - a.conv),
+    [tcms, leads, calls, tours],
+  );
 
   // ------- Red flags
   const redFlags = useMemo(() => {
-    const flags: { kind: string; lead: typeof leads[0]; detail: string; severity: "high" | "medium" }[] = [];
+    const flags: {
+      kind: string;
+      lead: (typeof leads)[0];
+      detail: string;
+      severity: "high" | "medium";
+    }[] = [];
     leads.forEach((l) => {
-      const lastActivity = activities.filter((a) => a.leadId === l.id).sort((a, b) => +new Date(b.ts) - +new Date(a.ts))[0];
+      const lastActivity = activities
+        .filter((a) => a.leadId === l.id)
+        .sort((a, b) => +new Date(b.ts) - +new Date(a.ts))[0];
       const daysIdle = lastActivity
         ? (Date.now() - new Date(lastActivity.ts).getTime()) / 86400_000
         : (Date.now() - new Date(l.createdAt).getTime()) / 86400_000;
       if (daysIdle >= 7 && l.stage !== "booked" && l.stage !== "dropped") {
-        flags.push({ kind: "untouched-7d", lead: l, detail: `${Math.round(daysIdle)}d idle`, severity: "high" });
+        flags.push({
+          kind: "untouched-7d",
+          lead: l,
+          detail: `${Math.round(daysIdle)}d idle`,
+          severity: "high",
+        });
       }
-      const lastVisit = tours.filter((t) => t.leadId === l.id && t.status === "completed")
+      const lastVisit = tours
+        .filter((t) => t.leadId === l.id && t.status === "completed")
         .sort((a, b) => +new Date(b.scheduledAt) - +new Date(a.scheduledAt))[0];
       if (lastVisit) {
         const hours = (Date.now() - new Date(lastVisit.scheduledAt).getTime()) / 3600_000;
-        const hasFollowup = activities.some((a) => a.leadId === l.id && +new Date(a.ts) > +new Date(lastVisit.scheduledAt) + 3600_000);
+        const hasFollowup = activities.some(
+          (a) => a.leadId === l.id && +new Date(a.ts) > +new Date(lastVisit.scheduledAt) + 3600_000,
+        );
         if (hours >= 48 && !hasFollowup && l.stage !== "booked") {
-          flags.push({ kind: "post-visit-silent", lead: l, detail: `${Math.round(hours)}h since visit`, severity: "high" });
+          flags.push({
+            kind: "post-visit-silent",
+            lead: l,
+            detail: `${Math.round(hours)}h since visit`,
+            severity: "high",
+          });
         }
       }
       const moveIn = new Date(l.moveInDate);
       if (moveIn.getTime() < Date.now() && l.stage !== "booked" && l.stage !== "dropped") {
-        flags.push({ kind: "move-in-passed", lead: l, detail: `move-in ${format(moveIn, "MMM d")}`, severity: "high" });
+        flags.push({
+          kind: "move-in-passed",
+          lead: l,
+          detail: `move-in ${format(moveIn, "MMM d")}`,
+          severity: "high",
+        });
       }
     });
     return flags.slice(0, 12);
@@ -103,7 +152,9 @@ export function ManagerDashboard() {
     <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
       <div>
         <h1 className="font-display text-2xl font-bold">Manager Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Numbers only. No lead cards. {format(new Date(), "EEEE, MMM d")}</p>
+        <p className="text-sm text-muted-foreground">
+          Numbers only. No lead cards. {format(new Date(), "EEEE, MMM d")}
+        </p>
       </div>
 
       {/* Today's pulse */}
@@ -112,7 +163,12 @@ export function ManagerDashboard() {
         <Stat icon={Activity} label="Visits today" value={visitsToday.length} />
         <Stat icon={Trophy} label="Booked this week" value={bookedThisWeek} accent="success" />
         <Stat icon={Users} label="New today" value={newToday} />
-        <Stat icon={AlertTriangle} label="Never called" value={neverCalled} accent={neverCalled > 0 ? "danger" : undefined} />
+        <Stat
+          icon={AlertTriangle}
+          label="Never called"
+          value={neverCalled}
+          accent={neverCalled > 0 ? "danger" : undefined}
+        />
       </div>
 
       {/* Conversion Intelligence Engine */}
@@ -134,18 +190,30 @@ export function ManagerDashboard() {
               <div key={row.stage} className="flex items-center gap-2 text-sm">
                 <span className="w-32 capitalize">{row.stage.replace("-", " ")}</span>
                 <ArrowRight className="h-3 w-3 text-muted-foreground" />
-                <span className="w-32 capitalize text-muted-foreground">{next.stage.replace("-", " ")}</span>
+                <span className="w-32 capitalize text-muted-foreground">
+                  {next.stage.replace("-", " ")}
+                </span>
                 <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
                   <div
                     className={`h-full rounded-full ${isCrit ? "bg-destructive" : isLow ? "bg-warning" : "bg-success"}`}
                     style={{ width: `${row.conversionToNext}%` }}
                   />
                 </div>
-                <span className={`w-16 text-right text-xs font-mono ${isCrit ? "text-destructive font-bold" : isLow ? "text-warning" : "text-success"}`}>
+                <span
+                  className={`w-16 text-right text-xs font-mono ${isCrit ? "text-destructive font-bold" : isLow ? "text-warning" : "text-success"}`}
+                >
                   {row.conversionToNext}%
                 </span>
-                {isCrit && <Badge variant="destructive" className="text-[10px]">CRITICAL</Badge>}
-                {!isCrit && isLow && <Badge variant="outline" className="text-[10px] border-warning text-warning">LOW</Badge>}
+                {isCrit && (
+                  <Badge variant="destructive" className="text-[10px]">
+                    CRITICAL
+                  </Badge>
+                )}
+                {!isCrit && isLow && (
+                  <Badge variant="outline" className="text-[10px] border-warning text-warning">
+                    LOW
+                  </Badge>
+                )}
               </div>
             );
           })}
@@ -178,7 +246,9 @@ export function ManagerDashboard() {
                   <td className="text-right">{r.touches}</td>
                   <td className="text-right">{r.visits}</td>
                   <td className="text-right">{r.booked}</td>
-                  <td className={`text-right font-semibold ${r.conv >= 25 ? "text-success" : r.conv >= 15 ? "text-warning" : "text-destructive"}`}>
+                  <td
+                    className={`text-right font-semibold ${r.conv >= 25 ? "text-success" : r.conv >= 15 ? "text-warning" : "text-destructive"}`}
+                  >
                     {r.conv}%
                   </td>
                   <td className="text-right text-muted-foreground">{r.days}d</td>
@@ -199,12 +269,19 @@ export function ManagerDashboard() {
           {redFlags.map((f, i) => {
             const tcm = tcms.find((t) => t.id === f.lead.assignedTcmId);
             return (
-              <div key={i} className="flex items-center justify-between text-xs border-b border-border/50 py-1.5">
+              <div
+                key={i}
+                className="flex items-center justify-between text-xs border-b border-border/50 py-1.5"
+              >
                 <div>
                   <div className="font-medium">{f.lead.name}</div>
-                  <div className="text-muted-foreground text-[10px]">{tcm?.name ?? "—"} · {f.detail}</div>
+                  <div className="text-muted-foreground text-[10px]">
+                    {tcm?.name ?? "—"} · {f.detail}
+                  </div>
                 </div>
-                <Badge variant="outline" className="text-[10px] capitalize">{f.kind.replace(/-/g, " ")}</Badge>
+                <Badge variant="outline" className="text-[10px] capitalize">
+                  {f.kind.replace(/-/g, " ")}
+                </Badge>
               </div>
             );
           })}
@@ -215,12 +292,19 @@ export function ManagerDashboard() {
           <h2 className="font-display text-lg font-semibold flex items-center gap-2">
             <Zap className="h-4 w-4" /> Top blockers this period
           </h2>
-          {objBreakdown.length === 0 && <p className="text-xs text-muted-foreground">No objections logged yet. Start capturing on every "Answered" call.</p>}
+          {objBreakdown.length === 0 && (
+            <p className="text-xs text-muted-foreground">
+              No objections logged yet. Start capturing on every "Answered" call.
+            </p>
+          )}
           {objBreakdown.map((o) => (
             <div key={o.code} className="flex items-center gap-2 text-sm">
               <span className="w-32">{OBJECTION_LABELS[o.code] ?? o.code}</span>
               <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
-                <div className="h-full rounded-full bg-destructive" style={{ width: `${o.pct}%` }} />
+                <div
+                  className="h-full rounded-full bg-destructive"
+                  style={{ width: `${o.pct}%` }}
+                />
               </div>
               <span className="w-12 text-right text-xs font-mono">{o.pct}%</span>
               <span className="w-8 text-right text-[10px] text-muted-foreground">{o.count}</span>
@@ -237,14 +321,20 @@ export function ManagerDashboard() {
             const lead = leads.find((l) => l.id === c.leadId);
             const overdue = new Date(c.decisionBy).getTime() < Date.now() && c.status === "pending";
             return (
-              <div key={c.id} className={`flex items-center justify-between text-xs border-b border-border/50 py-1.5 ${overdue ? "text-destructive" : ""}`}>
+              <div
+                key={c.id}
+                className={`flex items-center justify-between text-xs border-b border-border/50 py-1.5 ${overdue ? "text-destructive" : ""}`}
+              >
                 <div>
                   <div className="font-medium">{lead?.name ?? "—"}</div>
                   <div className="text-muted-foreground italic">"{c.exactWords}"</div>
                 </div>
                 <div className="text-right">
                   <div>{format(new Date(c.decisionBy), "MMM d")}</div>
-                  <div className="text-[10px] capitalize">{c.status}{overdue && " · OVERDUE"}</div>
+                  <div className="text-[10px] capitalize">
+                    {c.status}
+                    {overdue && " · OVERDUE"}
+                  </div>
                 </div>
               </div>
             );
@@ -262,7 +352,9 @@ export function ManagerDashboard() {
               <div key={n.id} className="text-xs border-l-2 border-accent pl-2 py-1">
                 <div className="font-medium">{lead?.name ?? "—"}</div>
                 <div className="text-muted-foreground">{n.text}</div>
-                <div className="text-[10px] text-muted-foreground">{format(new Date(n.ts), "MMM d, p")}</div>
+                <div className="text-[10px] text-muted-foreground">
+                  {format(new Date(n.ts), "MMM d, p")}
+                </div>
               </div>
             );
           })}
@@ -273,7 +365,10 @@ export function ManagerDashboard() {
 }
 
 function Stat({
-  icon: Icon, label, value, accent,
+  icon: Icon,
+  label,
+  value,
+  accent,
 }: {
   icon: typeof Phone;
   label: string;
@@ -281,9 +376,11 @@ function Stat({
   accent?: "success" | "danger";
 }) {
   const tone =
-    accent === "success" ? "text-success border-success/30 bg-success/5"
-    : accent === "danger" ? "text-destructive border-destructive/30 bg-destructive/5"
-    : "border-border bg-card";
+    accent === "success"
+      ? "text-success border-success/30 bg-success/5"
+      : accent === "danger"
+        ? "text-destructive border-destructive/30 bg-destructive/5"
+        : "border-border bg-card";
   return (
     <div className={`rounded-lg border p-3 ${tone}`}>
       <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">

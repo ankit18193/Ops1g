@@ -69,31 +69,32 @@ export const useNotifications = create<NotifState>()(
   persist(
     (set) => ({
       items: [],
-      push: (n) => set((s) => {
-        const id = n.id ?? `n:${n.kind}:${Math.random().toString(36).slice(2, 10)}`;
-        if (s.items.some((x) => x.id === id)) return s;
-        const next: AppNotification = {
-          id,
-          ts: n.ts ?? Date.now(),
-          read: false,
-          audience: n.audience,
-          recipientId: n.recipientId,
-          severity: n.severity,
-          title: n.title,
-          body: n.body,
-          href: n.href,
-          kind: n.kind,
-          leadId: n.leadId,
-          tourId: n.tourId,
-          channels: n.channels,
-          dueAt: n.dueAt,
-          senderId: n.senderId,
-          senderName: n.senderName,
-          emailQueued: n.emailQueued,
-          todoDone: n.todoDone,
-        };
-        return { items: [next, ...s.items].slice(0, MAX) };
-      }),
+      push: (n) =>
+        set((s) => {
+          const id = n.id ?? `n:${n.kind}:${Math.random().toString(36).slice(2, 10)}`;
+          if (s.items.some((x) => x.id === id)) return s;
+          const next: AppNotification = {
+            id,
+            ts: n.ts ?? Date.now(),
+            read: false,
+            audience: n.audience,
+            recipientId: n.recipientId,
+            severity: n.severity,
+            title: n.title,
+            body: n.body,
+            href: n.href,
+            kind: n.kind,
+            leadId: n.leadId,
+            tourId: n.tourId,
+            channels: n.channels,
+            dueAt: n.dueAt,
+            senderId: n.senderId,
+            senderName: n.senderName,
+            emailQueued: n.emailQueued,
+            todoDone: n.todoDone,
+          };
+          return { items: [next, ...s.items].slice(0, MAX) };
+        }),
       pushBroadcast: (b) => {
         const ids: string[] = [];
         const baseTs = Date.now();
@@ -126,21 +127,26 @@ export const useNotifications = create<NotifState>()(
         });
         return ids;
       },
-      markRead: (id) => set((s) => ({
-        items: s.items.map((n) => (n.id === id ? { ...n, read: true } : n)),
-      })),
-      toggleTodoDone: (id) => set((s) => ({
-        items: s.items.map((n) => (n.id === id ? { ...n, todoDone: !n.todoDone, read: true } : n)),
-      })),
-      markAllRead: (forRole, recipientId) => set((s) => ({
-        items: s.items.map((n) => {
-          if (n.recipientId && n.recipientId !== recipientId) return n;
-          if (!forRole || n.audience.length === 0 || n.audience.includes(forRole)) {
-            return { ...n, read: true };
-          }
-          return n;
-        }),
-      })),
+      markRead: (id) =>
+        set((s) => ({
+          items: s.items.map((n) => (n.id === id ? { ...n, read: true } : n)),
+        })),
+      toggleTodoDone: (id) =>
+        set((s) => ({
+          items: s.items.map((n) =>
+            n.id === id ? { ...n, todoDone: !n.todoDone, read: true } : n,
+          ),
+        })),
+      markAllRead: (forRole, recipientId) =>
+        set((s) => ({
+          items: s.items.map((n) => {
+            if (n.recipientId && n.recipientId !== recipientId) return n;
+            if (!forRole || n.audience.length === 0 || n.audience.includes(forRole)) {
+              return { ...n, read: true };
+            }
+            return n;
+          }),
+        })),
       clear: () => set({ items: [] }),
     }),
     { name: "gharpayy.notifications.v1" },
@@ -264,13 +270,14 @@ export function startNotificationsBridge() {
 
 /** Convenience hook for the bell — returns count for the active (role, userId). */
 export function useUnreadCount(role: Role, userId?: string): number {
-  return useNotifications((s) =>
-    s.items.filter(
-      (n) =>
-        !n.read &&
-        (n.audience.length === 0 || n.audience.includes(role)) &&
-        (n.recipientId ? n.recipientId === userId : true),
-    ).length,
+  return useNotifications(
+    (s) =>
+      s.items.filter(
+        (n) =>
+          !n.read &&
+          (n.audience.length === 0 || n.audience.includes(role)) &&
+          (n.recipientId ? n.recipientId === userId : true),
+      ).length,
   );
 }
 

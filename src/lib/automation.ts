@@ -16,7 +16,11 @@ import { create } from "zustand";
 import type { Lead } from "@/lib/types";
 import type { PG } from "@/supply-hub/data/types";
 import { runMatcherV2, type MatchPair } from "@/lib/matcher-v2";
-import type { AutomationRule, AutomationRuleId, MatchingV2Settings } from "@/myt/lib/settings-context";
+import type {
+  AutomationRule,
+  AutomationRuleId,
+  MatchingV2Settings,
+} from "@/myt/lib/settings-context";
 
 interface AutomationStore {
   /** leadId → cached MatchPair */
@@ -109,8 +113,9 @@ export function simulateImpact(
 
     const beforeIds = new Set(before.all.map((m) => m.pg.id));
     const afterIds = new Set(after.all.map((m) => m.pg.id));
-    const diff = [...afterIds].filter((id) => !beforeIds.has(id)).length
-              + [...beforeIds].filter((id) => !afterIds.has(id)).length;
+    const diff =
+      [...afterIds].filter((id) => !beforeIds.has(id)).length +
+      [...beforeIds].filter((id) => !afterIds.has(id)).length;
 
     const aChanged = before.primary[0]?.pg.id !== after.primary[0]?.pg.id;
     const bChanged = before.primary[1]?.pg.id !== after.primary[1]?.pg.id;
@@ -126,7 +131,10 @@ export function simulateImpact(
     });
   }
 
-  return { rows, affectedPct: sampleLeads.length ? Math.round((affected / sampleLeads.length) * 100) : 0 };
+  return {
+    rows,
+    affectedPct: sampleLeads.length ? Math.round((affected / sampleLeads.length) * 100) : 0,
+  };
 }
 
 /**
@@ -140,7 +148,10 @@ export interface QualityReport {
   avgScore: number;
 }
 
-export function benchmarkMatchingQuality(leads: Lead[], settings: MatchingV2Settings): QualityReport {
+export function benchmarkMatchingQuality(
+  leads: Lead[],
+  settings: MatchingV2Settings,
+): QualityReport {
   let withAtLeastOne = 0;
   let withDualPrimary = 0;
   let totalScore = 0;

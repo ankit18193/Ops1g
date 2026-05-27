@@ -3,25 +3,38 @@ import { useApp } from "@/lib/store";
 import { useCRM10x } from "@/lib/crm10x/store";
 import { useSettings } from "@/myt/lib/settings-context";
 import {
-  funnelVelocity, agentCohort, weeklyRecommendations,
-  zoneSnapshots, objectionLossCorrelation, templatePerformance,
+  funnelVelocity,
+  agentCohort,
+  weeklyRecommendations,
+  zoneSnapshots,
+  objectionLossCorrelation,
+  templatePerformance,
 } from "@/lib/crm10x/analytics";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Activity, AlertTriangle, ArrowRight, Brain, Layers, MessageSquare,
-  Sparkles, TrendingDown, TrendingUp, Trophy, Zap,
+  Activity,
+  AlertTriangle,
+  ArrowRight,
+  Brain,
+  Layers,
+  MessageSquare,
+  Sparkles,
+  TrendingDown,
+  TrendingUp,
+  Trophy,
+  Zap,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 const STAGE_LABEL: Record<string, string> = {
-  "new": "New",
-  "contacted": "Contacted",
+  new: "New",
+  contacted: "Contacted",
   "tour-scheduled": "Tour set",
   "tour-done": "Tour done",
-  "negotiation": "Negotiation",
-  "booked": "Booked",
+  negotiation: "Negotiation",
+  booked: "Booked",
 };
 
 const OBJ_LABEL: Record<string, string> = {
@@ -51,7 +64,9 @@ export function ConversionIntelligence() {
   const messageOutcomes = useCRM10x((s) => s.messageOutcomes);
   const { settings } = useSettings();
 
-  const [tab, setTab] = useState<"funnel" | "agents" | "objections" | "zones" | "templates">("funnel");
+  const [tab, setTab] = useState<"funnel" | "agents" | "objections" | "zones" | "templates">(
+    "funnel",
+  );
 
   const funnel = useMemo(() => funnelVelocity(leads), [leads]);
   const agents = useMemo(
@@ -62,10 +77,7 @@ export function ConversionIntelligence() {
     () => weeklyRecommendations({ leads, funnel, objections, agents }),
     [leads, funnel, objections, agents],
   );
-  const objLoss = useMemo(
-    () => objectionLossCorrelation(leads, objections),
-    [leads, objections],
-  );
+  const objLoss = useMemo(() => objectionLossCorrelation(leads, objections), [leads, objections]);
   const zones = useMemo(
     () => zoneSnapshots({ zones: settings.zones, tcms, leads, bookings }),
     [settings.zones, tcms, leads, bookings],
@@ -80,7 +92,8 @@ export function ConversionIntelligence() {
             <Brain className="h-5 w-5 text-accent" /> Conversion Intelligence
           </h2>
           <p className="text-sm text-muted-foreground">
-            Real-time funnel velocity, drop-off heatmap, agent cohort, objection-loss correlation and template ROI.
+            Real-time funnel velocity, drop-off heatmap, agent cohort, objection-loss correlation
+            and template ROI.
           </p>
         </div>
         <div className="flex gap-1.5 flex-wrap">
@@ -157,10 +170,13 @@ export function ConversionIntelligence() {
               const isCrit = row.cohortConv < 20;
               const isLow = row.cohortConv < 35;
               const heat =
-                row.dropOffPct >= 80 ? "bg-destructive/30"
-                  : row.dropOffPct >= 60 ? "bg-destructive/20"
-                  : row.dropOffPct >= 40 ? "bg-warning/20"
-                  : "bg-success/15";
+                row.dropOffPct >= 80
+                  ? "bg-destructive/30"
+                  : row.dropOffPct >= 60
+                    ? "bg-destructive/20"
+                    : row.dropOffPct >= 40
+                      ? "bg-warning/20"
+                      : "bg-success/15";
               return (
                 <div
                   key={row.fromStage}
@@ -184,7 +200,9 @@ export function ConversionIntelligence() {
                     />
                   </div>
                   <div className="col-span-2 text-right">
-                    <span className={`text-xs font-mono font-bold ${isCrit ? "text-destructive" : isLow ? "text-warning" : "text-success"}`}>
+                    <span
+                      className={`text-xs font-mono font-bold ${isCrit ? "text-destructive" : isLow ? "text-warning" : "text-success"}`}
+                    >
                       {row.cohortConv}% conv
                     </span>
                     <div className="text-[10px] text-muted-foreground">{row.dropOffPct}% drop</div>
@@ -223,13 +241,19 @@ export function ConversionIntelligence() {
                     <td className="font-medium">{a.name}</td>
                     <td className="text-muted-foreground text-xs">{a.zone}</td>
                     <td className="text-right">{a.leads}</td>
-                    <td className={`text-right font-bold ${a.conv >= 25 ? "text-success" : a.conv >= 15 ? "text-warning" : "text-destructive"}`}>
+                    <td
+                      className={`text-right font-bold ${a.conv >= 25 ? "text-success" : a.conv >= 15 ? "text-warning" : "text-destructive"}`}
+                    >
                       {a.conv}%
                     </td>
                     <td className="text-right">{a.callsPerLead}</td>
                     <td className="text-right">
-                      <span className="text-xs">{a.objectionsResolved}/{a.objectionsLogged}</span>
-                      <span className="text-muted-foreground text-[10px] ml-1">({a.resolutionRate}%)</span>
+                      <span className="text-xs">
+                        {a.objectionsResolved}/{a.objectionsLogged}
+                      </span>
+                      <span className="text-muted-foreground text-[10px] ml-1">
+                        ({a.resolutionRate}%)
+                      </span>
                     </td>
                     <td className="text-right text-muted-foreground">{a.avgFirstResponseMins}m</td>
                   </tr>
@@ -252,15 +276,26 @@ export function ConversionIntelligence() {
             </p>
           )}
           {objLoss.map((o) => (
-            <div key={o.code} className="grid grid-cols-12 items-center gap-2 text-sm py-1.5 border-b border-border/40">
+            <div
+              key={o.code}
+              className="grid grid-cols-12 items-center gap-2 text-sm py-1.5 border-b border-border/40"
+            >
               <span className="col-span-3 font-medium">{OBJ_LABEL[o.code] ?? o.code}</span>
-              <span className="col-span-2 text-xs text-muted-foreground">raised <span className="font-mono text-foreground">{o.raised}</span></span>
-              <span className="col-span-2 text-xs text-success">booked <span className="font-mono">{o.booked}</span></span>
-              <span className="col-span-2 text-xs text-destructive">lost <span className="font-mono">{o.lost}</span></span>
+              <span className="col-span-2 text-xs text-muted-foreground">
+                raised <span className="font-mono text-foreground">{o.raised}</span>
+              </span>
+              <span className="col-span-2 text-xs text-success">
+                booked <span className="font-mono">{o.booked}</span>
+              </span>
+              <span className="col-span-2 text-xs text-destructive">
+                lost <span className="font-mono">{o.lost}</span>
+              </span>
               <div className="col-span-2 h-2 rounded-full bg-muted overflow-hidden">
                 <div className="h-full bg-destructive" style={{ width: `${o.lossRate}%` }} />
               </div>
-              <span className="col-span-1 text-right text-xs font-mono font-bold text-destructive">{o.lossRate}%</span>
+              <span className="col-span-1 text-right text-xs font-mono font-bold text-destructive">
+                {o.lossRate}%
+              </span>
             </div>
           ))}
         </Card>
@@ -284,24 +319,32 @@ export function ConversionIntelligence() {
               <div
                 key={z.zoneId}
                 className={`rounded-lg border p-3 space-y-2 ${
-                  z.pressureLevel === "leaking" ? "border-destructive/40 bg-destructive/5"
-                    : z.pressureLevel === "overloaded" ? "border-warning/40 bg-warning/5"
-                    : z.pressureLevel === "underloaded" ? "border-info/40 bg-info/5"
-                    : "border-border bg-card"
+                  z.pressureLevel === "leaking"
+                    ? "border-destructive/40 bg-destructive/5"
+                    : z.pressureLevel === "overloaded"
+                      ? "border-warning/40 bg-warning/5"
+                      : z.pressureLevel === "underloaded"
+                        ? "border-info/40 bg-info/5"
+                        : "border-border bg-card"
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="font-display font-semibold text-sm">{z.zoneName}</div>
-                    <div className="text-[10px] text-muted-foreground">{z.city} · {z.tcmIds.length} TCM</div>
+                    <div className="text-[10px] text-muted-foreground">
+                      {z.city} · {z.tcmIds.length} TCM
+                    </div>
                   </div>
                   <Badge
                     variant="outline"
                     className={`text-[10px] capitalize ${
-                      z.pressureLevel === "leaking" ? "border-destructive text-destructive"
-                        : z.pressureLevel === "overloaded" ? "border-warning text-warning"
-                        : z.pressureLevel === "underloaded" ? "border-info text-info"
-                        : "border-success text-success"
+                      z.pressureLevel === "leaking"
+                        ? "border-destructive text-destructive"
+                        : z.pressureLevel === "overloaded"
+                          ? "border-warning text-warning"
+                          : z.pressureLevel === "underloaded"
+                            ? "border-info text-info"
+                            : "border-success text-success"
                     }`}
                   >
                     {z.pressureLevel}
@@ -311,12 +354,24 @@ export function ConversionIntelligence() {
                   <Mini label="Leads" value={z.leadCount} />
                   <Mini label="Active" value={z.activeLeads} />
                   <Mini label="Booked" value={z.bookings} />
-                  <Mini label="Conv%" value={`${z.conversion}%`} tone={z.conversion >= 20 ? "good" : "bad"} />
+                  <Mini
+                    label="Conv%"
+                    value={`${z.conversion}%`}
+                    tone={z.conversion >= 20 ? "good" : "bad"}
+                  />
                 </div>
                 <div className="grid grid-cols-3 gap-1 text-[10px]">
                   <Mini label="₹/mo" value={`₹${(z.revenueINR / 1000).toFixed(0)}k`} />
-                  <Mini label="Load/TCM" value={z.loadPerTcm} tone={z.loadPerTcm > 25 ? "bad" : "neutral"} />
-                  <Mini label="SLA fail" value={z.slaBreaches} tone={z.slaBreaches >= 3 ? "bad" : "neutral"} />
+                  <Mini
+                    label="Load/TCM"
+                    value={z.loadPerTcm}
+                    tone={z.loadPerTcm > 25 ? "bad" : "neutral"}
+                  />
+                  <Mini
+                    label="SLA fail"
+                    value={z.slaBreaches}
+                    tone={z.slaBreaches >= 3 ? "bad" : "neutral"}
+                  />
                 </div>
                 <div className="text-[11px] text-muted-foreground italic">→ {z.recommendation}</div>
               </div>
@@ -333,20 +388,34 @@ export function ConversionIntelligence() {
           </h3>
           {templates.length === 0 ? (
             <p className="text-xs text-muted-foreground">
-              No template sends logged yet. Use the Smart WhatsApp picker on the lead Dossier tab to start tracking.
+              No template sends logged yet. Use the Smart WhatsApp picker on the lead Dossier tab to
+              start tracking.
             </p>
           ) : (
             <div className="space-y-1.5">
               {templates.map((t) => (
-                <div key={t.stage} className="grid grid-cols-12 items-center gap-2 text-sm py-1.5 border-b border-border/40">
-                  <span className="col-span-3 font-medium capitalize">{t.stage.replace(/-/g, " ")}</span>
-                  <span className="col-span-2 text-xs text-muted-foreground">sent <span className="font-mono text-foreground">{t.sent}</span></span>
-                  <span className="col-span-2 text-xs">replies <span className="font-mono">{t.replies}</span></span>
-                  <span className="col-span-2 text-xs text-success">booked <span className="font-mono">{t.bookings}</span></span>
+                <div
+                  key={t.stage}
+                  className="grid grid-cols-12 items-center gap-2 text-sm py-1.5 border-b border-border/40"
+                >
+                  <span className="col-span-3 font-medium capitalize">
+                    {t.stage.replace(/-/g, " ")}
+                  </span>
+                  <span className="col-span-2 text-xs text-muted-foreground">
+                    sent <span className="font-mono text-foreground">{t.sent}</span>
+                  </span>
+                  <span className="col-span-2 text-xs">
+                    replies <span className="font-mono">{t.replies}</span>
+                  </span>
+                  <span className="col-span-2 text-xs text-success">
+                    booked <span className="font-mono">{t.bookings}</span>
+                  </span>
                   <div className="col-span-2 h-2 rounded-full bg-muted overflow-hidden">
                     <div className="h-full bg-success" style={{ width: `${t.bookRate}%` }} />
                   </div>
-                  <span className="col-span-1 text-right text-xs font-mono font-bold text-success">{t.bookRate}%</span>
+                  <span className="col-span-1 text-right text-xs font-mono font-bold text-success">
+                    {t.bookRate}%
+                  </span>
                 </div>
               ))}
             </div>
@@ -357,7 +426,15 @@ export function ConversionIntelligence() {
   );
 }
 
-function Mini({ label, value, tone }: { label: string; value: string | number; tone?: "good" | "bad" | "neutral" }) {
+function Mini({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string | number;
+  tone?: "good" | "bad" | "neutral";
+}) {
   const cls = tone === "good" ? "text-success" : tone === "bad" ? "text-destructive" : "";
   return (
     <div className="rounded bg-background/60 px-1.5 py-1">

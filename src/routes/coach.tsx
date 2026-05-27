@@ -19,8 +19,8 @@ function CoachRoute() {
           <h1 className="text-2xl font-display font-bold">Your Coach</h1>
         </div>
         <p className="text-sm text-muted-foreground -mt-2 max-w-2xl">
-          What you've done, what slipped, what's next, and exactly how to do it.
-          Clear items to earn XP, keep your streak alive, and unlock badges.
+          What you've done, what slipped, what's next, and exactly how to do it. Clear items to earn
+          XP, keep your streak alive, and unlock badges.
         </p>
         {role === "hr" && <HRBroadcastComposer />}
         <div className="rounded-xl border border-border bg-card p-5 md:p-6">

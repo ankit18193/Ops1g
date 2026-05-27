@@ -33,10 +33,14 @@ export function registerOwnerBridge(b: OwnerBridge) {
 /** Map team OBJECTIONS labels → owner ObjectionReason taxonomy. */
 export function mapObjectionLabelToReason(label: string | null | undefined): ObjectionReason {
   switch ((label ?? "").toLowerCase()) {
-    case "budget": return "price";
-    case "location": return "location";
-    case "amenities": return "amenities";
-    case "timing": return "timing";
+    case "budget":
+      return "price";
+    case "location":
+      return "location";
+    case "amenities":
+      return "amenities";
+    case "timing":
+      return "timing";
     case "parents":
     case "comparing options":
     case "other":

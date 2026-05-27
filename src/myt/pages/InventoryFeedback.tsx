@@ -36,7 +36,8 @@ export default function InventoryFeedback() {
       const r = reports[t.id];
       const f = feedback[t.id];
       if (r?.outcome === "booked" || t.tokenPaid) cur.bookings += 1;
-      if (r?.firstObjection) cur.objections.set(r.firstObjection, (cur.objections.get(r.firstObjection) ?? 0) + 1);
+      if (r?.firstObjection)
+        cur.objections.set(r.firstObjection, (cur.objections.get(r.firstObjection) ?? 0) + 1);
       if (f?.comment) {
         const c = f.comment.toLowerCase();
         ["expensive", "small", "location", "food", "noisy", "dirty"].forEach((kw) => {
@@ -53,29 +54,44 @@ export default function InventoryFeedback() {
     return arr;
   }, [tours, reports, feedback]);
 
-  const dead = aggregates.filter((p) => p.tours >= 3 && p.conv === 0).sort((a, b) => b.tours - a.tours);
-  const winners = aggregates.filter((p) => p.tours <= 5 && p.bookings >= 1).sort((a, b) => b.conv - a.conv);
+  const dead = aggregates
+    .filter((p) => p.tours >= 3 && p.conv === 0)
+    .sort((a, b) => b.tours - a.tours);
+  const winners = aggregates
+    .filter((p) => p.tours <= 5 && p.bookings >= 1)
+    .sort((a, b) => b.conv - a.conv);
   const ranked = [...aggregates].sort((a, b) => b.conv - a.conv);
 
   return (
     <div className="space-y-4 max-w-6xl mx-auto">
       <div>
         <h1 className="text-xl md:text-2xl font-heading font-bold">Inventory Feedback Loop</h1>
-        <p className="text-sm text-muted-foreground">Self-optimizing supply: which inventory closes vs wastes time, with the real reason.</p>
+        <p className="text-sm text-muted-foreground">
+          Self-optimizing supply: which inventory closes vs wastes time, with the real reason.
+        </p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-3">
         <Card>
-          <CardHeader><CardTitle className="text-base">⚰️ Dead inventory (≥3 tours, 0 conversion)</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-base">⚰️ Dead inventory (≥3 tours, 0 conversion)</CardTitle>
+          </CardHeader>
           <CardContent>
             {dead.length === 0 ? (
               <p className="text-sm text-muted-foreground">No dead inventory yet.</p>
             ) : (
               <ul className="space-y-1.5">
                 {dead.map((p) => (
-                  <li key={p.name} className="text-sm flex items-center justify-between border-b py-1.5 last:border-0">
-                    <span>{p.name} <span className="text-muted-foreground">· {p.area}</span></span>
-                    <span className="text-xs text-muted-foreground">{p.tours} tours · {p.topObjection ?? "no signal"}</span>
+                  <li
+                    key={p.name}
+                    className="text-sm flex items-center justify-between border-b py-1.5 last:border-0"
+                  >
+                    <span>
+                      {p.name} <span className="text-muted-foreground">· {p.area}</span>
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {p.tours} tours · {p.topObjection ?? "no signal"}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -84,16 +100,26 @@ export default function InventoryFeedback() {
         </Card>
 
         <Card>
-          <CardHeader><CardTitle className="text-base">💎 Hidden winners (low tours, high conv)</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-base">💎 Hidden winners (low tours, high conv)</CardTitle>
+          </CardHeader>
           <CardContent>
             {winners.length === 0 ? (
               <p className="text-sm text-muted-foreground">No hidden winners yet.</p>
             ) : (
               <ul className="space-y-1.5">
                 {winners.map((p) => (
-                  <li key={p.name} className="text-sm flex items-center justify-between border-b py-1.5 last:border-0">
-                    <span>{p.name} <span className="text-muted-foreground">· {p.area}</span></span>
-                    <span className="text-xs">{p.bookings}/{p.tours} <span className="text-emerald-500">({Math.round(p.conv * 100)}%)</span></span>
+                  <li
+                    key={p.name}
+                    className="text-sm flex items-center justify-between border-b py-1.5 last:border-0"
+                  >
+                    <span>
+                      {p.name} <span className="text-muted-foreground">· {p.area}</span>
+                    </span>
+                    <span className="text-xs">
+                      {p.bookings}/{p.tours}{" "}
+                      <span className="text-emerald-500">({Math.round(p.conv * 100)}%)</span>
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -103,7 +129,9 @@ export default function InventoryFeedback() {
       </div>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">All properties — conversion ranking</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">All properties — conversion ranking</CardTitle>
+        </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -125,7 +153,9 @@ export default function InventoryFeedback() {
                     <td className="py-1.5 text-right tabular-nums">{p.tours}</td>
                     <td className="py-1.5 text-right tabular-nums">{p.bookings}</td>
                     <td className="py-1.5 text-right tabular-nums">{Math.round(p.conv * 100)}%</td>
-                    <td className="py-1.5 pl-4 text-xs text-muted-foreground">{p.topObjection ?? "—"}</td>
+                    <td className="py-1.5 pl-4 text-xs text-muted-foreground">
+                      {p.topObjection ?? "—"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -135,7 +165,11 @@ export default function InventoryFeedback() {
       </Card>
 
       <div className="text-xs text-muted-foreground">
-        Edit objection tags & add custom properties in <Link to="/myt/settings" className="underline">Settings</Link>.
+        Edit objection tags & add custom properties in{" "}
+        <Link to="/myt/settings" className="underline">
+          Settings
+        </Link>
+        .
       </div>
     </div>
   );

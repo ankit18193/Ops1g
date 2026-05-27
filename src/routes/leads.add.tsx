@@ -13,7 +13,10 @@ export const Route = createFileRoute("/leads/add")({
   head: () => ({
     meta: [
       { title: "Add Lead — Gharpayy" },
-      { name: "description", content: "Direct entry with live dedup, zone detection, and one-click ownership." },
+      {
+        name: "description",
+        content: "Direct entry with live dedup, zone detection, and one-click ownership.",
+      },
     ],
   }),
   component: AddLeadPage,
@@ -47,14 +50,25 @@ function AddLeadPage() {
                 <h2 className="font-display text-lg font-semibold flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-primary" /> Quick Add is the only paste flow
                 </h2>
-                <p className="text-sm text-muted-foreground">Paste into any Quick Add field and it auto-fills the same lead questions, dedups, and keeps geo data together.</p>
+                <p className="text-sm text-muted-foreground">
+                  Paste into any Quick Add field and it auto-fills the same lead questions, dedups,
+                  and keeps geo data together.
+                </p>
               </div>
-              <Button onClick={() => setQuickAddOpen(true)} className="w-full">Open Quick Add</Button>
+              <Button onClick={() => setQuickAddOpen(true)} className="w-full">
+                Open Quick Add
+              </Button>
             </div>
           </TabsContent>
-          <TabsContent value="single"><DirectLeadForm /></TabsContent>
-          <TabsContent value="geo"><GeoIntelligenceGuide /></TabsContent>
-          <TabsContent value="requests"><RequestAccessSheet /></TabsContent>
+          <TabsContent value="single">
+            <DirectLeadForm />
+          </TabsContent>
+          <TabsContent value="geo">
+            <GeoIntelligenceGuide />
+          </TabsContent>
+          <TabsContent value="requests">
+            <RequestAccessSheet />
+          </TabsContent>
         </Tabs>
       </div>
       <QuickAddLeadPanel open={quickAddOpen} onClose={() => setQuickAddOpen(false)} />
@@ -67,12 +81,22 @@ function GeoIntelligenceGuide() {
     <div className="rounded-xl border border-border bg-card p-4 space-y-3">
       <div>
         <h2 className="font-display text-lg font-semibold">Geo-intelligence sync</h2>
-        <p className="text-sm text-muted-foreground">Every paste now keeps area tokens, map links, raw address, zone, and distance-readiness with the lead.</p>
+        <p className="text-sm text-muted-foreground">
+          Every paste now keeps area tokens, map links, raw address, zone, and distance-readiness
+          with the lead.
+        </p>
       </div>
       <div className="grid gap-2 text-sm">
-        <div className="rounded-md bg-muted/40 p-3"><strong>Ready</strong> · map link or strong multi-area match is attached.</div>
-        <div className="rounded-md bg-muted/40 p-3"><strong>Needs map link</strong> · area is parsed, exact travel distance can be added later.</div>
-        <div className="rounded-md bg-muted/40 p-3"><strong>Needs location</strong> · lead can still be saved, but routing confidence is low.</div>
+        <div className="rounded-md bg-muted/40 p-3">
+          <strong>Ready</strong> · map link or strong multi-area match is attached.
+        </div>
+        <div className="rounded-md bg-muted/40 p-3">
+          <strong>Needs map link</strong> · area is parsed, exact travel distance can be added
+          later.
+        </div>
+        <div className="rounded-md bg-muted/40 p-3">
+          <strong>Needs location</strong> · lead can still be saved, but routing confidence is low.
+        </div>
       </div>
     </div>
   );

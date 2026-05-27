@@ -34,9 +34,7 @@ Link.displayName = "Link";
 
 export interface NavLinkProps extends Omit<LinkProps, "className" | "style" | "children"> {
   end?: boolean;
-  className?:
-    | string
-    | ((props: { isActive: boolean; isPending: boolean }) => string);
+  className?: string | ((props: { isActive: boolean; isPending: boolean }) => string);
   style?:
     | React.CSSProperties
     | ((props: { isActive: boolean; isPending: boolean }) => React.CSSProperties);
@@ -52,19 +50,11 @@ export const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
       ? location.pathname === to
       : location.pathname === to || location.pathname.startsWith(to + "/");
     const ctx = { isActive, isPending: false };
-    const resolvedClassName =
-      typeof className === "function" ? className(ctx) : className;
+    const resolvedClassName = typeof className === "function" ? className(ctx) : className;
     const resolvedStyle = typeof style === "function" ? style(ctx) : style;
-    const resolvedChildren =
-      typeof children === "function" ? children(ctx) : children;
+    const resolvedChildren = typeof children === "function" ? children(ctx) : children;
     return (
-      <Link
-        ref={ref}
-        to={to}
-        className={resolvedClassName}
-        style={resolvedStyle}
-        {...rest}
-      >
+      <Link ref={ref} to={to} className={resolvedClassName} style={resolvedStyle} {...rest}>
         {resolvedChildren}
       </Link>
     );
@@ -87,7 +77,9 @@ export function useNavigate() {
   );
 }
 
-export function useParams<T extends Record<string, string | undefined> = Record<string, string | undefined>>(): T {
+export function useParams<
+  T extends Record<string, string | undefined> = Record<string, string | undefined>,
+>(): T {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return useTSParams({ strict: false }) as any;
 }
@@ -103,13 +95,13 @@ export function useLocation() {
   };
 }
 
-export function useSearchParams(): [URLSearchParams, (next: URLSearchParams | Record<string, string>) => void] {
+export function useSearchParams(): [
+  URLSearchParams,
+  (next: URLSearchParams | Record<string, string>) => void,
+] {
   const loc = useTSLocation();
   const nav = useTSNavigate();
-  const params = React.useMemo(
-    () => new URLSearchParams(loc.searchStr ?? ""),
-    [loc.searchStr],
-  );
+  const params = React.useMemo(() => new URLSearchParams(loc.searchStr ?? ""), [loc.searchStr]);
   const setParams = React.useCallback(
     (next: URLSearchParams | Record<string, string>) => {
       const sp = next instanceof URLSearchParams ? next : new URLSearchParams(next);
@@ -134,5 +126,7 @@ export function Navigate({ to, replace }: { to: string; replace?: boolean }) {
 // Stubs so files that import these don't break — they're never mounted.
 export const Routes: React.FC<{ children?: React.ReactNode }> = ({ children }) => <>{children}</>;
 export const Route: React.FC<{ children?: React.ReactNode }> = () => null;
-export const BrowserRouter: React.FC<{ children?: React.ReactNode }> = ({ children }) => <>{children}</>;
+export const BrowserRouter: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+  <>{children}</>
+);
 export const Outlet: React.FC = () => null;

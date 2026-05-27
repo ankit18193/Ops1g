@@ -3,7 +3,17 @@ import { AppShell } from "@/components/AppShell";
 import { useApp } from "@/lib/store";
 import { useCRM10x } from "@/lib/crm10x/store";
 import { useSettings } from "@/myt/lib/settings-context";
-import { CheckCircle2, AlertTriangle, Activity, Database, MessageSquare, Zap, Brain, Layers, Target } from "lucide-react";
+import {
+  CheckCircle2,
+  AlertTriangle,
+  Activity,
+  Database,
+  MessageSquare,
+  Zap,
+  Brain,
+  Layers,
+  Target,
+} from "lucide-react";
 import { useMountedNow } from "@/hooks/use-now";
 import { format } from "date-fns";
 
@@ -11,7 +21,11 @@ export const Route = createFileRoute("/health")({
   head: () => ({
     meta: [
       { title: "System Health — Gharpayy" },
-      { name: "description", content: "Live module mount status, build info and data integrity check for the Arena Infrastructure CRM." },
+      {
+        name: "description",
+        content:
+          "Live module mount status, build info and data integrity check for the Arena Infrastructure CRM.",
+      },
     ],
   }),
   component: HealthPage,
@@ -34,37 +48,56 @@ function HealthPage() {
 
   const checks: ModuleCheck[] = [
     {
-      id: "leads", label: "Leads module", icon: Target, href: "/leads",
+      id: "leads",
+      label: "Leads module",
+      icon: Target,
+      href: "/leads",
       ok: leads.length > 0,
       detail: `${leads.length} leads · ${tours.length} tours · ${bookings.length} bookings`,
     },
     {
-      id: "deep-profile", label: "Deep profile store", icon: Database,
+      id: "deep-profile",
+      label: "Deep profile store",
+      icon: Database,
       ok: true,
       detail: `${Object.keys(profiles).length} enriched profiles · ${calls.length} calls · ${objections.length} objections logged`,
     },
     {
-      id: "smart-wa", label: "SmartWaLayer", icon: MessageSquare,
+      id: "smart-wa",
+      label: "SmartWaLayer",
+      icon: MessageSquare,
       ok: true,
       detail: `${messageOutcomes.length} sends tracked · ${messageOutcomes.filter((m) => m.replied).length} replied · ${messageOutcomes.filter((m) => m.bookedAfter).length} booked-after`,
     },
     {
-      id: "queue", label: "Daily Action Queue", icon: Zap, href: "/queue",
+      id: "queue",
+      label: "Daily Action Queue",
+      icon: Zap,
+      href: "/queue",
       ok: true,
       detail: "Mounted at /queue — fire/confirm/recover/nurture bands",
     },
     {
-      id: "zone-brain", label: "Zone Brain", icon: Brain, href: "/zone-brain",
+      id: "zone-brain",
+      label: "Zone Brain",
+      icon: Brain,
+      href: "/zone-brain",
       ok: settings.zones && settings.zones.length > 0,
       detail: `${settings.zones?.length ?? 0} zones · ${tcms.length} TCMs · capacity + rebalancing recos`,
     },
     {
-      id: "conversion", label: "Conversion Intelligence", icon: Activity, href: "/manager",
+      id: "conversion",
+      label: "Conversion Intelligence",
+      icon: Activity,
+      href: "/manager",
       ok: true,
       detail: "Mounted on Manager dashboard — funnel velocity, objection-loss, agent cohort",
     },
     {
-      id: "supply", label: "Supply Hub", icon: Layers, href: "/supply-hub",
+      id: "supply",
+      label: "Supply Hub",
+      icon: Layers,
+      href: "/supply-hub",
       ok: properties.length > 0,
       detail: `${properties.length} properties indexed · matcher v2 live`,
     },
@@ -102,14 +135,20 @@ function HealthPage() {
                   <div className="text-sm font-medium">{c.label}</div>
                   <div className="text-[11px] text-muted-foreground truncate">{c.detail}</div>
                 </div>
-                <Tone className={`h-4 w-4 shrink-0 ${c.ok ? "text-success" : "text-destructive"}`} />
-                <span className={`text-[10px] font-mono uppercase ${c.ok ? "text-success" : "text-destructive"}`}>
+                <Tone
+                  className={`h-4 w-4 shrink-0 ${c.ok ? "text-success" : "text-destructive"}`}
+                />
+                <span
+                  className={`text-[10px] font-mono uppercase ${c.ok ? "text-success" : "text-destructive"}`}
+                >
                   {c.ok ? "OK" : "FAIL"}
                 </span>
               </div>
             );
             return c.href ? (
-              <Link key={c.id} to={c.href} className="block hover:bg-muted/40 transition-colors">{row}</Link>
+              <Link key={c.id} to={c.href} className="block hover:bg-muted/40 transition-colors">
+                {row}
+              </Link>
             ) : (
               <div key={c.id}>{row}</div>
             );

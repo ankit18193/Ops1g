@@ -4,5 +4,9 @@ import DraftTracker from "@/myt/pages/DraftTracker";
 
 export const Route = createFileRoute("/myt/drafts")({
   head: () => ({ meta: [{ title: "Draft Tracker — MYT" }] }),
-  component: () => <AppShell><DraftTracker /></AppShell>,
+  component: () => (
+    <AppShell>
+      <DraftTracker />
+    </AppShell>
+  ),
 });

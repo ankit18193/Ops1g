@@ -14,7 +14,7 @@ export type SyncMessage =
   | { type: "LEAD_TOUCHED"; ulid: string; from: string };
 
 const CHANNEL_NAME = "lead-sync";
-const SELF_ID = `${typeof window !== "undefined" ? (window.name || "main") : "main"}-${Math.random().toString(36).slice(2, 8)}`;
+const SELF_ID = `${typeof window !== "undefined" ? window.name || "main" : "main"}-${Math.random().toString(36).slice(2, 8)}`;
 
 export function getSyncChannel(): BroadcastChannel | null {
   if (typeof window === "undefined" || !("BroadcastChannel" in window)) return null;

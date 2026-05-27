@@ -54,8 +54,8 @@ export interface MatchingV2Settings {
   radiusDefault: number;
   // Output
   topMatchCount: number;
-  primaryCount: number;        // locked min 2 — defended in UI
-  diversityWeight: number;     // % tolerance band for Primary B
+  primaryCount: number; // locked min 2 — defended in UI
+  diversityWeight: number; // % tolerance band for Primary B
   showOnlyVerified: boolean;
   hideLowCompliance: boolean;
   // Drawer behavior
@@ -71,12 +71,12 @@ export interface MatchingV2Settings {
 export type MatchingSettings = MatchingV2Settings;
 
 export type AutomationRuleId =
-  | "R04"   // Lead created → auto-route to TCM
-  | "R11"   // Tour completed → block top room
-  | "R26"   // Lead created → generate property matches
-  | "R27"   // Room becomes vacant → recompute affected leads
-  | "R28"   // Owner compliance drops → reduce ranking weight
-  | "R29";  // Property booked frequently → boost ranking
+  | "R04" // Lead created → auto-route to TCM
+  | "R11" // Tour completed → block top room
+  | "R26" // Lead created → generate property matches
+  | "R27" // Room becomes vacant → recompute affected leads
+  | "R28" // Owner compliance drops → reduce ranking weight
+  | "R29"; // Property booked frequently → boost ranking
 
 export interface AutomationRule {
   id: AutomationRuleId;
@@ -107,12 +107,12 @@ export interface SLASettings {
 }
 
 export interface ZoneOrgUnit {
-  id: string;            // e.g. "z-koramangala"
-  name: string;          // "Koramangala"
-  city: string;          // "Bangalore"
+  id: string; // e.g. "z-koramangala"
+  name: string; // "Koramangala"
+  city: string; // "Bangalore"
   flowOpsLeadName?: string;
   flowOpsLeadPhone?: string;
-  tcmIds: string[];      // TCM ids responsible for this zone
+  tcmIds: string[]; // TCM ids responsible for this zone
   notes?: string;
 }
 
@@ -300,23 +300,59 @@ const DEFAULT_MATCHING: MatchingV2Settings = {
 };
 
 const DEFAULT_AUTOMATION: AutomationRule[] = [
-  { id: "R04", label: "R04 · Auto-route lead", description: "Lead created → routed to best-fit TCM by zone, load and conversion.", enabled: true, scope: "global" },
-  { id: "R11", label: "R11 · Block top room", description: "Tour completed and decision pending → soft-block the top-ranked room for 24h.", enabled: true, scope: "global" },
-  { id: "R26", label: "R26 · Generate property matches", description: "Lead created → matching engine generates Top-6 with dual-primary pair.", enabled: true, scope: "global" },
-  { id: "R27", label: "R27 · Vacant room → recompute leads", description: "When a property opens up, all affected leads' match list is recomputed.", enabled: true, scope: "global" },
-  { id: "R28", label: "R28 · Compliance drop → demote", description: "Owner compliance below threshold reduces that property's ranking weight.", enabled: true, scope: "global" },
-  { id: "R29", label: "R29 · Booked often → boost", description: "Properties with strong recent bookings get a small ranking boost.", enabled: true, scope: "global" },
+  {
+    id: "R04",
+    label: "R04 · Auto-route lead",
+    description: "Lead created → routed to best-fit TCM by zone, load and conversion.",
+    enabled: true,
+    scope: "global",
+  },
+  {
+    id: "R11",
+    label: "R11 · Block top room",
+    description: "Tour completed and decision pending → soft-block the top-ranked room for 24h.",
+    enabled: true,
+    scope: "global",
+  },
+  {
+    id: "R26",
+    label: "R26 · Generate property matches",
+    description: "Lead created → matching engine generates Top-6 with dual-primary pair.",
+    enabled: true,
+    scope: "global",
+  },
+  {
+    id: "R27",
+    label: "R27 · Vacant room → recompute leads",
+    description: "When a property opens up, all affected leads' match list is recomputed.",
+    enabled: true,
+    scope: "global",
+  },
+  {
+    id: "R28",
+    label: "R28 · Compliance drop → demote",
+    description: "Owner compliance below threshold reduces that property's ranking weight.",
+    enabled: true,
+    scope: "global",
+  },
+  {
+    id: "R29",
+    label: "R29 · Booked often → boost",
+    description: "Properties with strong recent bookings get a small ranking boost.",
+    enabled: true,
+    scope: "global",
+  },
 ];
 
 const DEFAULT_ROLE_ACCESS: RoleSettingsAccess = {
-  matching:   ["hr", "flow-ops"],
+  matching: ["hr", "flow-ops"],
   automation: ["hr", "flow-ops"],
-  templates:  ["hr", "flow-ops", "tcm"],
-  weights:    ["hr", "flow-ops"],
-  reminders:  ["hr", "flow-ops"],
-  custom:     ["hr", "flow-ops"],
-  targets:    ["hr"],
-  simulator:  ["hr", "flow-ops"],
+  templates: ["hr", "flow-ops", "tcm"],
+  weights: ["hr", "flow-ops"],
+  reminders: ["hr", "flow-ops"],
+  custom: ["hr", "flow-ops"],
+  targets: ["hr"],
+  simulator: ["hr", "flow-ops"],
 };
 
 const DEFAULT_SLA: SLASettings = {
@@ -326,12 +362,60 @@ const DEFAULT_SLA: SLASettings = {
 };
 
 const DEFAULT_ZONES: ZoneOrgUnit[] = [
-  { id: "z-koramangala", name: "Koramangala", city: "Bangalore", flowOpsLeadName: "Aarav S.", flowOpsLeadPhone: "9000010001", tcmIds: ["tcm-1", "tcm-2"], notes: "Christ University belt + 1st-7th block." },
-  { id: "z-bellandur",   name: "Bellandur",   city: "Bangalore", flowOpsLeadName: "Diya P.",  flowOpsLeadPhone: "9000010002", tcmIds: ["tcm-3"],          notes: "Outer Ring Road tech corridor." },
-  { id: "z-marathahalli",name: "Marathahalli",city: "Bangalore", flowOpsLeadName: "Kabir M.", flowOpsLeadPhone: "9000010003", tcmIds: ["tcm-4"],          notes: "Brookefield + AECS Layout." },
-  { id: "z-whitefield",  name: "Whitefield",  city: "Bangalore", flowOpsLeadName: "Ishaan R.", flowOpsLeadPhone: "9000010004", tcmIds: [],                notes: "ITPL + Hope Farm." },
-  { id: "z-mahadevapura",name: "Mahadevapura",city: "Bangalore", flowOpsLeadName: "Riya N.",  flowOpsLeadPhone: "9000010005", tcmIds: [],                notes: "EPIP + KR Puram bridge." },
-  { id: "z-manyata",     name: "Nagawara Manyata", city: "Bangalore", flowOpsLeadName: "Vivaan A.", flowOpsLeadPhone: "9000010006", tcmIds: [],          notes: "Manyata Tech Park belt." },
+  {
+    id: "z-koramangala",
+    name: "Koramangala",
+    city: "Bangalore",
+    flowOpsLeadName: "Aarav S.",
+    flowOpsLeadPhone: "9000010001",
+    tcmIds: ["tcm-1", "tcm-2"],
+    notes: "Christ University belt + 1st-7th block.",
+  },
+  {
+    id: "z-bellandur",
+    name: "Bellandur",
+    city: "Bangalore",
+    flowOpsLeadName: "Diya P.",
+    flowOpsLeadPhone: "9000010002",
+    tcmIds: ["tcm-3"],
+    notes: "Outer Ring Road tech corridor.",
+  },
+  {
+    id: "z-marathahalli",
+    name: "Marathahalli",
+    city: "Bangalore",
+    flowOpsLeadName: "Kabir M.",
+    flowOpsLeadPhone: "9000010003",
+    tcmIds: ["tcm-4"],
+    notes: "Brookefield + AECS Layout.",
+  },
+  {
+    id: "z-whitefield",
+    name: "Whitefield",
+    city: "Bangalore",
+    flowOpsLeadName: "Ishaan R.",
+    flowOpsLeadPhone: "9000010004",
+    tcmIds: [],
+    notes: "ITPL + Hope Farm.",
+  },
+  {
+    id: "z-mahadevapura",
+    name: "Mahadevapura",
+    city: "Bangalore",
+    flowOpsLeadName: "Riya N.",
+    flowOpsLeadPhone: "9000010005",
+    tcmIds: [],
+    notes: "EPIP + KR Puram bridge.",
+  },
+  {
+    id: "z-manyata",
+    name: "Nagawara Manyata",
+    city: "Bangalore",
+    flowOpsLeadName: "Vivaan A.",
+    flowOpsLeadPhone: "9000010006",
+    tcmIds: [],
+    notes: "Manyata Tech Park belt.",
+  },
 ];
 
 const DEFAULT_SETTINGS: SettingsState = {
@@ -436,7 +520,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   function upsertTemplate(t: MessageTemplate) {
     setSettings((s) => {
       const exists = s.templates.some((x) => x.id === t.id);
-      const templates = exists ? s.templates.map((x) => (x.id === t.id ? t : x)) : [...s.templates, t];
+      const templates = exists
+        ? s.templates.map((x) => (x.id === t.id ? t : x))
+        : [...s.templates, t];
       return { ...s, templates };
     });
   }
@@ -445,7 +531,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     setSettings((s) => ({ ...s, templates: s.templates.filter((x) => x.id !== id) }));
   }
 
-  return <Ctx.Provider value={{ settings, update, reset, upsertTemplate, removeTemplate }}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={{ settings, update, reset, upsertTemplate, removeTemplate }}>
+      {children}
+    </Ctx.Provider>
+  );
 }
 
 export function useSettings() {

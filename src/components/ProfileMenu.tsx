@@ -62,12 +62,21 @@ export function ProfileMenu() {
           className="relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent text-[11px] font-semibold text-accent-foreground outline-none ring-offset-background transition focus-visible:ring-2 focus-visible:ring-accent"
         >
           {initials}
-          <span className={cn("absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-background", meta.dot)} />
+          <span
+            className={cn(
+              "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-background",
+              meta.dot,
+            )}
+          />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel className="flex items-center gap-2">
-          <div className={cn("inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/15 text-[11px] font-semibold")}>
+          <div
+            className={cn(
+              "inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/15 text-[11px] font-semibold",
+            )}
+          >
             {initials}
           </div>
           <div className="min-w-0">
@@ -82,7 +91,9 @@ export function ProfileMenu() {
           <span className="ml-auto text-[10px] text-muted-foreground">N</span>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/leads"><Target className="mr-2 h-4 w-4" /> All leads</Link>
+          <Link to="/leads">
+            <Target className="mr-2 h-4 w-4" /> All leads
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -92,7 +103,13 @@ export function ProfileMenu() {
             <RefreshCw className="mr-2 h-4 w-4" /> Switch role
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="w-48">
-            <DropdownMenuRadioGroup value={role} onValueChange={(v) => { setRole(v as typeof role); toast.success(`Now viewing as ${ROLE_META[v as typeof role].label}`); }}>
+            <DropdownMenuRadioGroup
+              value={role}
+              onValueChange={(v) => {
+                setRole(v as typeof role);
+                toast.success(`Now viewing as ${ROLE_META[v as typeof role].label}`);
+              }}
+            >
               {(Object.keys(ROLE_META) as Array<keyof typeof ROLE_META>).map((r) => (
                 <DropdownMenuRadioItem key={r} value={r}>
                   <span className={cn("mr-2 h-1.5 w-1.5 rounded-full", ROLE_META[r].dot)} />
@@ -112,7 +129,8 @@ export function ProfileMenu() {
               <DropdownMenuRadioGroup value={currentTcmId} onValueChange={setCurrentTcmId}>
                 {tcms.map((t) => (
                   <DropdownMenuRadioItem key={t.id} value={t.id}>
-                    {t.name} <span className="ml-auto text-[10px] text-muted-foreground">{t.zone}</span>
+                    {t.name}{" "}
+                    <span className="ml-auto text-[10px] text-muted-foreground">{t.zone}</span>
                   </DropdownMenuRadioItem>
                 ))}
               </DropdownMenuRadioGroup>
@@ -123,10 +141,14 @@ export function ProfileMenu() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <Link to="/myt/settings"><Settings className="mr-2 h-4 w-4" /> Settings</Link>
+          <Link to="/myt/settings">
+            <Settings className="mr-2 h-4 w-4" /> Settings
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/help"><HelpCircle className="mr-2 h-4 w-4" /> How to use</Link>
+          <Link to="/help">
+            <HelpCircle className="mr-2 h-4 w-4" /> How to use
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

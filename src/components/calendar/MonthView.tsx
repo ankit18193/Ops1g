@@ -68,7 +68,9 @@ export function MonthView({ focus, events, onEventClick, onDayClick, selectedDay
                       title={e.title}
                     >
                       {!e.allDay && (
-                        <span className="opacity-70 mr-1">{format(new Date(e.start), "h:mma").toLowerCase()}</span>
+                        <span className="opacity-70 mr-1">
+                          {format(new Date(e.start), "h:mma").toLowerCase()}
+                        </span>
                       )}
                       {e.title}
                     </span>

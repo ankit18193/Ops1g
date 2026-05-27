@@ -4,5 +4,9 @@ import WarRoom from "@/myt/pages/WarRoom";
 
 export const Route = createFileRoute("/myt/war-room")({
   head: () => ({ meta: [{ title: "War Room — MYT" }] }),
-  component: () => <AppShell><WarRoom /></AppShell>,
+  component: () => (
+    <AppShell>
+      <WarRoom />
+    </AppShell>
+  ),
 });

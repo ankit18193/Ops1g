@@ -1,7 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  CheckCircle2, AlertOctagon, ListTodo, BookOpen, Flame, Trophy,
-  Phone, MessageSquare, ChevronRight, Sparkles, Target, Radio, Users2, Zap,
+  CheckCircle2,
+  AlertOctagon,
+  ListTodo,
+  BookOpen,
+  Flame,
+  Trophy,
+  Phone,
+  MessageSquare,
+  ChevronRight,
+  Sparkles,
+  Target,
+  Radio,
+  Users2,
+  Zap,
 } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useGame, whoKey } from "@/lib/gamification";
@@ -10,8 +22,11 @@ import { useConnectorFeed } from "@/hooks/use-connector-feed";
 import { personName } from "@/lib/people";
 import type { ConnectorEvent } from "@/lib/connectors";
 import {
-  buildCoachReport, HOW_TO, computeBadges,
-  type CoachItem, type CoachKind,
+  buildCoachReport,
+  HOW_TO,
+  computeBadges,
+  type CoachItem,
+  type CoachKind,
 } from "@/lib/coach";
 import { CoachAutoPilot } from "./CoachAutoPilot";
 import { cn } from "@/lib/utils";
@@ -27,19 +42,19 @@ interface Props {
 }
 
 export function CoachPanel({ compact = false }: Props) {
-  const role            = useApp((s) => s.role);
-  const currentTcmId    = useApp((s) => s.currentTcmId);
-  const tcms            = useApp((s) => s.tcms);
-  const leads           = useApp((s) => s.leads);
-  const tours           = useApp((s) => s.tours);
-  const followUps       = useApp((s) => s.followUps);
-  const activities      = useApp((s) => s.activities);
-  const bookings        = useApp((s) => s.bookings);
-  const handoffs        = useApp((s) => s.handoffs);
-  const selectLead      = useApp((s) => s.selectLead);
-  const completeFollowUp= useApp((s) => s.completeFollowUp);
-  const logCall         = useApp((s) => s.logCall);
-  const sendMessage     = useApp((s) => s.sendMessage);
+  const role = useApp((s) => s.role);
+  const currentTcmId = useApp((s) => s.currentTcmId);
+  const tcms = useApp((s) => s.tcms);
+  const leads = useApp((s) => s.leads);
+  const tours = useApp((s) => s.tours);
+  const followUps = useApp((s) => s.followUps);
+  const activities = useApp((s) => s.activities);
+  const bookings = useApp((s) => s.bookings);
+  const handoffs = useApp((s) => s.handoffs);
+  const selectLead = useApp((s) => s.selectLead);
+  const completeFollowUp = useApp((s) => s.completeFollowUp);
+  const logCall = useApp((s) => s.logCall);
+  const sendMessage = useApp((s) => s.sendMessage);
   const [now, mounted] = useMountedNow();
   const awardXp = useGame((s) => s.awardXp);
   const rolloverIfNeeded = useGame((s) => s.rolloverIfNeeded);
@@ -48,7 +63,15 @@ export function CoachPanel({ compact = false }: Props) {
   const userSlot = useGame((s) => s.byUser[who]);
   const stats = mounted
     ? useGame.getState().getStats(who)
-    : { xp: 0, streak: 0, xpToday: 0, bookingsClosed: 0, cleared: {}, lastWinDate: null, todayKey: null };
+    : {
+        xp: 0,
+        streak: 0,
+        xpToday: 0,
+        bookingsClosed: 0,
+        cleared: {},
+        lastWinDate: null,
+        todayKey: null,
+      };
   // ensure dependency tracking
   void userSlot;
 
@@ -60,11 +83,31 @@ export function CoachPanel({ compact = false }: Props) {
   const report = useMemo(() => {
     if (!mounted) return null;
     return buildCoachReport({
-      role, currentTcmId, tcms, leads, tours, followUps,
-      activities, bookings, handoffs, now,
+      role,
+      currentTcmId,
+      tcms,
+      leads,
+      tours,
+      followUps,
+      activities,
+      bookings,
+      handoffs,
+      now,
       ownerSignals: { staleRooms: 0, pendingBlocks: 0 },
     });
-  }, [role, currentTcmId, tcms, leads, tours, followUps, activities, bookings, handoffs, now, mounted]);
+  }, [
+    role,
+    currentTcmId,
+    tcms,
+    leads,
+    tours,
+    followUps,
+    activities,
+    bookings,
+    handoffs,
+    now,
+    mounted,
+  ]);
 
   const badges = computeBadges(stats.xp, stats.streak, stats.bookingsClosed);
 
@@ -96,7 +139,9 @@ export function CoachPanel({ compact = false }: Props) {
           {report.arc && (
             <div className="mt-1.5 inline-flex items-start gap-1.5 text-[11px] text-accent/90 bg-accent/5 border border-accent/20 rounded-md px-2 py-1">
               <Sparkles className="h-3 w-3 mt-0.5 shrink-0" />
-              <span><span className="font-semibold">This week:</span> {report.arc}</span>
+              <span>
+                <span className="font-semibold">This week:</span> {report.arc}
+              </span>
             </div>
           )}
           <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
@@ -128,7 +173,14 @@ export function CoachPanel({ compact = false }: Props) {
       )}
 
       {/* PREDICT-AND-SAVE — leads about to slip in next 6h */}
-      <PredictBar leads={leads} tours={tours} now={now} role={role} currentTcmId={currentTcmId} onOpen={openLead} />
+      <PredictBar
+        leads={leads}
+        tours={tours}
+        now={now}
+        role={role}
+        currentTcmId={currentTcmId}
+        onOpen={openLead}
+      />
 
       {/* AUTO-PILOT (Coach 4.0) — top-3 plan with confidence + streak multiplier */}
       <CoachAutoPilot
@@ -181,7 +233,10 @@ export function CoachPanel({ compact = false }: Props) {
             ) : (
               <ul className="space-y-1.5 pr-2">
                 {report.done.map((d) => (
-                  <li key={d.id} className="flex items-center gap-2 rounded-md border border-border bg-success/5 px-3 py-2">
+                  <li
+                    key={d.id}
+                    className="flex items-center gap-2 rounded-md border border-border bg-success/5 px-3 py-2"
+                  >
                     <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
                     <span className="flex-1 text-sm truncate">{d.text}</span>
                     <span className="text-[11px] font-mono text-success">+{d.xp}</span>
@@ -209,8 +264,18 @@ export function CoachPanel({ compact = false }: Props) {
                     item={m}
                     severity="missed"
                     onOpen={() => openLead(m.leadId)}
-                    onCall={() => { if (m.leadId) { logCall(m.leadId); clearItem(m, "Call logged"); } }}
-                    onMessage={() => { if (m.leadId) { sendMessage(m.leadId, "Quick check-in from coach"); clearItem(m, "Message sent"); } }}
+                    onCall={() => {
+                      if (m.leadId) {
+                        logCall(m.leadId);
+                        clearItem(m, "Call logged");
+                      }
+                    }}
+                    onMessage={() => {
+                      if (m.leadId) {
+                        sendMessage(m.leadId, "Quick check-in from coach");
+                        clearItem(m, "Message sent");
+                      }
+                    }}
                     onMarkDone={() => clearItem(m, "Cleared")}
                   />
                 ))}
@@ -236,8 +301,18 @@ export function CoachPanel({ compact = false }: Props) {
                     item={t}
                     severity="todo"
                     onOpen={() => openLead(t.leadId)}
-                    onCall={() => { if (t.leadId) { logCall(t.leadId); clearItem(t, "Call logged"); } }}
-                    onMessage={() => { if (t.leadId) { sendMessage(t.leadId, "Quick check-in from coach"); clearItem(t, "Message sent"); } }}
+                    onCall={() => {
+                      if (t.leadId) {
+                        logCall(t.leadId);
+                        clearItem(t, "Call logged");
+                      }
+                    }}
+                    onMessage={() => {
+                      if (t.leadId) {
+                        sendMessage(t.leadId, "Quick check-in from coach");
+                        clearItem(t, "Message sent");
+                      }
+                    }}
                     onMarkDone={() => {
                       // Best-effort: complete a matching follow-up if found
                       const fu = followUps.find((f) => f.leadId === t.leadId && !f.done);
@@ -269,7 +344,9 @@ export function CoachPanel({ compact = false }: Props) {
       {/* BADGES */}
       {!compact && (
         <div className="rounded-lg border border-border bg-card/50 p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-2">Badges</div>
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-2">
+            Badges
+          </div>
           <div className="flex flex-wrap gap-2">
             {badges.map((b) => (
               <div
@@ -296,7 +373,12 @@ export function CoachPanel({ compact = false }: Props) {
 /* ------------------------------------------------------------------ */
 
 function ItemRow({
-  item, severity, onOpen, onCall, onMessage, onMarkDone,
+  item,
+  severity,
+  onOpen,
+  onCall,
+  onMessage,
+  onMarkDone,
 }: {
   item: CoachItem;
   severity: "missed" | "todo";
@@ -308,16 +390,20 @@ function ItemRow({
   const [showHow, setShowHow] = useState(false);
   const how = HOW_TO[item.kind];
   return (
-    <li className={cn(
-      "rounded-md border p-3",
-      severity === "missed" ? "border-destructive/30 bg-destructive/5" : "border-border bg-card",
-    )}>
+    <li
+      className={cn(
+        "rounded-md border p-3",
+        severity === "missed" ? "border-destructive/30 bg-destructive/5" : "border-border bg-card",
+      )}
+    >
       <div className="flex items-start gap-2">
         <div className="flex-1 min-w-0">
           <div className="font-medium text-sm truncate">{item.title}</div>
           <div className="text-[12px] text-muted-foreground mt-0.5">{item.why}</div>
         </div>
-        <Badge variant="outline" className="font-mono text-[10px] shrink-0">+{item.xp} XP</Badge>
+        <Badge variant="outline" className="font-mono text-[10px] shrink-0">
+          +{item.xp} XP
+        </Badge>
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
@@ -334,15 +420,15 @@ function ItemRow({
             </Button>
           </>
         )}
-        <Button size="sm" variant="ghost" className="h-7 px-2 text-muted-foreground" onClick={() => setShowHow((v) => !v)}>
-          <BookOpen className="h-3 w-3 mr-1" /> How
-        </Button>
         <Button
           size="sm"
-          variant="default"
-          className="h-7 px-2 ml-auto"
-          onClick={onMarkDone}
+          variant="ghost"
+          className="h-7 px-2 text-muted-foreground"
+          onClick={() => setShowHow((v) => !v)}
         >
+          <BookOpen className="h-3 w-3 mr-1" /> How
+        </Button>
+        <Button size="sm" variant="default" className="h-7 px-2 ml-auto" onClick={onMarkDone}>
           <CheckCircle2 className="h-3 w-3 mr-1" /> Done
         </Button>
       </div>
@@ -354,7 +440,9 @@ function ItemRow({
             {how.steps.map((s, i) => (
               <li key={i}>
                 <span className="text-foreground">{s.step}</span>
-                {s.hint && <div className="ml-5 text-[11px] italic text-muted-foreground">{s.hint}</div>}
+                {s.hint && (
+                  <div className="ml-5 text-[11px] italic text-muted-foreground">{s.hint}</div>
+                )}
               </li>
             ))}
           </ol>
@@ -369,8 +457,21 @@ function HowSection({ role }: { role: string }) {
     role === "owner"
       ? ["owner-room-stale", "owner-block-pending"]
       : role === "flow-ops"
-        ? ["first-response", "no-follow-up", "flowops-handoff-unread", "flowops-reassign-stuck", "post-tour-overdue"]
-        : ["post-tour-overdue", "follow-up-overdue", "tour-today", "hot-untouched", "no-follow-up", "first-response"];
+        ? [
+            "first-response",
+            "no-follow-up",
+            "flowops-handoff-unread",
+            "flowops-reassign-stuck",
+            "post-tour-overdue",
+          ]
+        : [
+            "post-tour-overdue",
+            "follow-up-overdue",
+            "tour-today",
+            "hot-untouched",
+            "no-follow-up",
+            "first-response",
+          ];
 
   return (
     <div className="space-y-3 pr-2">
@@ -419,26 +520,37 @@ function LiveFeed({ compact }: { compact: boolean }) {
   return (
     <ul className="space-y-1.5 pr-2">
       {events.map((e) => (
-        <li key={e.id} className={cn("flex items-start gap-2 rounded-md border border-border bg-card/40 px-2.5 py-1.5",
-          e.kind === "booking.closed" && "border-success/40 bg-success/5",
-          e.kind === "post_tour.filled" && "border-accent/30 bg-accent/5",
-        )}>
+        <li
+          key={e.id}
+          className={cn(
+            "flex items-start gap-2 rounded-md border border-border bg-card/40 px-2.5 py-1.5",
+            e.kind === "booking.closed" && "border-success/40 bg-success/5",
+            e.kind === "post_tour.filled" && "border-accent/30 bg-accent/5",
+          )}
+        >
           <FeedDot kind={e.kind} />
           <div className="flex-1 min-w-0">
-            <div className={cn("text-[12px] truncate", e.kind === "booking.closed" && "font-medium")}>
+            <div
+              className={cn("text-[12px] truncate", e.kind === "booking.closed" && "font-medium")}
+            >
               {e.text}
             </div>
             {e.assists && e.assists.length > 0 && (
               <div className="text-[10px] text-accent mt-0.5 inline-flex items-center gap-1">
-                <Users2 className="h-3 w-3" /> assist · {e.assists.map((a) => personName(a.id, a.role)).join(", ")}
+                <Users2 className="h-3 w-3" /> assist ·{" "}
+                {e.assists.map((a) => personName(a.id, a.role)).join(", ")}
               </div>
             )}
           </div>
-          <span className="text-[10px] text-muted-foreground font-mono shrink-0">{relTime(e.ts)}</span>
+          <span className="text-[10px] text-muted-foreground font-mono shrink-0">
+            {relTime(e.ts)}
+          </span>
         </li>
       ))}
       {compact && (
-        <li className="text-[10px] text-muted-foreground text-center pt-2">— live across all roles —</li>
+        <li className="text-[10px] text-muted-foreground text-center pt-2">
+          — live across all roles —
+        </li>
       )}
     </ul>
   );
@@ -446,13 +558,19 @@ function LiveFeed({ compact }: { compact: boolean }) {
 
 function FeedDot({ kind }: { kind: ConnectorEvent["kind"] }) {
   const color =
-    kind === "booking.closed" ? "bg-success" :
-    kind === "post_tour.filled" ? "bg-accent" :
-    kind === "tour.scheduled" ? "bg-info" :
-    kind === "tour.completed" ? "bg-info" :
-    kind === "owner.room_updated" || kind === "owner.block_decided" ? "bg-warning" :
-    kind === "handoff.sent" ? "bg-primary" :
-    "bg-muted-foreground";
+    kind === "booking.closed"
+      ? "bg-success"
+      : kind === "post_tour.filled"
+        ? "bg-accent"
+        : kind === "tour.scheduled"
+          ? "bg-info"
+          : kind === "tour.completed"
+            ? "bg-info"
+            : kind === "owner.room_updated" || kind === "owner.block_decided"
+              ? "bg-warning"
+              : kind === "handoff.sent"
+                ? "bg-primary"
+                : "bg-muted-foreground";
   return <span className={cn("mt-1 h-1.5 w-1.5 rounded-full shrink-0", color)} />;
 }
 
@@ -469,7 +587,12 @@ function relTime(ts: number): string {
 
 /* PREDICT-AND-SAVE — leads about to slip in next ~6 hours. */
 function PredictBar({
-  leads, tours, now, role, currentTcmId, onOpen,
+  leads,
+  tours,
+  now,
+  role,
+  currentTcmId,
+  onOpen,
 }: {
   leads: ReturnType<typeof useApp.getState>["leads"];
   tours: ReturnType<typeof useApp.getState>["tours"];
@@ -481,7 +604,12 @@ function PredictBar({
   const slipping = useMemo(() => {
     const filterTcm = role === "tcm" ? currentTcmId : undefined;
     return leads
-      .filter((l) => (!filterTcm || l.assignedTcmId === filterTcm) && l.stage !== "booked" && l.stage !== "dropped")
+      .filter(
+        (l) =>
+          (!filterTcm || l.assignedTcmId === filterTcm) &&
+          l.stage !== "booked" &&
+          l.stage !== "dropped",
+      )
       .map((l) => {
         const silentH = (now - +new Date(l.updatedAt)) / 36e5;
         const intentBoost = l.intent === "hot" ? 24 : l.intent === "warm" ? 12 : 4;
@@ -508,9 +636,17 @@ function PredictBar({
             <span className="font-mono text-warning shrink-0 w-8">{risk}%</span>
             <span className="flex-1 truncate">
               <span className="font-medium">{lead.name}</span>
-              <span className="text-muted-foreground"> · {Math.round(silentH)}h silent · {lead.intent}</span>
+              <span className="text-muted-foreground">
+                {" "}
+                · {Math.round(silentH)}h silent · {lead.intent}
+              </span>
             </span>
-            <Button size="sm" variant="outline" className="h-6 px-2 text-[11px]" onClick={() => onOpen(lead.id)}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-6 px-2 text-[11px]"
+              onClick={() => onOpen(lead.id)}
+            >
               Save
             </Button>
           </li>
@@ -548,14 +684,25 @@ function MissionRing({ pct, streak }: { pct: number; streak: number }) {
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
         <circle
-          cx={size / 2} cy={size / 2} r={r}
-          stroke="currentColor" className="text-muted" strokeWidth={stroke} fill="none"
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          stroke="currentColor"
+          className="text-muted"
+          strokeWidth={stroke}
+          fill="none"
         />
         <circle
-          cx={size / 2} cy={size / 2} r={r}
-          stroke="currentColor" className="text-accent transition-all duration-500"
-          strokeWidth={stroke} fill="none"
-          strokeDasharray={c} strokeDashoffset={offset} strokeLinecap="round"
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          stroke="currentColor"
+          className="text-accent transition-all duration-500"
+          strokeWidth={stroke}
+          fill="none"
+          strokeDasharray={c}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">

@@ -37,15 +37,22 @@ export function SequenceChip({ leadId, compact = false }: { leadId: string; comp
         </div>
         <div className="flex gap-1">
           <Button
-            size="icon" variant="ghost" className="h-6 w-6"
+            size="icon"
+            variant="ghost"
+            className="h-6 w-6"
             onClick={() => toggleSequencePause(seq.leadId)}
             title={seq.paused ? "Resume" : "Pause"}
           >
             {seq.paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
           </Button>
           <Button
-            size="icon" variant="ghost" className="h-6 w-6"
-            onClick={() => { stopSequence(seq.leadId, "Stopped manually"); toast.success("Sequence stopped"); }}
+            size="icon"
+            variant="ghost"
+            className="h-6 w-6"
+            onClick={() => {
+              stopSequence(seq.leadId, "Stopped manually");
+              toast.success("Sequence stopped");
+            }}
             title="Stop"
           >
             <X className="h-3 w-3" />

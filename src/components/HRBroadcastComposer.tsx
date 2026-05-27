@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useNotifications, type NotifChannel, type NotifSeverity } from "@/lib/notifications";
 import { PERSONAS, activePersona } from "@/lib/personas";
 import { useApp } from "@/lib/store";
@@ -43,7 +49,11 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
     if (mode === "role") {
       return peopleByRole[targetRole].map((p) => ({ role: p.role, id: p.id, name: p.name }));
     }
-    return PERSONAS.filter((p) => targetIds.has(p.id)).map((p) => ({ role: p.role, id: p.id, name: p.name }));
+    return PERSONAS.filter((p) => targetIds.has(p.id)).map((p) => ({
+      role: p.role,
+      id: p.id,
+      name: p.name,
+    }));
   }, [mode, targetRole, targetIds, peopleByRole]);
 
   const toggleChannel = (c: NotifChannel) => {
@@ -69,9 +79,10 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
       toast.error("Add a title, message, and at least one recipient.");
       return;
     }
-    const dueAt = channels.has("calendar") || channels.has("todo")
-      ? Date.now() + Number(dueIn || 0) * 3600 * 1000
-      : undefined;
+    const dueAt =
+      channels.has("calendar") || channels.has("todo")
+        ? Date.now() + Number(dueIn || 0) * 3600 * 1000
+        : undefined;
     const ids = pushBroadcast({
       senderId: senderPersona.id,
       senderName: senderPersona.name,
@@ -83,9 +94,12 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
       dueAt,
       href: "/inbox",
     });
-    toast.success(`Broadcast sent to ${recipients.length} recipient${recipients.length === 1 ? "" : "s"}`, {
-      description: `${ids.length} entries — ${Array.from(channels).join(" · ")}`,
-    });
+    toast.success(
+      `Broadcast sent to ${recipients.length} recipient${recipients.length === 1 ? "" : "s"}`,
+      {
+        description: `${ids.length} entries — ${Array.from(channels).join(" · ")}`,
+      },
+    );
     // Reset form, keep audience selection.
     setTitle("");
     setBody("");
@@ -128,14 +142,16 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
         <div className="flex items-center gap-2 text-xs">
           <Button
             variant={mode === "role" ? "default" : "outline"}
-            size="sm" className="h-7"
+            size="sm"
+            className="h-7"
             onClick={() => setMode("role")}
           >
             <Users2 className="h-3 w-3 mr-1" /> Whole role
           </Button>
           <Button
             variant={mode === "people" ? "default" : "outline"}
-            size="sm" className="h-7"
+            size="sm"
+            className="h-7"
             onClick={() => setMode("people")}
           >
             Pick people
@@ -143,7 +159,9 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
         </div>
         {mode === "role" ? (
           <Select value={targetRole} onValueChange={(v) => setTargetRole(v as Role)}>
-            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               {ALL_ROLES.map((r) => (
                 <SelectItem key={r} value={r}>
@@ -166,7 +184,9 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
                 )}
               >
                 <div className="font-medium truncate">{p.name}</div>
-                <div className="text-[10px] text-muted-foreground truncate">{labelForRole(p.role)} · {p.focus}</div>
+                <div className="text-[10px] text-muted-foreground truncate">
+                  {labelForRole(p.role)} · {p.focus}
+                </div>
               </button>
             ))}
           </div>
@@ -175,14 +195,18 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
 
       {/* Channels */}
       <div className="space-y-2">
-        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Channels</div>
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+          Channels
+        </div>
         <div className="flex flex-wrap gap-1.5">
-          {([
-            { c: "in-app", icon: Bell, label: "In-app" },
-            { c: "todo", icon: ListTodo, label: "Todo" },
-            { c: "calendar", icon: CalendarDays, label: "Calendar" },
-            { c: "email", icon: Mail, label: "Email (queued)" },
-          ] as const).map(({ c, icon: Icon, label }) => (
+          {(
+            [
+              { c: "in-app", icon: Bell, label: "In-app" },
+              { c: "todo", icon: ListTodo, label: "Todo" },
+              { c: "calendar", icon: CalendarDays, label: "Calendar" },
+              { c: "email", icon: Mail, label: "Email (queued)" },
+            ] as const
+          ).map(({ c, icon: Icon, label }) => (
             <button
               key={c}
               onClick={() => toggleChannel(c)}
@@ -202,9 +226,13 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
       {/* Severity + due */}
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Priority</div>
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+            Priority
+          </div>
           <Select value={severity} onValueChange={(v) => setSeverity(v as NotifSeverity)}>
-            <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="info">Info</SelectItem>
               <SelectItem value="success">Success</SelectItem>
@@ -215,7 +243,9 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
         </div>
         {(channels.has("calendar") || channels.has("todo")) && (
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Due in (hrs)</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">
+              Due in (hrs)
+            </div>
             <Input
               type="number"
               min={0}
@@ -244,7 +274,9 @@ export function HRBroadcastComposer({ defaultOpen = false }: { defaultOpen?: boo
 
       <div className="flex items-center justify-between pt-1">
         <div className="text-[11px] text-muted-foreground">
-          {channels.has("email") && <span className="mr-2">📧 Email queued — backend will send</span>}
+          {channels.has("email") && (
+            <span className="mr-2">📧 Email queued — backend will send</span>
+          )}
           {channels.has("calendar") && <span className="mr-2">📅 Lands on /calendar</span>}
         </div>
         <Button onClick={send} size="sm" className="h-8">

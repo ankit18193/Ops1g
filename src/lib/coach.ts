@@ -10,9 +10,7 @@
  *
  * Pure functions. Depends on existing engine + types.
  */
-import type {
-  ActivityLog, FollowUp, Lead, Role, TCM, Tour, Booking,
-} from "./types";
+import type { ActivityLog, FollowUp, Lead, Role, TCM, Tour, Booking } from "./types";
 import { buildDoNextQueue, slaForPostTour, SLA, liveConfidence } from "./engine";
 import { activePersona, voiceFor } from "./personas";
 
@@ -32,11 +30,11 @@ export type CoachKind =
 export interface CoachItem {
   id: string;
   kind: CoachKind;
-  title: string;       // short headline
-  why: string;         // one-line reason
+  title: string; // short headline
+  why: string; // one-line reason
   leadId?: string;
   tourId?: string;
-  score: number;       // higher = do first
+  score: number; // higher = do first
   /** XP awarded when user clears this item */
   xp: number;
 }
@@ -86,7 +84,10 @@ export const HOW_TO: Record<CoachKind, { goal: string; steps: HowToStep[] }> = {
     goal: "Close the post-tour loop within 1 hour.",
     steps: [
       { step: "Open the lead and tap Post-tour update." },
-      { step: "Pick the outcome — booked / thinking / not-interested.", hint: "Be honest. The system scores you on truthfulness, not on optimism." },
+      {
+        step: "Pick the outcome — booked / thinking / not-interested.",
+        hint: "Be honest. The system scores you on truthfulness, not on optimism.",
+      },
       { step: "Log the real objection in the client's words." },
       { step: "Set the next follow-up date — never leave it blank." },
       { step: "Submit. Confidence and the owner's bars update automatically." },
@@ -207,8 +208,8 @@ export interface CoachInput {
   bookings: Booking[];
   handoffs: { id: string; leadId: string; to: Role; read: boolean; ts: string }[];
   ownerSignals?: {
-    staleRooms: number;       // rooms not updated in 7d
-    pendingBlocks: number;    // pending block requests
+    staleRooms: number; // rooms not updated in 7d
+    pendingBlocks: number; // pending block requests
   };
   now: number;
 }
@@ -217,8 +218,17 @@ export interface CoachInput {
 
 export function buildCoachReport(input: CoachInput): CoachReport {
   const {
-    role, currentTcmId, tcms, leads, tours, followUps,
-    activities, bookings, handoffs, ownerSignals, now,
+    role,
+    currentTcmId,
+    tcms,
+    leads,
+    tours,
+    followUps,
+    activities,
+    bookings,
+    handoffs,
+    ownerSignals,
+    now,
   } = input;
 
   const filterTcm = role === "tcm" ? currentTcmId : undefined;
@@ -271,7 +281,13 @@ export function buildCoachReport(input: CoachInput): CoachReport {
 
   // HOT untouched — leads w/ intent hot and silent >12h
   leads
-    .filter((l) => (!filterTcm || l.assignedTcmId === filterTcm) && l.intent === "hot" && l.stage !== "booked" && l.stage !== "dropped")
+    .filter(
+      (l) =>
+        (!filterTcm || l.assignedTcmId === filterTcm) &&
+        l.intent === "hot" &&
+        l.stage !== "booked" &&
+        l.stage !== "dropped",
+    )
     .forEach((l) => {
       const silentH = (now - +new Date(l.updatedAt)) / 36e5;
       if (silentH >= 12) {
@@ -427,36 +443,56 @@ function isWinAction(kind: ActivityLog["kind"]): boolean {
 
 function xpForActivity(kind: ActivityLog["kind"]): number {
   switch (kind) {
-    case "post_tour_filled": return 25;
-    case "follow_up_done":   return 15;
-    case "tour_completed":   return 20;
-    case "decision_logged":  return 18;
-    case "tour_scheduled":   return 10;
-    case "follow_up_set":    return 6;
-    case "call_logged":      return 4;
-    default:                 return 2;
+    case "post_tour_filled":
+      return 25;
+    case "follow_up_done":
+      return 15;
+    case "tour_completed":
+      return 20;
+    case "decision_logged":
+      return 18;
+    case "tour_scheduled":
+      return 10;
+    case "follow_up_set":
+      return 6;
+    case "call_logged":
+      return 4;
+    default:
+      return 2;
   }
 }
 
 function missionTargetFor(role: Role): number {
   switch (role) {
-    case "tcm":       return 8;
-    case "flow-ops":  return 12;
-    case "hr":        return 6;
-    case "owner":     return 3;
+    case "tcm":
+      return 8;
+    case "flow-ops":
+      return 12;
+    case "hr":
+      return 6;
+    case "owner":
+      return 3;
   }
 }
 
 function titleFor(kind: CoachKind, name: string, lead?: Lead): string {
   switch (kind) {
-    case "post-tour-overdue":   return `Fill post-tour for ${name}`;
-    case "follow-up-overdue":   return `Recover follow-up · ${name}`;
-    case "follow-up-today":     return `Follow up with ${name} today`;
-    case "no-follow-up":        return `Set next follow-up for ${name}`;
-    case "first-response":      return `First response · ${name}`;
-    case "tour-today":          return `Tour today · ${name}`;
-    case "hot-untouched":       return `Touch ${name} now (HOT)`;
-    default:                    return `${name}${lead?.intent === "hot" ? " (HOT)" : ""}`;
+    case "post-tour-overdue":
+      return `Fill post-tour for ${name}`;
+    case "follow-up-overdue":
+      return `Recover follow-up · ${name}`;
+    case "follow-up-today":
+      return `Follow up with ${name} today`;
+    case "no-follow-up":
+      return `Set next follow-up for ${name}`;
+    case "first-response":
+      return `First response · ${name}`;
+    case "tour-today":
+      return `Tour today · ${name}`;
+    case "hot-untouched":
+      return `Touch ${name} now (HOT)`;
+    default:
+      return `${name}${lead?.intent === "hot" ? " (HOT)" : ""}`;
   }
 }
 
@@ -497,17 +533,25 @@ export interface Badge {
   hint: string;
 }
 
-export function computeBadges(
-  xp: number,
-  streak: number,
-  bookingsClosed: number,
-): Badge[] {
+export function computeBadges(xp: number, streak: number, bookingsClosed: number): Badge[] {
   return [
-    { id: "spark",     label: "First Spark",      emoji: "✦",  earned: xp >= 50,         hint: "Earn 50 XP" },
-    { id: "rhythm",    label: "Rhythm",           emoji: "♪",  earned: streak >= 3,      hint: "3-day streak" },
-    { id: "engine",    label: "Engine",           emoji: "⚡", earned: streak >= 7,      hint: "7-day streak" },
-    { id: "closer",    label: "Closer",           emoji: "✓",  earned: bookingsClosed >= 1, hint: "Close 1 deal" },
-    { id: "rainmaker", label: "Rainmaker",        emoji: "★",  earned: bookingsClosed >= 5, hint: "Close 5 deals" },
-    { id: "veteran",   label: "Veteran",          emoji: "◆",  earned: xp >= 1000,       hint: "Earn 1,000 XP" },
+    { id: "spark", label: "First Spark", emoji: "✦", earned: xp >= 50, hint: "Earn 50 XP" },
+    { id: "rhythm", label: "Rhythm", emoji: "♪", earned: streak >= 3, hint: "3-day streak" },
+    { id: "engine", label: "Engine", emoji: "⚡", earned: streak >= 7, hint: "7-day streak" },
+    {
+      id: "closer",
+      label: "Closer",
+      emoji: "✓",
+      earned: bookingsClosed >= 1,
+      hint: "Close 1 deal",
+    },
+    {
+      id: "rainmaker",
+      label: "Rainmaker",
+      emoji: "★",
+      earned: bookingsClosed >= 5,
+      hint: "Close 5 deals",
+    },
+    { id: "veteran", label: "Veteran", emoji: "◆", earned: xp >= 1000, hint: "Earn 1,000 XP" },
   ];
 }

@@ -4,5 +4,9 @@ import ScheduleTour from "@/myt/pages/ScheduleTour";
 
 export const Route = createFileRoute("/myt/schedule")({
   head: () => ({ meta: [{ title: "Schedule Tour — MYT" }] }),
-  component: () => <AppShell><ScheduleTour /></AppShell>,
+  component: () => (
+    <AppShell>
+      <ScheduleTour />
+    </AppShell>
+  ),
 });

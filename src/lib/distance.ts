@@ -28,10 +28,10 @@ export type CampusTag =
 
 export interface Distance {
   km: number | null;
-  walkMins: number | null;     // 5 km/h walking pace
-  autoMins: number | null;     // ~22 km/h normal
-  peakMins: number | null;     // ~13 km/h peak
-  walkability: number;         // 0..100
+  walkMins: number | null; // 5 km/h walking pace
+  autoMins: number | null; // ~22 km/h normal
+  peakMins: number | null; // ~13 km/h peak
+  walkability: number; // 0..100
   band: DistanceBand;
   campusTag: CampusTag;
   oneLiner: string;
@@ -53,7 +53,10 @@ function leadCoords(area: string): { lat: number; lng: number } | null {
   const n = norm(area);
   if (!n) return null;
   const lm = LANDMARKS.find(
-    (l) => l.lat && l.lng && (l.n.toLowerCase().includes(n) || n.includes(l.n.toLowerCase().split(" ")[0])),
+    (l) =>
+      l.lat &&
+      l.lng &&
+      (l.n.toLowerCase().includes(n) || n.includes(l.n.toLowerCase().split(" ")[0])),
   );
   if (lm && lm.lat && lm.lng) return { lat: lm.lat, lng: lm.lng };
   for (const [k, v] of Object.entries(AREA_CENTROID)) {

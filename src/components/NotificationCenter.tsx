@@ -34,7 +34,9 @@ export function NotificationCenter({ role }: { role: Role }) {
   const [now, setNow] = useState(() => Date.now());
   const ref = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => { startNotificationsBridge(); }, []);
+  useEffect(() => {
+    startNotificationsBridge();
+  }, []);
   useEffect(() => {
     if (!open) return;
     const t = setInterval(() => setNow(Date.now()), 30_000);
@@ -123,25 +125,48 @@ export function NotificationCenter({ role }: { role: Role }) {
               visible.slice(0, 40).map((n) => {
                 const Body = (
                   <div className="flex gap-2.5 px-3 py-2.5 hover:bg-muted/40 transition-colors border-b border-border/50 last:border-b-0">
-                    <span className={cn("mt-1 h-2 w-2 rounded-full shrink-0", sevDot[n.severity])} />
+                    <span
+                      className={cn("mt-1 h-2 w-2 rounded-full shrink-0", sevDot[n.severity])}
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
-                        <span className={cn("text-xs font-semibold truncate", n.read ? "text-muted-foreground" : "text-foreground")}>{n.title}</span>
-                        {!n.read && <Circle className="h-1.5 w-1.5 fill-accent text-accent shrink-0" />}
+                        <span
+                          className={cn(
+                            "text-xs font-semibold truncate",
+                            n.read ? "text-muted-foreground" : "text-foreground",
+                          )}
+                        >
+                          {n.title}
+                        </span>
+                        {!n.read && (
+                          <Circle className="h-1.5 w-1.5 fill-accent text-accent shrink-0" />
+                        )}
                       </div>
                       <div className="text-[11px] text-muted-foreground line-clamp-2">{n.body}</div>
-                      <div className="text-[10px] text-muted-foreground/70 mt-0.5 font-mono">{timeAgo(n.ts, now)} ago</div>
+                      <div className="text-[10px] text-muted-foreground/70 mt-0.5 font-mono">
+                        {timeAgo(n.ts, now)} ago
+                      </div>
                     </div>
-                    {n.severity === "urgent" && <AlertTriangle className="h-3 w-3 text-destructive shrink-0 mt-1" />}
+                    {n.severity === "urgent" && (
+                      <AlertTriangle className="h-3 w-3 text-destructive shrink-0 mt-1" />
+                    )}
                   </div>
                 );
-                const onClick = () => { markRead(n.id); setOpen(false); };
+                const onClick = () => {
+                  markRead(n.id);
+                  setOpen(false);
+                };
                 return n.href ? (
                   <Link key={n.id} to={n.href} onClick={onClick} className="block">
                     {Body}
                   </Link>
                 ) : (
-                  <button key={n.id} type="button" onClick={onClick} className="block w-full text-left">
+                  <button
+                    key={n.id}
+                    type="button"
+                    onClick={onClick}
+                    className="block w-full text-left"
+                  >
                     {Body}
                   </button>
                 );

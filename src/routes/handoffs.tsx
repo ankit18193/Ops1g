@@ -11,7 +11,10 @@ export const Route = createFileRoute("/handoffs")({
   head: () => ({
     meta: [
       { title: "Handoffs — Gharpayy" },
-      { name: "description", content: "FlowOps ↔ TCM communication thread. Every lead handover, every urgent ping." },
+      {
+        name: "description",
+        content: "FlowOps ↔ TCM communication thread. Every lead handover, every urgent ping.",
+      },
     ],
   }),
   component: HandoffsPage,
@@ -50,7 +53,8 @@ function HandoffsPage() {
             <MessageSquare className="h-6 w-6 text-accent" /> Handoffs
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            FlowOps qualifies and routes. TCM closes. Both sides stay in sync here — every lead, in real time.
+            FlowOps qualifies and routes. TCM closes. Both sides stay in sync here — every lead, in
+            real time.
           </p>
         </header>
 
@@ -58,18 +62,21 @@ function HandoffsPage() {
           <div className="rounded-xl border border-border bg-card p-12 text-center">
             <MessageSquare className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
             <div className="font-display font-semibold">No handoffs yet.</div>
-            <div className="text-xs text-muted-foreground mt-1">When FlowOps routes a lead or a TCM updates one, it appears here.</div>
+            <div className="text-xs text-muted-foreground mt-1">
+              When FlowOps routes a lead or a TCM updates one, it appears here.
+            </div>
           </div>
         ) : (
           <div className="rounded-xl border border-border bg-card overflow-hidden divide-y divide-border">
             {grouped.map(({ leadId, msgs, last, unread, hasUrgent }) => {
               const lead = leads.find((l) => l.id === leadId);
               if (!lead) return null;
-              const fromLabel = last.from === "flow-ops"
-                ? "Flow Ops"
-                : last.from === "tcm"
-                  ? tcms.find((t) => t.id === last.fromId)?.name ?? "TCM"
-                  : "HR";
+              const fromLabel =
+                last.from === "flow-ops"
+                  ? "Flow Ops"
+                  : last.from === "tcm"
+                    ? (tcms.find((t) => t.id === last.fromId)?.name ?? "TCM")
+                    : "HR";
               return (
                 <div
                   key={leadId}
@@ -85,12 +92,16 @@ function HandoffsPage() {
                             {unread} new
                           </span>
                         )}
-                        <span className="text-[10px] text-muted-foreground">· {msgs.length} msg{msgs.length === 1 ? "" : "s"}</span>
+                        <span className="text-[10px] text-muted-foreground">
+                          · {msgs.length} msg{msgs.length === 1 ? "" : "s"}
+                        </span>
                       </div>
                       <div className="text-[11px] text-muted-foreground mt-1 inline-flex items-center gap-1">
                         <span>{fromLabel}</span>
                         <ArrowRight className="h-2.5 w-2.5" />
-                        <span>{last.to === "flow-ops" ? "Flow Ops" : last.to === "tcm" ? "TCM" : "HR"}</span>
+                        <span>
+                          {last.to === "flow-ops" ? "Flow Ops" : last.to === "tcm" ? "TCM" : "HR"}
+                        </span>
                         <ClientOnly fallback={<span suppressHydrationWarning>· …</span>}>
                           <span>· {format(new Date(last.ts), "MMM d, p")}</span>
                         </ClientOnly>
@@ -98,8 +109,12 @@ function HandoffsPage() {
                       <div className="text-sm mt-1.5 line-clamp-2">{last.text}</div>
                     </div>
                     <Button
-                      size="sm" variant="outline"
-                      onClick={() => { selectLead(leadId); markHandoffsRead(leadId); }}
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        selectLead(leadId);
+                        markHandoffsRead(leadId);
+                      }}
                     >
                       Open
                     </Button>

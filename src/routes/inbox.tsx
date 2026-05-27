@@ -1,6 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Inbox as InboxIcon, Bell, ListTodo, CalendarDays, Mail, CheckCircle2, Filter, Send, AlertCircle } from "lucide-react";
+import {
+  Inbox as InboxIcon,
+  Bell,
+  ListTodo,
+  CalendarDays,
+  Mail,
+  CheckCircle2,
+  Filter,
+  Send,
+  AlertCircle,
+} from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,7 +67,9 @@ function InboxPage() {
             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
               <InboxIcon className="h-3.5 w-3.5" />
               <span>Inbox · {me.name}</span>
-              <Badge variant="outline" className="text-[10px] font-mono">{labelForRole(role)}</Badge>
+              <Badge variant="outline" className="text-[10px] font-mono">
+                {labelForRole(role)}
+              </Badge>
             </div>
             <h1 className="font-display text-2xl font-semibold tracking-tight">
               Everything you need to act on, in one place.
@@ -69,7 +81,8 @@ function InboxPage() {
             </p>
           </div>
           <Button
-            size="sm" variant="outline"
+            size="sm"
+            variant="outline"
             onClick={() => markAllRead(role, me.id)}
             disabled={unread === 0}
           >
@@ -83,13 +96,15 @@ function InboxPage() {
 
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           <Filter className="h-3 w-3 text-muted-foreground mr-1" />
-          {([
-            ["all", "All", InboxIcon, counts.all],
-            ["broadcasts", "From HR", Send, counts.broadcasts],
-            ["todo", "Todo", ListTodo, counts.todo],
-            ["calendar", "Calendar", CalendarDays, counts.calendar],
-            ["email", "Email", Mail, counts.email],
-          ] as const).map(([k, label, Icon, n]) => (
+          {(
+            [
+              ["all", "All", InboxIcon, counts.all],
+              ["broadcasts", "From HR", Send, counts.broadcasts],
+              ["todo", "Todo", ListTodo, counts.todo],
+              ["calendar", "Calendar", CalendarDays, counts.calendar],
+              ["email", "Email", Mail, counts.email],
+            ] as const
+          ).map(([k, label, Icon, n]) => (
             <button
               key={k}
               onClick={() => setTab(k as Tab)}
@@ -140,15 +155,29 @@ function InboxPage() {
                         </div>
                         <p className="text-[12px] text-muted-foreground mt-0.5">{n.body}</p>
                         <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground">
-                          <span className="font-mono">{formatDistanceToNow(n.ts, { addSuffix: true })}</span>
+                          <span className="font-mono">
+                            {formatDistanceToNow(n.ts, { addSuffix: true })}
+                          </span>
                           {n.dueAt && (
-                            <span className={cn("inline-flex items-center gap-1 rounded px-1.5 py-0.5",
-                              overdue ? "bg-destructive/10 text-destructive" : "bg-warning/10 text-warning")}>
-                              {overdue ? <AlertCircle className="h-2.5 w-2.5" /> : <CalendarDays className="h-2.5 w-2.5" />}
+                            <span
+                              className={cn(
+                                "inline-flex items-center gap-1 rounded px-1.5 py-0.5",
+                                overdue
+                                  ? "bg-destructive/10 text-destructive"
+                                  : "bg-warning/10 text-warning",
+                              )}
+                            >
+                              {overdue ? (
+                                <AlertCircle className="h-2.5 w-2.5" />
+                              ) : (
+                                <CalendarDays className="h-2.5 w-2.5" />
+                              )}
                               due {formatDistanceToNow(n.dueAt, { addSuffix: true })}
                             </span>
                           )}
-                          {(n.channels ?? []).map((c) => <ChannelChip key={c} c={c} />)}
+                          {(n.channels ?? []).map((c) => (
+                            <ChannelChip key={c} c={c} />
+                          ))}
                           {n.emailQueued && (
                             <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 bg-info/10 text-info">
                               <Mail className="h-2.5 w-2.5" /> email queued
@@ -160,7 +189,8 @@ function InboxPage() {
                         {n.channels?.includes("todo") && (
                           <Button
                             variant={n.todoDone ? "outline" : "default"}
-                            size="sm" className="h-7 text-[11px]"
+                            size="sm"
+                            className="h-7 text-[11px]"
                             onClick={() => toggleTodoDone(n.id)}
                           >
                             <CheckCircle2 className="h-3 w-3 mr-1" />
@@ -206,10 +236,13 @@ function ChannelChip({ c }: { c: NotifChannel }) {
 
 function SeverityDot({ severity }: { severity: string }) {
   const cls =
-    severity === "urgent" ? "bg-destructive" :
-    severity === "warn" ? "bg-warning" :
-    severity === "success" ? "bg-success" :
-    "bg-info";
+    severity === "urgent"
+      ? "bg-destructive"
+      : severity === "warn"
+        ? "bg-warning"
+        : severity === "success"
+          ? "bg-success"
+          : "bg-info";
   return <span className={cn("mt-1 h-2 w-2 rounded-full shrink-0", cls)} />;
 }
 

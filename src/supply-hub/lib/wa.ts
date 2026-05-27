@@ -3,7 +3,10 @@
 
 import type { PG } from "../data/types";
 
-export function buildWaCard(pg: PG, opts?: { leadName?: string; bedLabel?: string; commuteKm?: number | null; landmarkName?: string }): string {
+export function buildWaCard(
+  pg: PG,
+  opts?: { leadName?: string; bedLabel?: string; commuteKm?: number | null; landmarkName?: string },
+): string {
   const greet = opts?.leadName ? `Hi ${opts.leadName},` : "Hi,";
   const lines: string[] = [greet, "", `Sharing *${pg.name}* — ${pg.area}.`];
 
@@ -24,7 +27,8 @@ export function buildWaCard(pg: PG, opts?: { leadName?: string; bedLabel?: strin
 
   if (pg.amenities.length) lines.push("", `Includes: ${pg.amenities.slice(0, 6).join(", ")}`);
 
-  if (pg.foodType || pg.mealsIncluded) lines.push("", `🍽 ${[pg.foodType, pg.mealsIncluded].filter(Boolean).join(" · ")}`);
+  if (pg.foodType || pg.mealsIncluded)
+    lines.push("", `🍽 ${[pg.foodType, pg.mealsIncluded].filter(Boolean).join(" · ")}`);
 
   if (pg.deposit) lines.push("", `Deposit: ${pg.deposit}`);
 

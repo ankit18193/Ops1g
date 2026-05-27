@@ -116,11 +116,50 @@ export const useCalendar = create<CalendarState>()(
   ),
 );
 
-export const KIND_META: Record<CalEventKind, { label: string; color: string; ring: string; bg: string; text: string }> = {
-  meeting: { label: "Meeting", color: "#2563eb", ring: "ring-blue-500/40", bg: "bg-blue-500/15", text: "text-blue-700" },
-  call: { label: "Call", color: "#0891b2", ring: "ring-cyan-500/40", bg: "bg-cyan-500/15", text: "text-cyan-700" },
-  tour: { label: "Tour", color: "#f97316", ring: "ring-orange-500/40", bg: "bg-orange-500/15", text: "text-orange-700" },
-  "follow-up": { label: "Follow-up", color: "#9333ea", ring: "ring-purple-500/40", bg: "bg-purple-500/15", text: "text-purple-700" },
-  task: { label: "Task", color: "#16a34a", ring: "ring-emerald-500/40", bg: "bg-emerald-500/15", text: "text-emerald-700" },
-  personal: { label: "Personal", color: "#64748b", ring: "ring-slate-500/40", bg: "bg-slate-500/15", text: "text-slate-700" },
+export const KIND_META: Record<
+  CalEventKind,
+  { label: string; color: string; ring: string; bg: string; text: string }
+> = {
+  meeting: {
+    label: "Meeting",
+    color: "#2563eb",
+    ring: "ring-blue-500/40",
+    bg: "bg-blue-500/15",
+    text: "text-blue-700",
+  },
+  call: {
+    label: "Call",
+    color: "#0891b2",
+    ring: "ring-cyan-500/40",
+    bg: "bg-cyan-500/15",
+    text: "text-cyan-700",
+  },
+  tour: {
+    label: "Tour",
+    color: "#f97316",
+    ring: "ring-orange-500/40",
+    bg: "bg-orange-500/15",
+    text: "text-orange-700",
+  },
+  "follow-up": {
+    label: "Follow-up",
+    color: "#9333ea",
+    ring: "ring-purple-500/40",
+    bg: "bg-purple-500/15",
+    text: "text-purple-700",
+  },
+  task: {
+    label: "Task",
+    color: "#16a34a",
+    ring: "ring-emerald-500/40",
+    bg: "bg-emerald-500/15",
+    text: "text-emerald-700",
+  },
+  personal: {
+    label: "Personal",
+    color: "#64748b",
+    ring: "ring-slate-500/40",
+    bg: "bg-slate-500/15",
+    text: "text-slate-700",
+  },
 };

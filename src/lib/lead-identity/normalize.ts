@@ -46,7 +46,7 @@ export function parseBudgetToNumber(raw: string): number {
     const lo = parseFloat(range[1]);
     const hi = parseFloat(range[2]);
     const k = !!range[3] || lo < 100;
-    return Math.round((lo + hi) / 2 * (k ? 1000 : 1));
+    return Math.round(((lo + hi) / 2) * (k ? 1000 : 1));
   }
   const single = t.match(/(\d+(?:\.\d+)?)(k)?/);
   if (single) {

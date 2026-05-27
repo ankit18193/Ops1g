@@ -26,12 +26,22 @@ function nearestLine(pg: PG): string {
 
 /* ---------- 1. Send-3-options (#2) ---------- */
 
-export function buildThreeOptions(pgs: PG[], opts?: { leadName?: string; landmark?: string; gender?: string }): string {
+export function buildThreeOptions(
+  pgs: PG[],
+  opts?: { leadName?: string; landmark?: string; gender?: string },
+): string {
   const greet = opts?.leadName ? `Hi ${opts.leadName},` : "Hi,";
   const ctx = opts?.landmark ? ` near ${opts.landmark}` : "";
-  const lines = [greet, "", `Here are 3 ${opts?.gender ?? ""} PG options${ctx} curated for you:`, ""];
+  const lines = [
+    greet,
+    "",
+    `Here are 3 ${opts?.gender ?? ""} PG options${ctx} curated for you:`,
+    "",
+  ];
   pgs.slice(0, 3).forEach((pg, i) => {
-    const cheapest = Math.min(...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999));
+    const cheapest = Math.min(
+      ...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999),
+    );
     lines.push(`*${i + 1}. ${pg.name}* — ${pg.area}`);
     if (cheapest < 99999) lines.push(`   From ${inr(cheapest)} (₹${perDay(cheapest)}/day)`);
     if (pg.usp) lines.push(`   ✨ ${pg.usp.slice(0, 80)}`);
@@ -46,16 +56,21 @@ export function buildThreeOptions(pgs: PG[], opts?: { leadName?: string; landmar
 /* ---------- 2. Comparison message (#10) ---------- */
 
 export function buildComparison(pgs: PG[], opts?: { leadName?: string }): string {
-  const greet = opts?.leadName ? `Hi ${opts.leadName}, here's a side-by-side:` : "Side-by-side comparison:";
+  const greet = opts?.leadName
+    ? `Hi ${opts.leadName}, here's a side-by-side:`
+    : "Side-by-side comparison:";
   const lines = [greet, ""];
   pgs.forEach((pg) => {
-    const cheap = Math.min(...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999));
+    const cheap = Math.min(
+      ...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999),
+    );
     lines.push(`━━━━━━━━━━━━━━`);
     lines.push(`*${pg.name}* (${pg.area})`);
     lines.push(`Price: ${bedLine(pg)}`);
     if (cheap < 99999) lines.push(`Per day: ₹${perDay(cheap)}`);
     lines.push(`IQ: ${pg.iq}/100 · ${pg.tier}`);
-    if (pg.foodType) lines.push(`Food: ${pg.foodType}${pg.mealsIncluded ? ` (${pg.mealsIncluded})` : ""}`);
+    if (pg.foodType)
+      lines.push(`Food: ${pg.foodType}${pg.mealsIncluded ? ` (${pg.mealsIncluded})` : ""}`);
     const lm = pg.nearbyLandmarks?.[0];
     if (lm) lines.push(`Nearest: ${lm.n} (${lm.w <= 0 ? "<1m" : lm.w + "m"})`);
     if (pg.amenities.length) lines.push(`Top amenities: ${pg.amenities.slice(0, 4).join(", ")}`);
@@ -79,11 +94,15 @@ export function buildBrochure(pg: PG, opts?: { leadName?: string }): string {
     "*PRICING*",
     bedLine(pg),
   ];
-  const cheap = Math.min(...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999));
+  const cheap = Math.min(
+    ...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999),
+  );
   if (cheap < 99999) lines.push(`Effective: ₹${perDay(cheap)}/day · everything included`);
   if (sc.hot) lines.push(`⚠️ ${sc.reason}`);
   lines.push("");
-  if (pg.usp) { lines.push("*WHY THIS PG*", pg.usp, ""); }
+  if (pg.usp) {
+    lines.push("*WHY THIS PG*", pg.usp, "");
+  }
   if (pg.nearbyLandmarks?.length) {
     lines.push("*NEAREST LANDMARKS*");
     pg.nearbyLandmarks.slice(0, 3).forEach((lm) => {
@@ -92,8 +111,11 @@ export function buildBrochure(pg: PG, opts?: { leadName?: string }): string {
     });
     lines.push("");
   }
-  if (pg.amenities.length) { lines.push("*AMENITIES*", pg.amenities.slice(0, 8).join(" · "), ""); }
-  if (pg.foodType || pg.mealsIncluded) lines.push(`🍽 *FOOD:* ${pg.foodType}${pg.mealsIncluded ? " · " + pg.mealsIncluded : ""}`, "");
+  if (pg.amenities.length) {
+    lines.push("*AMENITIES*", pg.amenities.slice(0, 8).join(" · "), "");
+  }
+  if (pg.foodType || pg.mealsIncluded)
+    lines.push(`🍽 *FOOD:* ${pg.foodType}${pg.mealsIncluded ? " · " + pg.mealsIncluded : ""}`, "");
   if (pg.safety.length) lines.push(`🛡 *SAFETY:* ${pg.safety.join(" · ")}`, "");
   if (pg.deposit) lines.push(`💰 *DEPOSIT:* ${pg.deposit}`);
   if (pg.minStay) lines.push(`📅 *MIN STAY:* ${pg.minStay}`);
@@ -105,12 +127,17 @@ export function buildBrochure(pg: PG, opts?: { leadName?: string }): string {
 
 /* ---------- 4. Parent safety pack (#5) ---------- */
 
-export function buildParentPack(pg: PG, opts?: { parentName?: string; daughterName?: string }): string {
+export function buildParentPack(
+  pg: PG,
+  opts?: { parentName?: string; daughterName?: string },
+): string {
   const greet = opts?.parentName ? `Namaste ${opts.parentName},` : "Namaste,";
   const lines = [
     greet,
     "",
-    opts?.daughterName ? `Sharing the safety profile of *${pg.name}* for ${opts.daughterName}.` : `Safety profile — *${pg.name}*, ${pg.area}.`,
+    opts?.daughterName
+      ? `Sharing the safety profile of *${pg.name}* for ${opts.daughterName}.`
+      : `Safety profile — *${pg.name}*, ${pg.area}.`,
     "",
     "🛡 *SAFETY MEASURES*",
   ];
@@ -146,7 +173,9 @@ export function buildParentPack(pg: PG, opts?: { parentName?: string; daughterNa
 /* ---------- 5. Convince-my-friend pack (#12) ---------- */
 
 export function buildFriendPack(pg: PG): string {
-  const cheap = Math.min(...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999));
+  const cheap = Math.min(
+    ...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999),
+  );
   const lm = pg.nearbyLandmarks?.[0];
   const lines = [
     `Hey — checking out *${pg.name}* in ${pg.area}.`,
@@ -169,9 +198,10 @@ export function buildFriendPack(pg: PG): string {
 
 export function buildReengagement(pg: PG, stage: "visited" | "got_price" | "browsed"): string {
   const fresh = freshness(pg);
-  const intro = fresh.isFresh && fresh.message
-    ? `Quick update — ${fresh.message.toLowerCase()}`
-    : "Following up on the property you liked";
+  const intro =
+    fresh.isFresh && fresh.message
+      ? `Quick update — ${fresh.message.toLowerCase()}`
+      : "Following up on the property you liked";
   switch (stage) {
     case "visited":
       return `Hi! ${intro}\n\n*${pg.name}* — the room you saw is still available, but someone else is visiting tomorrow morning.\n\nWant me to hold it for you with a token today?\n— Gharpayy`;
@@ -187,7 +217,9 @@ export function buildReengagement(pg: PG, stage: "visited" | "got_price" | "brow
 
 export function buildWalkthrough(pg: PG): string {
   const lm = pg.nearbyLandmarks?.[0];
-  const cheap = Math.min(...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999));
+  const cheap = Math.min(
+    ...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0).concat(99999),
+  );
   return [
     `90-SECOND WALKTHROUGH SCRIPT — ${pg.name}`,
     ``,
@@ -200,7 +232,7 @@ export function buildWalkthrough(pg: PG): string {
     ``,
     `✨ WOW MOMENT 2 (15s)`,
     `Show: ${pg.foodType ? "Kitchen/dining — point at hygiene" : "A typical room — open the wardrobe"}.`,
-    `Say: "${pg.mealsIncluded ? pg.mealsIncluded + ' — never cook again.' : 'Furnished, ready, walk in with one suitcase.'}"`,
+    `Say: "${pg.mealsIncluded ? pg.mealsIncluded + " — never cook again." : "Furnished, ready, walk in with one suitcase."}"`,
     ``,
     `✨ WOW MOMENT 3 (15s)`,
     `Show: ${pg.safety[0] ? "Safety setup — " + pg.safety[0] : "View from the room"}.`,
@@ -211,22 +243,38 @@ export function buildWalkthrough(pg: PG): string {
     `Pause for 3 seconds. Don't fill silence.`,
     ``,
     `🎯 CLOSE (10s)`,
-    `Ask: "${pg.scripts?.pitch?.closeQuestion || 'Should I block this room for you with a small token today?'}"`,
+    `Ask: "${pg.scripts?.pitch?.closeQuestion || "Should I block this room for you with a small token today?"}"`,
   ].join("\n");
 }
 
 /* ---------- 8. Instant match card (#1) ---------- */
 
-export function buildInstantMatch(pg: PG, opts: { leadName?: string; office: string; budget: number; commute?: { km: number; mins: number } | null }): string {
-  const cheap = Math.min(...[pg.prices.triple, pg.prices.double, pg.prices.single].filter((x) => x > 0 && x <= opts.budget * 1.1).concat(99999));
+export function buildInstantMatch(
+  pg: PG,
+  opts: {
+    leadName?: string;
+    office: string;
+    budget: number;
+    commute?: { km: number; mins: number } | null;
+  },
+): string {
+  const cheap = Math.min(
+    ...[pg.prices.triple, pg.prices.double, pg.prices.single]
+      .filter((x) => x > 0 && x <= opts.budget * 1.1)
+      .concat(99999),
+  );
   const greet = opts.leadName ? `Hi ${opts.leadName},` : "Hi,";
   const lines = [
     greet,
     "",
     `Best match for you: *${pg.name}*, ${pg.area}.`,
     "",
-    cheap < 99999 ? `💰 ${inr(cheap)} (₹${perDay(cheap)}/day) — fits your ${k(opts.budget)} budget.` : `Pricing: ${bedLine(pg)}`,
-    opts.commute ? `📍 ${opts.commute.km}km from ${opts.office} (~${opts.commute.mins} min auto)` : `📍 Near ${opts.office}`,
+    cheap < 99999
+      ? `💰 ${inr(cheap)} (₹${perDay(cheap)}/day) — fits your ${k(opts.budget)} budget.`
+      : `Pricing: ${bedLine(pg)}`,
+    opts.commute
+      ? `📍 ${opts.commute.km}km from ${opts.office} (~${opts.commute.mins} min auto)`
+      : `📍 Near ${opts.office}`,
     pg.usp ? `✨ ${pg.usp.slice(0, 100)}` : "",
     "",
     pg.mapsLink ? `🗺 ${pg.mapsLink}` : "",

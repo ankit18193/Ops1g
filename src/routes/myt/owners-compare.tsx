@@ -4,5 +4,9 @@ import OwnersCompare from "@/myt/pages/OwnersCompare";
 
 export const Route = createFileRoute("/myt/owners-compare")({
   head: () => ({ meta: [{ title: "Owners Compare — HR" }] }),
-  component: () => <AppShell><OwnersCompare /></AppShell>,
+  component: () => (
+    <AppShell>
+      <OwnersCompare />
+    </AppShell>
+  ),
 });

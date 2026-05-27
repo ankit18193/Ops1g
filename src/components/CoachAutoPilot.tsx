@@ -5,7 +5,13 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { Sparkles, Zap, Clock, Target } from "lucide-react";
-import { autoPilotPlan, streakMultiplier, tickMultiplier, multiplierLabel, type MultiplierState } from "@/lib/coach-pilot";
+import {
+  autoPilotPlan,
+  streakMultiplier,
+  tickMultiplier,
+  multiplierLabel,
+  type MultiplierState,
+} from "@/lib/coach-pilot";
 import type { CoachReport, CoachItem } from "@/lib/coach";
 import { cn } from "@/lib/utils";
 
@@ -17,15 +23,23 @@ function loadMult(): MultiplierState {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return { lastClearedAt: null, comboCount: 0 };
     return JSON.parse(raw) as MultiplierState;
-  } catch { return { lastClearedAt: null, comboCount: 0 }; }
+  } catch {
+    return { lastClearedAt: null, comboCount: 0 };
+  }
 }
 function saveMult(m: MultiplierState) {
-  try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(m)); } catch { /* ignore */ }
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(m));
+  } catch {
+    /* ignore */
+  }
 }
 
 export function useCoachMultiplier() {
   const [state, setState] = useState<MultiplierState>(() => loadMult());
-  useEffect(() => { saveMult(state); }, [state]);
+  useEffect(() => {
+    saveMult(state);
+  }, [state]);
   const bump = () => setState((s) => tickMultiplier(s));
   const mult = streakMultiplier(state);
   return { mult, bump, state };
@@ -62,7 +76,11 @@ export function CoachAutoPilot({
         <span
           className={cn(
             "text-[10px] font-mono rounded-full px-1.5 py-0.5",
-            mult >= 2 ? "bg-destructive/15 text-destructive" : mult > 1 ? "bg-accent/15 text-accent" : "bg-muted text-muted-foreground",
+            mult >= 2
+              ? "bg-destructive/15 text-destructive"
+              : mult > 1
+                ? "bg-accent/15 text-accent"
+                : "bg-muted text-muted-foreground",
           )}
           title="XP combo multiplier — keep clearing within 8 minutes to grow it."
         >
@@ -71,25 +89,39 @@ export function CoachAutoPilot({
       </div>
 
       <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-        <span className="inline-flex items-center gap-1"><Zap className="h-3 w-3" /> +{Math.round(plan.potentialXp * mult)} XP potential</span>
-        <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> ~{plan.etaMinutes} min</span>
+        <span className="inline-flex items-center gap-1">
+          <Zap className="h-3 w-3" /> +{Math.round(plan.potentialXp * mult)} XP potential
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <Clock className="h-3 w-3" /> ~{plan.etaMinutes} min
+        </span>
       </div>
 
       <ol className="space-y-1.5">
         {plan.picks.map((p, idx) => (
-          <li key={p.item.id} className="flex items-start gap-2 rounded-md border border-border bg-background/60 p-2">
+          <li
+            key={p.item.id}
+            className="flex items-start gap-2 rounded-md border border-border bg-background/60 p-2"
+          >
             <span className="h-5 w-5 rounded-full bg-accent/15 text-accent text-[10px] font-mono font-semibold flex items-center justify-center shrink-0">
               {idx + 1}
             </span>
             <div className="min-w-0 flex-1">
               <div className="text-xs font-medium text-foreground truncate">{p.item.title}</div>
-              {!compact && <div className="text-[10px] text-muted-foreground line-clamp-2">{p.rationale}</div>}
-              <div className="text-[10px] text-muted-foreground/70 font-mono mt-0.5">conf {p.confidence}% · +{p.item.xp} XP</div>
+              {!compact && (
+                <div className="text-[10px] text-muted-foreground line-clamp-2">{p.rationale}</div>
+              )}
+              <div className="text-[10px] text-muted-foreground/70 font-mono mt-0.5">
+                conf {p.confidence}% · +{p.item.xp} XP
+              </div>
             </div>
             {onClear && (
               <button
                 type="button"
-                onClick={() => { onClear(p.item); bump(); }}
+                onClick={() => {
+                  onClear(p.item);
+                  bump();
+                }}
                 className="shrink-0 text-[10px] inline-flex items-center gap-1 rounded-md border border-accent/40 bg-accent/10 text-accent px-2 py-1 hover:bg-accent/20 transition-colors"
                 aria-label="Mark done"
               >

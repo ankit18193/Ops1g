@@ -1,4 +1,13 @@
-import { Property, Room, RoomBlock, Tour, Lead, PropertyScores, InventorySignal, Intent } from './types';
+import {
+  Property,
+  Room,
+  RoomBlock,
+  Tour,
+  Lead,
+  PropertyScores,
+  InventorySignal,
+  Intent,
+} from "./types";
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -10,7 +19,7 @@ function demandScore(p: Property, leads: Lead[]): number {
   const viewScore = Math.min(50, (p.pageViews / 200) * 50);
   const shareScore = Math.min(20, (p.shares / 30) * 20);
   const matchingLeads = leads.filter(
-    l => l.area === p.area && Math.abs(l.budget - p.basePrice) <= 3000 && l.status !== 'dead'
+    (l) => l.area === p.area && Math.abs(l.budget - p.basePrice) <= 3000 && l.status !== "dead",
   ).length;
   const leadScore = Math.min(30, matchingLeads * 4);
   return Math.round(viewScore + shareScore + leadScore);
@@ -20,11 +29,11 @@ function demandScore(p: Property, leads: Lead[]): number {
  * Conversion score: of tours for this property, how many became bookings.
  */
 function conversionScore(p: Property, tours: Tour[]): number {
-  const propertyTours = tours.filter(t => t.propertyName === p.name);
+  const propertyTours = tours.filter((t) => t.propertyName === p.name);
   if (propertyTours.length === 0) return 50; // unknown — neutral
-  const completed = propertyTours.filter(t => t.status === 'completed').length;
+  const completed = propertyTours.filter((t) => t.status === "completed").length;
   const bookings = propertyTours.filter(
-    t => t.outcome === 'booked' || t.outcome === 'token-paid' || t.tokenPaid
+    (t) => t.outcome === "booked" || t.outcome === "token-paid" || t.tokenPaid,
   ).length;
   if (completed === 0) return 40;
   return Math.round((bookings / completed) * 100);
@@ -35,7 +44,7 @@ function conversionScore(p: Property, tours: Tour[]): number {
  * Proxy: occupancy % vs page age.
  */
 function velocityScore(p: Property, rooms: Room[]): number {
-  const propRooms = rooms.filter(r => r.propertyId === p.id);
+  const propRooms = rooms.filter((r) => r.propertyId === p.id);
   const total = propRooms.reduce((s, r) => s + r.bedsTotal, 0);
   const occupied = propRooms.reduce((s, r) => s + r.bedsOccupied, 0);
   if (total === 0) return 0;
@@ -46,15 +55,23 @@ function velocityScore(p: Property, rooms: Room[]): number {
 
 function deriveSignal(demand: number, available: number, total: number): InventorySignal {
   const occupancy = total > 0 ? 1 - available / total : 0;
-  if (demand >= 65 && occupancy >= 0.7) return 'hot';
-  if (demand <= 35 && occupancy <= 0.5) return 'cold';
-  return 'balanced';
+  if (demand >= 65 && occupancy >= 0.7) return "hot";
+  if (demand <= 35 && occupancy <= 0.5) return "cold";
+  return "balanced";
 }
 
-function suggestActions(p: Property, demand: number, conversion: number, velocity: number, available: number): string[] {
+function suggestActions(
+  p: Property,
+  demand: number,
+  conversion: number,
+  velocity: number,
+  available: number,
+): string[] {
   const out: string[] = [];
-  if (demand >= 70 && conversion >= 60 && available > 0) out.push(`Raise price ₹500 — demand strong`);
-  if (demand >= 70 && conversion < 50) out.push(`Fix conversion — top objection: ${p.foodRating < 3.5 ? 'food quality' : 'pricing'}`);
+  if (demand >= 70 && conversion >= 60 && available > 0)
+    out.push(`Raise price ₹500 — demand strong`);
+  if (demand >= 70 && conversion < 50)
+    out.push(`Fix conversion — top objection: ${p.foodRating < 3.5 ? "food quality" : "pricing"}`);
   if (demand < 40 && conversion >= 60) out.push(`Hidden gem — push reels & ads`);
   if (demand < 40 && conversion < 40) out.push(`Deprioritize — low demand & weak close`);
   if (available === 0) out.push(`Sold out — capture waitlist`);
@@ -68,13 +85,16 @@ export function scoreProperty(
   rooms: Room[],
   tours: Tour[],
   leads: Lead[],
-  blocks: RoomBlock[]
+  blocks: RoomBlock[],
 ): PropertyScores {
-  const propRooms = rooms.filter(r => r.propertyId === p.id);
+  const propRooms = rooms.filter((r) => r.propertyId === p.id);
   const bedsTotal = propRooms.reduce((s, r) => s + r.bedsTotal, 0);
   const bedsOccupied = propRooms.reduce((s, r) => s + r.bedsOccupied, 0);
   const activeBlocks = blocks.filter(
-    b => b.propertyId === p.id && b.status === 'active' && new Date(b.expiresAt).getTime() > Date.now()
+    (b) =>
+      b.propertyId === p.id &&
+      b.status === "active" &&
+      new Date(b.expiresAt).getTime() > Date.now(),
   );
   const bedsBlocked = activeBlocks.length;
   const bedsAvailable = Math.max(0, bedsTotal - bedsOccupied - bedsBlocked);
@@ -87,12 +107,16 @@ export function scoreProperty(
 
   const weekStart = Date.now() - WEEK_MS;
   const weekTours = tours.filter(
-    t => t.propertyName === p.name && new Date(t.createdAt).getTime() >= weekStart
+    (t) => t.propertyName === p.name && new Date(t.createdAt).getTime() >= weekStart,
   );
-  const weekBookings = weekTours.filter(t => t.outcome === 'booked' || t.outcome === 'token-paid' || t.tokenPaid).length;
+  const weekBookings = weekTours.filter(
+    (t) => t.outcome === "booked" || t.outcome === "token-paid" || t.tokenPaid,
+  ).length;
   const revenueWeek = weekBookings * p.basePrice;
 
-  const lostTours = weekTours.filter(t => t.outcome === 'rejected' || t.outcome === 'not-interested' || t.showUp === false).length;
+  const lostTours = weekTours.filter(
+    (t) => t.outcome === "rejected" || t.outcome === "not-interested" || t.showUp === false,
+  ).length;
   const missedRevenue = lostTours * p.basePrice;
 
   return {
@@ -126,32 +150,35 @@ export function budgetPowerScore(leadBudget: number, zoneMedian: number): number
 
 export function urgencyExpiry(intent: Intent, createdAt: string): string {
   const created = new Date(createdAt).getTime();
-  const hours = intent === 'hard' ? 2 : intent === 'medium' ? 8 : 24;
+  const hours = intent === "hard" ? 2 : intent === "medium" ? 8 : 24;
   return new Date(created + hours * 60 * 60 * 1000).toISOString();
 }
 
 export function conversionProbability(
   budgetPower: number,
   intent: Intent,
-  willBook: 'yes' | 'maybe' | 'no' | undefined
+  willBook: "yes" | "maybe" | "no" | undefined,
 ): number {
   let score = budgetPower * 0.4;
-  score += intent === 'hard' ? 40 : intent === 'medium' ? 25 : 10;
-  if (willBook === 'yes') score += 15;
-  else if (willBook === 'no') score -= 10;
+  score += intent === "hard" ? 40 : intent === "medium" ? 25 : 10;
+  if (willBook === "yes") score += 15;
+  else if (willBook === "no") score -= 10;
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 
 export function zoneMedianBudget(leads: Lead[], area: string): number {
-  const inZone = leads.filter(l => l.area === area).map(l => l.budget).sort((a, b) => a - b);
+  const inZone = leads
+    .filter((l) => l.area === area)
+    .map((l) => l.budget)
+    .sort((a, b) => a - b);
   if (inZone.length === 0) return 12000;
   return inZone[Math.floor(inZone.length / 2)];
 }
 
 export function leadIntent(lead: Lead): Intent {
-  if (!lead.mytQualified) return 'soft';
+  if (!lead.mytQualified) return "soft";
   const days = (new Date(lead.moveInDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
-  if (days <= 5 && lead.dateConfirmed) return 'hard';
-  if (days <= 12) return 'medium';
-  return 'soft';
+  if (days <= 5 && lead.dateConfirmed) return "hard";
+  if (days <= 12) return "medium";
+  return "soft";
 }

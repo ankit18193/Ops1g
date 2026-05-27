@@ -20,7 +20,10 @@ const toIcsDate = (iso: string, allDay: boolean): string => {
     const day = String(d.getUTCDate()).padStart(2, "0");
     return `${y}${m}${day}`;
   }
-  return d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  return d
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}/, "");
 };
 
 export function eventsToIcs(events: CalEvent[], calendarName = "Align Deal Flow"): string {
@@ -72,8 +75,7 @@ export function downloadIcs(filename: string, content: string) {
 
 /* ========================== ICS Parsing ========================== */
 
-const unfold = (text: string): string =>
-  text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
+const unfold = (text: string): string => text.replace(/\r\n[ \t]/g, "").replace(/\n[ \t]/g, "");
 
 const unescapeIcsText = (s: string): string =>
   s.replace(/\\n/g, "\n").replace(/\\,/g, ",").replace(/\\;/g, ";").replace(/\\\\/g, "\\");
@@ -96,7 +98,10 @@ const parseIcsDate = (raw: string): { iso: string; allDay: boolean } => {
   return { iso: local.toISOString(), allDay: false };
 };
 
-export function icsToEvents(text: string, externalSource: "ics" | "google" | "outlook" = "ics"): CalEvent[] {
+export function icsToEvents(
+  text: string,
+  externalSource: "ics" | "google" | "outlook" = "ics",
+): CalEvent[] {
   const unfolded = unfold(text);
   const lines = unfolded.split(/\r?\n/);
   const events: CalEvent[] = [];
@@ -192,8 +197,14 @@ export function icsToEvents(text: string, externalSource: "ics" | "google" | "ou
 
 /* ===================== Provider URL helpers ===================== */
 
-export function googleCalendarTemplateUrl(e: Pick<CalEvent, "title" | "start" | "end" | "description" | "location">): string {
-  const fmt = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+export function googleCalendarTemplateUrl(
+  e: Pick<CalEvent, "title" | "start" | "end" | "description" | "location">,
+): string {
+  const fmt = (iso: string) =>
+    new Date(iso)
+      .toISOString()
+      .replace(/[-:]/g, "")
+      .replace(/\.\d{3}/, "");
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: e.title,
@@ -204,7 +215,9 @@ export function googleCalendarTemplateUrl(e: Pick<CalEvent, "title" | "start" | 
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
-export function outlookCalendarTemplateUrl(e: Pick<CalEvent, "title" | "start" | "end" | "description" | "location">): string {
+export function outlookCalendarTemplateUrl(
+  e: Pick<CalEvent, "title" | "start" | "end" | "description" | "location">,
+): string {
   const params = new URLSearchParams({
     path: "/calendar/action/compose",
     rru: "addevent",

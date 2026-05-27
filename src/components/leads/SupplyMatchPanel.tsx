@@ -12,6 +12,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@/shims/react-router-dom";
 import {
   Sparkles,
   MapPin,
@@ -71,8 +72,7 @@ export function SupplyMatchPanel({ lead, limit, onNavigateAway }: Props) {
     [result.secondary, cap, visiblePrimary.length],
   );
 
-  const toggleExpanded = (id: string) =>
-    setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggleExpanded = (id: string) => setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const copyText = async (text: string, label: string) => {
     try {
@@ -96,7 +96,9 @@ export function SupplyMatchPanel({ lead, limit, onNavigateAway }: Props) {
     ];
     if (b) {
       lines.push("", `*Option 2 — ${b.pg.name}* (${b.pg.area})`);
-      lines.push(`${b.bedLabel} · ${b.distance.km != null ? `${b.distance.km} km` : "distance TBC"} · ${b.reasoning}`);
+      lines.push(
+        `${b.bedLabel} · ${b.distance.km != null ? `${b.distance.km} km` : "distance TBC"} · ${b.reasoning}`,
+      );
     }
     lines.push("", "Want me to lock visit slots for both?", `— Team ${settings.siteName}`);
     window.open(waLink(lead.phone, lines.join("\n")), "_blank", "noopener");
@@ -107,7 +109,9 @@ export function SupplyMatchPanel({ lead, limit, onNavigateAway }: Props) {
     return (
       <div className="rounded-md border border-dashed border-border bg-muted/20 p-4 text-center text-xs text-muted-foreground">
         No supply matches in the verified network.
-        <div className="mt-1">Try editing the lead's preferred area or budget, or relax the Settings filters.</div>
+        <div className="mt-1">
+          Try editing the lead's preferred area or budget, or relax the Settings filters.
+        </div>
       </div>
     );
   }
@@ -118,12 +122,18 @@ export function SupplyMatchPanel({ lead, limit, onNavigateAway }: Props) {
         <div className="flex items-center gap-1.5">
           <Sparkles className="h-3.5 w-3.5 text-accent" />
           <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Best fit · Normal fit · Alternatives — top {visiblePrimary.length + visibleSecondary.length}
+            Best fit · Normal fit · Alternatives — top{" "}
+            {visiblePrimary.length + visibleSecondary.length}
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           {visiblePrimary.length === 2 && (
-            <Button size="sm" variant="outline" className="h-7 px-2 text-[11px]" onClick={sendBothPitch}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 px-2 text-[11px]"
+              onClick={sendBothPitch}
+            >
               <GitCompare className="mr-1 h-3 w-3" /> Pitch Best+Normal
             </Button>
           )}
@@ -165,8 +175,14 @@ export function SupplyMatchPanel({ lead, limit, onNavigateAway }: Props) {
             onClick={() => setShowSecondary((v) => !v)}
             className="inline-flex w-full items-center justify-between rounded-md border border-dashed border-border bg-muted/10 px-2 py-1.5 text-[11px] text-muted-foreground hover:bg-muted/30"
           >
-            <span>{showSecondary ? "Hide" : "Show"} {visibleSecondary.length} more alternatives</span>
-            {showSecondary ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            <span>
+              {showSecondary ? "Hide" : "Show"} {visibleSecondary.length} more alternatives
+            </span>
+            {showSecondary ? (
+              <ChevronUp className="h-3 w-3" />
+            ) : (
+              <ChevronDown className="h-3 w-3" />
+            )}
           </button>
           {showSecondary &&
             visibleSecondary.map((m) => (
@@ -207,6 +223,7 @@ function MatchCard({
   const { settings } = useSettings();
   const sc = scarcity(match.pg);
   const assets = getPropertyAssets(match.pg);
+  const navigate = useNavigate();
 
   const pitchText = buildWaCard(match.pg, {
     leadName: lead.name,
@@ -222,7 +239,10 @@ function MatchCard({
   });
   const pdfWaLink = waLink(lead.phone, pdfMsg);
   const managerCallLink = telLink(match.pg.manager.phone);
-  const managerWaLink = waLink(match.pg.manager.phone, `Hi ${match.pg.manager.name}, checking availability for ${match.pg.name}.`);
+  const managerWaLink = waLink(
+    match.pg.manager.phone,
+    `Hi ${match.pg.manager.name}, checking availability for ${match.pg.name}.`,
+  );
 
   const bandClasses =
     match.band === "primary"
@@ -242,7 +262,12 @@ function MatchCard({
     <div className={cn("rounded-md border px-2.5 py-2 transition-colors", bandClasses)}>
       {/* Compact header row */}
       <div className="flex items-start gap-2">
-        <span className={cn("mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold uppercase", labelStyle)}>
+        <span
+          className={cn(
+            "mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold uppercase",
+            labelStyle,
+          )}
+        >
           {label}
         </span>
         <div className="min-w-0 flex-1">
@@ -267,13 +292,56 @@ function MatchCard({
               {match.pg.area} · {match.pg.gender} ·{" "}
               <span className="text-foreground/80">{match.bedLabel}</span>
               {match.distance.km != null && (
-                <> · {match.distance.km} km · {match.distance.peakMins}m peak</>
+                <>
+                  {" "}
+                  · {match.distance.km} km · {match.distance.peakMins}m peak
+                </>
               )}
             </span>
           </div>
         </div>
-        <div className="shrink-0 text-right">
-          <div className="font-display text-base font-semibold leading-none">{match.score}%</div>
+        <div className="shrink-0 flex flex-col items-center gap-1">
+          {/* start */}
+          {(() => {
+            const radius = 16;
+            const strokeWidth = 3;
+            const circumference = 2 * Math.PI * radius;
+            const strokeDashoffset = circumference - (match.score / 100) * circumference;
+            const strokeColor =
+              match.score >= 75
+                ? "stroke-emerald-500 dark:stroke-emerald-400"
+                : match.score >= 50
+                  ? "stroke-amber-500 dark:stroke-amber-400"
+                  : "stroke-blue-500 dark:stroke-blue-400";
+            return (
+              <div className="relative h-10 w-10 shrink-0">
+                <svg className="h-full w-full -rotate-90">
+                  <circle
+                    cx="20"
+                    cy="20"
+                    r={radius}
+                    className="stroke-muted fill-none"
+                    strokeWidth={strokeWidth}
+                  />
+                  <circle
+                    cx="20"
+                    cy="20"
+                    r={radius}
+                    className={cn("fill-none transition-all duration-700 ease-out", strokeColor)}
+                    strokeWidth={strokeWidth}
+                    strokeDasharray={circumference}
+                    strokeDashoffset={strokeDashoffset}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center font-display text-[10px] font-bold leading-none">
+                  {match.score}
+                  <span className="text-[6px] text-muted-foreground font-normal">%</span>
+                </div>
+              </div>
+            );
+          })()}
+          {/* end */}
           <div className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">
             {match.dominantDriver}
           </div>
@@ -304,12 +372,21 @@ function MatchCard({
           href={pdfWaLink}
           target="_blank"
           rel="noreferrer"
-          title={assets.pdfIsDirect ? "Sends the curated brochure" : "Opens Drive folder filtered to this property — copy direct link, then send"}
+          title={
+            assets.pdfIsDirect
+              ? "Sends the curated brochure"
+              : "Opens Drive folder filtered to this property — copy direct link, then send"
+          }
           className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-[11px] hover:bg-muted"
         >
           <FileText className="h-3 w-3" /> Send PDF
         </a>
-        <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px]" onClick={() => onCopy(pitchText, "Pitch")}>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-7 px-2 text-[11px]"
+          onClick={() => onCopy(pitchText, "Pitch")}
+        >
           <Copy className="h-3 w-3" />
         </Button>
         <button
@@ -327,31 +404,63 @@ function MatchCard({
         <div className="mt-2 space-y-2.5 rounded-md border border-border bg-background/60 p-2.5">
           {/* Rents */}
           <div className="grid grid-cols-3 gap-1.5 text-[11px]">
-            <Stat label="Single" value={match.pg.prices.single ? `₹${(match.pg.prices.single / 1000).toFixed(0)}k` : "—"} />
-            <Stat label="Double" value={match.pg.prices.double ? `₹${(match.pg.prices.double / 1000).toFixed(0)}k` : "—"} />
-            <Stat label="Triple" value={match.pg.prices.triple ? `₹${(match.pg.prices.triple / 1000).toFixed(0)}k` : "—"} />
+            <Stat
+              label="Single"
+              value={
+                match.pg.prices.single ? `₹${(match.pg.prices.single / 1000).toFixed(0)}k` : "—"
+              }
+            />
+            <Stat
+              label="Double"
+              value={
+                match.pg.prices.double ? `₹${(match.pg.prices.double / 1000).toFixed(0)}k` : "—"
+              }
+            />
+            <Stat
+              label="Triple"
+              value={
+                match.pg.prices.triple ? `₹${(match.pg.prices.triple / 1000).toFixed(0)}k` : "—"
+              }
+            />
             <Stat label="Deposit" value={match.pg.deposit || "—"} />
             <Stat label="Min stay" value={match.pg.minStay || "—"} />
             <Stat label="Per day" value={match.bedPrice ? perDayLabel(match.bedPrice) : "—"} />
           </div>
 
+          {/* start */}
           {settings.matching.showScoreBreakdown && (
-            <div className="flex flex-wrap gap-1 text-[10px]">
-              {match.parts.map((p) => (
-                <span
-                  key={p.label}
-                  className={cn(
-                    "rounded border px-1.5 py-0.5",
-                    p.pts >= p.max * 0.7
-                      ? "border-success/40 bg-success/10 text-success"
-                      : "border-border bg-muted/20 text-muted-foreground",
-                  )}
-                >
-                  {p.label} {p.pts}/{p.max}
-                </span>
-              ))}
+            <div className="space-y-2 border-t border-border/40 pt-2.5">
+              <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/80">
+                Match Signals Breakdown
+              </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[10px]">
+                {match.parts.map((p) => {
+                  const pct = Math.round((p.pts / p.max) * 100);
+                  const isHigh = p.pts >= p.max * 0.7;
+                  return (
+                    <div key={p.label} className="space-y-1">
+                      <div className="flex justify-between text-[9px] text-muted-foreground/80 font-medium">
+                        <span className="capitalize">{p.label}</span>
+                        <span className="font-mono">
+                          {p.pts}/{p.max}
+                        </span>
+                      </div>
+                      <div className="h-1.5 w-full bg-muted/50 rounded-full overflow-hidden">
+                        <div
+                          className={cn(
+                            "h-full rounded-full transition-all duration-500",
+                            isHigh ? "bg-success" : "bg-muted-foreground/45",
+                          )}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
+          {/* end */}
 
           <div className="grid gap-2.5 sm:grid-cols-2">
             <div>
@@ -369,12 +478,18 @@ function MatchCard({
               <SectionLabel icon={ShieldCheck}>Amenities &amp; safety</SectionLabel>
               <div className="flex flex-wrap gap-1">
                 {match.pg.amenities.slice(0, 10).map((a) => (
-                  <span key={a} className="rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                  <span
+                    key={a}
+                    className="rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[10px] text-muted-foreground"
+                  >
                     {a}
                   </span>
                 ))}
                 {match.pg.safety.slice(0, 6).map((s) => (
-                  <span key={s} className="rounded border border-success/30 bg-success/10 px-1.5 py-0.5 text-[10px] text-success">
+                  <span
+                    key={s}
+                    className="rounded border border-success/30 bg-success/10 px-1.5 py-0.5 text-[10px] text-success"
+                  >
                     {s}
                   </span>
                 ))}
@@ -387,8 +502,13 @@ function MatchCard({
               <SectionLabel icon={MapPin}>Nearby</SectionLabel>
               <div className="space-y-0.5">
                 {match.pg.nearbyLandmarks.slice(0, 4).map((lm) => (
-                  <div key={`${match.pg.id}-${lm.n}`} className="flex items-center justify-between text-[11px] text-muted-foreground">
-                    <span className="truncate">{lm.n} · {lm.t}</span>
+                  <div
+                    key={`${match.pg.id}-${lm.n}`}
+                    className="flex items-center justify-between text-[11px] text-muted-foreground"
+                  >
+                    <span className="truncate">
+                      {lm.n} · {lm.t}
+                    </span>
                     <span>{lm.d < 1 ? `${Math.round(lm.d * 1000)}m` : `${lm.d} km`}</span>
                   </div>
                 ))}
@@ -404,7 +524,8 @@ function MatchCard({
               rel="noreferrer"
               className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted"
             >
-              <FileText className="h-3 w-3" /> {assets.pdfIsDirect ? "View brochure" : "Find brochure"}
+              <FileText className="h-3 w-3" />{" "}
+              {assets.pdfIsDirect ? "View brochure" : "Find brochure"}
             </a>
             <a
               href={assets.folderUrl}
@@ -415,27 +536,70 @@ function MatchCard({
               <FolderOpen className="h-3 w-3" /> Drive folder
             </a>
             {settings.matching.showMapsAction && match.pg.mapsLink && (
-              <a href={match.pg.mapsLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted">
+              <a
+                href={match.pg.mapsLink}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted"
+              >
                 <MapPin className="h-3 w-3" /> Maps
               </a>
             )}
             {settings.matching.showManagerContacts && managerCallLink && (
-              <a href={managerCallLink} className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted">
+              <a
+                href={managerCallLink}
+                className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted"
+              >
                 <Phone className="h-3 w-3" /> Manager
               </a>
             )}
             {settings.matching.showManagerContacts && match.pg.manager.phone && (
-              <a href={managerWaLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted">
+              <a
+                href={managerWaLink}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted"
+              >
                 <MessageCircle className="h-3 w-3" /> WA mgr
               </a>
             )}
-            <Link
-              to="/myt/schedule"
-              onClick={onNavigateAway}
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted"
+            {/* start */}
+            <button
+              onClick={() => {
+                onNavigateAway?.();
+                navigate("/myt/schedule", {
+                  state: {
+                    lead: lead,
+                    inventoryFit: {
+                      propertyId: match.pg.id,
+                      propertyName: match.pg.name,
+                      availableBeds: Object.values(sc.perBed).reduce(
+                        (acc: number, val) => acc + (val || 0),
+                        0,
+                      ),
+                      reason: match.reasoning,
+                      score: match.score,
+                      zoneId:
+                        match.pg.area === "Koramangala"
+                          ? "z1"
+                          : match.pg.area === "HSR Layout"
+                            ? "z2"
+                            : match.pg.area === "Indiranagar"
+                              ? "z3"
+                              : match.pg.area === "Whitefield"
+                                ? "z4"
+                                : match.pg.area === "BTM"
+                                  ? "z5"
+                                  : "z1",
+                    },
+                  },
+                });
+              }}
+              className="inline-flex items-center gap-1 rounded-md border border-transparent bg-accent px-2 py-1 text-[11px] font-medium text-accent-foreground hover:opacity-90 cursor-pointer"
             >
               <Navigation className="h-3 w-3" /> Schedule
-            </Link>
+            </button>
+            {/* end */}
             <Link
               to="/supply-hub/$id"
               params={{ id: match.pg.id }}
@@ -460,7 +624,13 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function SectionLabel({ icon: Icon, children }: { icon: typeof MapPin; children: React.ReactNode }) {
+function SectionLabel({
+  icon: Icon,
+  children,
+}: {
+  icon: typeof MapPin;
+  children: React.ReactNode;
+}) {
   return (
     <div className="mb-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
       <Icon className="h-3 w-3" /> {children}
@@ -471,6 +641,8 @@ function SectionLabel({ icon: Icon, children }: { icon: typeof MapPin; children:
 function Row({ k, v }: { k: string; v?: string }) {
   if (!v) return null;
   return (
-    <div className="truncate"><span className="text-foreground">{k}:</span> {v}</div>
+    <div className="truncate">
+      <span className="text-foreground">{k}:</span> {v}
+    </div>
   );
 }

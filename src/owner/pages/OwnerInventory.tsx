@@ -21,11 +21,13 @@ export function OwnerInventory() {
   return (
     <div className="space-y-5">
       <header>
-        <div className="text-[10px] uppercase tracking-wider text-warning font-semibold mb-1">Owner Portal</div>
+        <div className="text-[10px] uppercase tracking-wider text-warning font-semibold mb-1">
+          Owner Portal
+        </div>
         <h1 className="font-display text-2xl font-semibold tracking-tight">My Inventory</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Your properties listed in the Gharpayy network. Names are masked for privacy when shared externally.
-          Pricing, occupancy and pitch tools are managed by the Gharpayy team.
+          Your properties listed in the Gharpayy network. Names are masked for privacy when shared
+          externally. Pricing, occupancy and pitch tools are managed by the Gharpayy team.
         </p>
       </header>
 
@@ -42,11 +44,16 @@ export function OwnerInventory() {
                   <Building2 className="h-5 w-5 text-warning" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Listed as</div>
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Listed as
+                  </div>
                   <h3 className="font-display text-lg font-semibold truncate">{masked(p.name)}</h3>
                   <div className="mt-1 flex items-start gap-1 text-xs text-muted-foreground">
                     <MapPin className="h-3 w-3 mt-0.5 shrink-0" />
-                    <span className="truncate">{p.area}{p.address ? ` · ${p.address}` : ""}</span>
+                    <span className="truncate">
+                      {p.area}
+                      {p.address ? ` · ${p.address}` : ""}
+                    </span>
                   </div>
                 </div>
               </div>

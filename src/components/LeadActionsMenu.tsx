@@ -1,20 +1,35 @@
 // Single action menu used everywhere a lead appears. Same actions, same order, same icons.
 // Replaces ad-hoc dropdowns scattered across pages.
 
-import { useApp } from '@/lib/store';
-import { tourMessageLink, sendTourMessage } from '@/owner/messaging';
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MessageCircle, Phone, CalendarPlus, BellRing, MoreVertical, ExternalLink, Sparkles } from 'lucide-react';
-import { toast } from 'sonner';
-import type { Lead } from '@/lib/types';
+import { useApp } from "@/lib/store";
+import { tourMessageLink, sendTourMessage } from "@/owner/messaging";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  MessageCircle,
+  Phone,
+  CalendarPlus,
+  BellRing,
+  MoreVertical,
+  ExternalLink,
+  Sparkles,
+} from "lucide-react";
+import { toast } from "sonner";
+import type { Lead } from "@/lib/types";
 
 interface Props {
   lead: Lead;
-  size?: 'sm' | 'md';
+  size?: "sm" | "md";
 }
 
-export function LeadActionsMenu({ lead, size = 'sm' }: Props) {
+export function LeadActionsMenu({ lead, size = "sm" }: Props) {
   const { selectLead, logCall, sendMessage, tours, properties, tcms } = useApp();
   const tour = tours.find((t) => t.leadId === lead.id);
   const property = tour ? properties.find((p) => p.id === tour.propertyId) : undefined;
@@ -27,7 +42,7 @@ export function LeadActionsMenu({ lead, size = 'sm' }: Props) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size={size === 'sm' ? 'sm' : 'default'}
+          size={size === "sm" ? "sm" : "default"}
           className="h-8 w-8 p-0"
           aria-label={`Actions for ${lead.name}`}
         >
@@ -39,10 +54,20 @@ export function LeadActionsMenu({ lead, size = 'sm' }: Props) {
         <DropdownMenuItem onClick={() => selectLead(lead.id)}>
           <Sparkles className="h-3.5 w-3.5 mr-2" /> Open control panel
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => { logCall(lead.id); toast.success(`Call logged for ${lead.name}`); }}>
+        <DropdownMenuItem
+          onClick={() => {
+            logCall(lead.id);
+            toast.success(`Call logged for ${lead.name}`);
+          }}
+        >
           <Phone className="h-3.5 w-3.5 mr-2" /> Log call
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => { sendMessage(lead.id, '👋 Quick check-in from Gharpayy'); toast.success('Message sent'); }}>
+        <DropdownMenuItem
+          onClick={() => {
+            sendMessage(lead.id, "👋 Quick check-in from Gharpayy");
+            toast.success("Message sent");
+          }}
+        >
           <MessageCircle className="h-3.5 w-3.5 mr-2" /> Send check-in
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => selectLead(lead.id)}>
@@ -57,14 +82,17 @@ export function LeadActionsMenu({ lead, size = 'sm' }: Props) {
           disabled={!canSendTourMsg}
           onClick={() => {
             if (!tour || !property) return;
-            sendTourMessage('confirmation', {
-              tourId: tour.id, leadName: lead.name, phone: lead.phone,
-              propertyName: property.name, area: property.area,
+            sendTourMessage("confirmation", {
+              tourId: tour.id,
+              leadName: lead.name,
+              phone: lead.phone,
+              propertyName: property.name,
+              area: property.area,
               tourDate: tour.scheduledAt.slice(0, 10),
               tourTime: tour.scheduledAt.slice(11, 16),
               tcmName: tcm?.name,
             });
-            toast.success('WhatsApp confirmation opened');
+            toast.success("WhatsApp confirmation opened");
           }}
         >
           <ExternalLink className="h-3.5 w-3.5 mr-2" /> Send confirmation
@@ -73,14 +101,17 @@ export function LeadActionsMenu({ lead, size = 'sm' }: Props) {
           disabled={!canSendTourMsg}
           onClick={() => {
             if (!tour || !property) return;
-            sendTourMessage('reminder_2h', {
-              tourId: tour.id, leadName: lead.name, phone: lead.phone,
-              propertyName: property.name, area: property.area,
+            sendTourMessage("reminder_2h", {
+              tourId: tour.id,
+              leadName: lead.name,
+              phone: lead.phone,
+              propertyName: property.name,
+              area: property.area,
               tourDate: tour.scheduledAt.slice(0, 10),
               tourTime: tour.scheduledAt.slice(11, 16),
               tcmName: tcm?.name,
             });
-            toast.success('2h reminder opened');
+            toast.success("2h reminder opened");
           }}
         >
           <ExternalLink className="h-3.5 w-3.5 mr-2" /> Send 2h reminder

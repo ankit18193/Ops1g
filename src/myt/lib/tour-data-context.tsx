@@ -107,7 +107,11 @@ export function TourDataProvider({ children }: { children: React.ReactNode }) {
     setState((s) => ({
       ...s,
       events: [
-        { id: `e${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, at: e.at ?? new Date().toISOString(), ...e },
+        {
+          id: `e${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          at: e.at ?? new Date().toISOString(),
+          ...e,
+        },
         ...s.events,
       ],
     }));

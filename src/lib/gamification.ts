@@ -7,9 +7,9 @@ export type WhoKey = string; // e.g. "tcm:tcm-1" or "flow-ops" or "owner"
 interface PerUserStats {
   xp: number;
   streak: number;
-  lastWinDate: string | null;   // YYYY-MM-DD (local)
+  lastWinDate: string | null; // YYYY-MM-DD (local)
   xpToday: number;
-  todayKey: string | null;      // YYYY-MM-DD (local)
+  todayKey: string | null; // YYYY-MM-DD (local)
   bookingsClosed: number;
   /** ids of cleared coach items / bookings (so we don't double-count) */
   cleared: Record<string, true>;
@@ -41,9 +41,13 @@ const today = () => {
 };
 
 const empty = (): PerUserStats => ({
-  xp: 0, streak: 0, lastWinDate: null,
-  xpToday: 0, todayKey: today(),
-  bookingsClosed: 0, cleared: {},
+  xp: 0,
+  streak: 0,
+  lastWinDate: null,
+  xpToday: 0,
+  todayKey: today(),
+  bookingsClosed: 0,
+  cleared: {},
 });
 
 /** Pure: returns stats with today's bucket reset if the day rolled over. */
@@ -79,9 +83,7 @@ export const useGame = create<GameState>()(
         const cur = viewStats(get().byUser[who]);
         if (dedupeKey && cur.cleared[dedupeKey]) return 0;
         const t = today();
-        const { streak, lastWinDate } = computeNewStreak(
-          cur.streak, cur.lastWinDate, t, true,
-        );
+        const { streak, lastWinDate } = computeNewStreak(cur.streak, cur.lastWinDate, t, true);
         const next: PerUserStats = {
           ...cur,
           xp: cur.xp + amount,
@@ -109,8 +111,7 @@ export const useGame = create<GameState>()(
         set((s) => ({ byUser: { ...s.byUser, [who]: next } }));
       },
 
-      resetUser: (who) =>
-        set((s) => ({ byUser: { ...s.byUser, [who]: empty() } })),
+      resetUser: (who) => set((s) => ({ byUser: { ...s.byUser, [who]: empty() } })),
 
       setShownIntro: (v) => set({ shownIntro: v }),
     }),
