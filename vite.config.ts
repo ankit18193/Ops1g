@@ -9,6 +9,9 @@ export default defineConfig({
     tsconfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({
       ssr: false,
+      server: {
+        preset: 'vercel'
+      },
       importProtection: {
         behavior: "error",
         client: {
